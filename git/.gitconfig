@@ -1,7 +1,7 @@
 [user]
-	name = Victor Rodriguez
-	email = victor.rodriguez.guriz@gmail.com
-	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO8svbpnhW1fbLEKhF/9ckmLS0yE1s4GdWt+SlsYb1pe
+	name = Wilber Carrascal
+	email = wilber.carrascal@gmail.com
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEm+HTmpCdkHTSgW/78H9MOIvO15El63TpaPlDKZ+Eyz
 [gpg]
 	format = ssh
 [core]
