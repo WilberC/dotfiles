@@ -15,6 +15,7 @@
   # Clone your personal keys files inside the dotfiles folder
   # For more context go to the keys_template README
   git clone git@github.com:WilberC/keys_template.git keys
+  stow keys
   ```
 
 3. Install the configuration files you need/want:
