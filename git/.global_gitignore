@@ -26,3 +26,14 @@ TAGS
 
 # znap generated files
 *.zwc
+
+# Ignore Brewfile
+Brewfile.lock.json
+Brewfile.extra.lock.json
+
+# Mise local versioning
+.tool-versions
+ 
+# Local ignore folder
+.local/
+_local/
