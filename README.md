@@ -1,4 +1,4 @@
-<h2 align="center">kucho/dotfiles</h2>
+<h2 align="center">wilber/dotfiles</h2>
 
 ## Prerequisites
 1. [GNU/Stow](https://www.gnu.org/software/stow/)
@@ -7,7 +7,7 @@
 
 1. Clone onto your machine:
   ```bash
-  git clone git@github.com:kucho/dotfiles.git ~/dotfiles
+  git clone git@github.com:wilberc/dotfiles.git ~/dotfiles
   ```
 
 2. Install the configuration files you need/want:
