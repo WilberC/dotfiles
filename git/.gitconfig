@@ -7,6 +7,8 @@
   verbose = true
 [core]
   excludesfile = ~/.global_gitignore
+  fsmonitor = true
+  untrackedcache = true
 [diff]
   algorithm = histogram
   colorMoved = default
@@ -41,7 +43,5 @@
 [rerere]
   autoUpdate = true
   enabled = true
-[user]
-  email = wilberx@pm.me
-  name = Victor Rodriguez
-  signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO8svbpnhW1fbLEKhF/9ckmLS0yE1s4GdWt+SlsYb1pe
+[include]
+  path = ~/.config/gitconfig/main_config

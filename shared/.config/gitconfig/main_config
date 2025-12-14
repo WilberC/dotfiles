@@ -1,0 +1,15 @@
+[user]
+	name = Wilber Carrascal
+	email = wilber.carrascal@gmail.com
+
+[includeIf "gitdir:~/dotfiles/"]
+    path =  ~/.config/gitconfig/accounts/personal
+
+[includeIf "gitdir:~/dotfile-personal-setup/"]
+    path =  ~/.config/gitconfig/accounts/personal
+
+[includeIf "gitdir:~/Projects/"]
+    path =  ~/.config/gitconfig/accounts/personal
+
+[includeIf "gitdir:~/Projects/Work/Outcode/"]
+    path =  ~/.config/gitconfig/accounts/outcode
