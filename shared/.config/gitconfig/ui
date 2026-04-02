@@ -11,3 +11,7 @@
   experimental = false
 [help]
   autocorrect = prompt
+[log]
+  follow = true
+[tag]
+  sort = -version:refname
