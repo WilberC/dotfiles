@@ -16,10 +16,21 @@ The git configuration is split across `git/` and `shared/.config/gitconfig/` to 
 | `accounts/personal` | Personal git identity |
 | `accounts/outcode` | Work git identity |
 | `signing` | GPG format (SSH) and commit signing |
-| `ui` | Display preferences: column layout, branch sort, diff algorithm, help |
+| `ui` | Display preferences: column layout, branch sort, diff algorithm, difftastic difftool, help |
 | `workflow` | Day-to-day behaviour: fetch, pull, push, rebase, merge, rerere |
-| `delta` | `git-delta` pager config |
+| `delta` | `git-delta` pager config (side-by-side, line numbers) |
 | `utils/disable_sign` | Utility include to turn off signing when needed |
+
+## Diff tooling
+
+Two diff renderers are configured and coexist:
+
+| Tool | How to invoke | What it does |
+|------|--------------|-------------|
+| `delta` | `git diff`, `git show`, `git log -p` (automatic) | Syntax-highlighted pager with side-by-side and line numbers |
+| `difftastic` | `git difftool` | Structural/AST diff — understands language syntax, not just lines |
+
+In **lazygit**, both are available as pager options (configured in `shared/.config/lazygit/config.yml`).
 
 ## OS-specific
 

@@ -7,6 +7,11 @@
   colorMoved = default
   mnemonicPrefix = true
   renames = true
+  tool = difftastic
+[difftool]
+  prompt = false
+[difftool "difftastic"]
+  cmd = difft "$LOCAL" "$REMOTE"
 [feature]
   experimental = false
 [help]

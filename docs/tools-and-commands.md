@@ -1,0 +1,63 @@
+# Tools and Commands Reference
+
+A quick reference for the tools installed via `osx/Brewfile` and the commands they expose.
+
+## Git tooling
+
+| Tool | Command | What it does |
+|------|---------|-------------|
+| [lazygit](https://github.com/jesseduffield/lazygit) | `lazygit` / `lg` | Terminal UI for git — stage hunks, rebase, manage branches |
+| [git-delta](https://github.com/dandavison/delta) | automatic (pager) | Syntax-highlighted `git diff` / `git show` output with side-by-side view |
+| [difftastic](https://github.com/Wilfred/difftastic) | `git difftool` | Structural diff — understands syntax, not just lines |
+
+### Diff cheatsheet
+
+```sh
+git diff              # delta (automatic pager, side-by-side)
+git difftool          # difftastic (structural/AST diff)
+git difftool <file>   # difftastic on a specific file
+```
+
+In lazygit, press `<tab>` to switch between the delta and difftastic pager views.
+
+## Shell utilities
+
+| Tool | Command | What it does |
+|------|---------|-------------|
+| [eza](https://github.com/eza-community/eza) | `ls` (aliased) | Modern `ls` with icons, git status, tree view |
+| [mise](https://mise.jdx.dev/) | `mise` | Tool version manager (replaces nvm, rbenv, pyenv, etc.) |
+| [tree](https://oldmanprogrammer.net/source.php?dir=projects/tree) | `tree` | Print directory trees |
+| [unar](https://theunarchiver.com/command-line) | `unar <archive>` | Extract any archive format (zip, rar, 7z, tar, etc.) |
+
+### mise cheatsheet
+
+```sh
+mise use node@22       # pin a tool version for the current project
+mise install           # install all versions from .mise.toml
+mise ls                # list installed tools
+mise exec -- <cmd>     # run a command with mise-managed tools
+```
+
+## Scripts
+
+These live in `shared/scripts/` (stowed to `~/scripts/`). See `07-scripts-discoverability.md` for PATH notes.
+
+| Script | What it does |
+|--------|-------------|
+| `until_failure` | Runs a command repeatedly until it exits non-zero — useful for debugging flaky tests |
+| `install_bfg` | Downloads and installs [BFG Repo Cleaner](https://rtyley.github.io/bfg-repo-cleaner/) for scrubbing git history |
+
+## Terminal & editors
+
+| Tool | Notes |
+|------|-------|
+| [Ghostty](https://ghostty.org/) | Terminal emulator. Config at `shared/.config/ghostty/` |
+| [Zed](https://zed.dev/) | Editor. Config at `shared/.config/zed/` |
+| [libpq](https://www.postgresql.org/docs/current/libpq.html) | PostgreSQL client libs — provides `psql`, `pg_dump`, etc. |
+
+## Dev infrastructure
+
+| Tool | Notes |
+|------|-------|
+| [OrbStack](https://orbstack.dev/) | Docker Desktop replacement for macOS (faster, lighter) |
+| [mise](https://mise.jdx.dev/) | Manages Node, Python, Ruby, Go, Rust versions per-project via `.mise.toml` |

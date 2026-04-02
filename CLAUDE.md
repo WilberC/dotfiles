@@ -49,3 +49,5 @@ stow shared
 **Git accounts**: Conditional includes in `shared/.config/gitconfig/main_config` switch between personal and work (Outcode) identities based on the working directory path.
 
 **SSH via 1Password**: All platforms use the 1Password SSH agent for authentication and SSH-format GPG signing. The socket path differs per OS.
+
+- If there is an util command tool or something that should be noted add to docs/tools-and-commands.md so is easy to know what tools are available. Only add the necessary ones so we keep it clean and only with the needed one.
