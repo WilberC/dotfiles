@@ -24,8 +24,6 @@
   format = ssh
 [help]
   autocorrect = prompt
-[include]
-  path = ~/.gitconfig-os-specific
 [init]
   defaultBranch = main
 [merge]
@@ -44,4 +42,6 @@
   autoUpdate = true
   enabled = true
 [include]
+  path = ~/.config/gitconfig/delta
+  path = ~/.gitconfig-os-specific
   path = ~/.config/gitconfig/main_config
