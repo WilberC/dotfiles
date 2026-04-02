@@ -1,0 +1,13 @@
+[column]
+  ui = auto
+[branch]
+  sort = -committerdate
+[diff]
+  algorithm = histogram
+  colorMoved = default
+  mnemonicPrefix = true
+  renames = true
+[feature]
+  experimental = false
+[help]
+  autocorrect = prompt
