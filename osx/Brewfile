@@ -1,0 +1,54 @@
+# Terminal
+cask "ghostty"
+
+# Fonts
+cask "font-jetbrains-mono-nerd-font"
+
+# Core dotfiles utility
+brew "stow"
+
+# General utilities
+brew "tree"
+brew "unar"
+
+# Git tooling (required by lazygit config)
+brew "lazygit"
+brew "git-delta"
+brew "difftastic"
+
+# Dev tools
+brew "mise"
+brew "libpq"
+
+# Containers
+cask "orbstack"
+
+# Editors
+cask "zed"
+
+# AI
+cask "claude-code"
+
+# Shell tools
+cargo "eza"
+
+# VSCode extensions — general purpose only
+# Project-specific extensions belong in workspace .vscode/extensions.json
+vscode "enkia.tokyo-night"
+vscode "pkief.material-icon-theme"
+vscode "eamodio.gitlens"
+vscode "waderyan.gitblame"
+vscode "esbenp.prettier-vscode"
+vscode "dbaeumer.vscode-eslint"
+vscode "formulahendry.auto-close-tag"
+vscode "formulahendry.auto-rename-tag"
+vscode "christian-kohler.path-intellisense"
+vscode "codezombiech.gitignore"
+vscode "mikestead.dotenv"
+vscode "aaron-bond.better-comments"
+vscode "oderwat.indent-rainbow"
+vscode "streetsidesoftware.code-spell-checker"
+vscode "mechatroner.rainbow-csv"
+vscode "yzhang.markdown-all-in-one"
+vscode "humao.rest-client"
+vscode "sleistner.vscode-fileutils"
