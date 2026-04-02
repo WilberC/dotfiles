@@ -42,6 +42,6 @@
   autoUpdate = true
   enabled = true
 [include]
-  path = ~/.config/gitconfig/delta
   path = ~/.gitconfig-os-specific
-  path = ~/.config/gitconfig/main_config
+  path = ~/.config/gitconfig/accounts/identity
+  path = ~/.config/gitconfig/delta

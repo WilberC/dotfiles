@@ -5,9 +5,6 @@
 [includeIf "gitdir:~/dotfiles/"]
     path =  ~/.config/gitconfig/accounts/personal
 
-[includeIf "gitdir:~/dotfile-personal-setup/"]
-    path =  ~/.config/gitconfig/accounts/personal
-
 [includeIf "gitdir:~/Projects/"]
     path =  ~/.config/gitconfig/accounts/personal
 
