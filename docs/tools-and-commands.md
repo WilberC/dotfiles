@@ -38,6 +38,17 @@ mise ls                # list installed tools
 mise exec -- <cmd>     # run a command with mise-managed tools
 ```
 
+### Shell git helpers
+
+| Command | What it does |
+|---------|-------------|
+| `git-exclude <pattern>` | Appends a pattern to `.git/info/exclude` in the current repo (local-only, never committed) |
+
+```sh
+git-exclude mise.toml   # ignore mise.toml only in this repo
+git-exclude .env.local  # ignore a file without touching .gitignore
+```
+
 ## Scripts
 
 These live in `shared/scripts/` (stowed to `~/scripts/`). See `07-scripts-discoverability.md` for PATH notes.
