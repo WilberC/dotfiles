@@ -1,0 +1,16 @@
+# Global mise config — tracked in dotfiles
+# Stowed to ~/.config/mise/config.toml
+#
+# Per-project overrides: add a mise.toml (or .mise.toml) in the project root.
+# Project-local versions always take precedence over these globals.
+# Add mise.toml to the project's .gitignore if the team doesn't use mise.
+
+[tools]
+# LTS / stable global versions — last updated 2026-04
+node    = "24"           # LTS "Krypton"
+python  = "3.12"         # stable, widely supported
+ruby    = "3.4"          # stable release
+java    = "temurin-25"   # LTS (Eclipse Temurin)
+bun     = "latest"       # no LTS cadence; track latest stable
+uv      = "latest"       # no LTS cadence; track latest stable
+poetry  = "latest"       # Python dependency manager
