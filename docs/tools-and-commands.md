@@ -1,6 +1,6 @@
 # Tools and Commands Reference
 
-A quick reference for the tools installed via `osx/Brewfile` and the commands they expose.
+A quick reference for the tools installed via `osx/Brewfile` and the commands they expose. The Brewfile is cross-platform — macOS-only entries are guarded with `if OS.mac?`.
 
 ## Git tooling
 
@@ -27,6 +27,7 @@ In lazygit, press `<tab>` to switch between the delta and difftastic pager views
 | [eza](https://github.com/eza-community/eza) | `ls` / `ll` / `tree` | Modern `ls` replacement — icons, git status, long format, tree view |
 | [mise](https://mise.jdx.dev/) | `mise` | Tool version manager (replaces nvm, rbenv, pyenv, etc.) |
 | [unar](https://theunarchiver.com/command-line) | `unar <archive>` | Extract any archive format (zip, rar, 7z, tar, etc.) |
+| [bfs](https://github.com/tavianator/bfs) | `bfs` | Breadth-first `find` alternative — faster on large trees, same syntax |
 
 ### eza aliases
 

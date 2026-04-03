@@ -1,14 +1,19 @@
 # Terminal
-cask "ghostty"
+if OS.mac?
+  cask "ghostty"
+end
 
 # Fonts
-cask "font-jetbrains-mono-nerd-font"
+if OS.mac?
+  cask "font-jetbrains-mono-nerd-font"
+end
 
 # Core dotfiles utility
 brew "stow"
 
 # General utilities
 brew "unar"
+brew "bfs"
 
 # Git tooling (required by lazygit config)
 brew "lazygit"
@@ -20,7 +25,9 @@ brew "mise"
 brew "libpq"
 
 # Containers
-cask "orbstack"
+if OS.mac?
+  cask "orbstack"
+end
 
 # Editors
 cask "zed"
