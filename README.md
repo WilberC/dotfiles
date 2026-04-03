@@ -26,3 +26,9 @@ stow osx
 ```bash
 stow -R zsh # the folder that contains the new config file
 ```
+
+## Docs
+
+- [Zsh config — how to modify and extend](docs/zsh-config.md)
+- [Git config structure](docs/git-config-structure.md)
+- [Tools and commands](docs/tools-and-commands.md)
