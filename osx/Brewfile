@@ -8,7 +8,6 @@ cask "font-jetbrains-mono-nerd-font"
 brew "stow"
 
 # General utilities
-brew "tree"
 brew "unar"
 
 # Git tooling (required by lazygit config)

@@ -24,10 +24,17 @@ In lazygit, press `<tab>` to switch between the delta and difftastic pager views
 
 | Tool | Command | What it does |
 |------|---------|-------------|
-| [eza](https://github.com/eza-community/eza) | `ls` (aliased) | Modern `ls` with icons, git status, tree view |
+| [eza](https://github.com/eza-community/eza) | `ls` / `ll` / `tree` | Modern `ls` replacement — icons, git status, long format, tree view |
 | [mise](https://mise.jdx.dev/) | `mise` | Tool version manager (replaces nvm, rbenv, pyenv, etc.) |
-| [tree](https://oldmanprogrammer.net/source.php?dir=projects/tree) | `tree` | Print directory trees |
 | [unar](https://theunarchiver.com/command-line) | `unar <archive>` | Extract any archive format (zip, rar, 7z, tar, etc.) |
+
+### eza aliases
+
+```sh
+ls      # list with icons, dotfiles, dirs first
+ll      # long format with git status per file
+tree    # directory tree (respects .gitignore)
+```
 
 ### mise cheatsheet
 
