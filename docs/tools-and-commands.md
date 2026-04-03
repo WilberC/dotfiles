@@ -1,6 +1,6 @@
 # Tools and Commands Reference
 
-A quick reference for the tools installed via `osx/Brewfile` and the commands they expose. The Brewfile is cross-platform — macOS-only entries are guarded with `if OS.mac?`.
+A quick reference for the tools installed via `shared/Brewfile` and the commands they expose. The Brewfile is cross-platform — macOS-only entries are guarded with `if OS.mac?`.
 
 ## Git tooling
 
