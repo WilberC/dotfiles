@@ -28,6 +28,7 @@ In lazygit, press `<tab>` to switch between the delta and difftastic pager views
 | [mise](https://mise.jdx.dev/) | `mise` | Tool version manager (replaces nvm, rbenv, pyenv, etc.) |
 | [unar](https://theunarchiver.com/command-line) | `unar <archive>` | Extract any archive format (zip, rar, 7z, tar, etc.) |
 | [bfs](https://github.com/tavianator/bfs) | `bfs` | Breadth-first `find` alternative — faster on large trees, same syntax |
+| [fzf](https://github.com/junegunn/fzf) | `fzf` | Fuzzy finder — interactive selector for any list; pipes well with `bfs` |
 
 ### eza aliases
 

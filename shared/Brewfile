@@ -14,6 +14,7 @@ brew "stow"
 # General utilities
 brew "unar"
 brew "bfs"
+brew "fzf"
 
 # Git tooling (required by lazygit config)
 brew "lazygit"
