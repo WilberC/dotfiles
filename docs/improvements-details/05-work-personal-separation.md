@@ -1,5 +1,44 @@
 # Work/Personal Separation — What's Being Proposed
 
+> **Decision (2026-04-02):** Go with **Option B**. This repo stays public as personal dotfiles. Work config moves to a private `dotfiles-work` repo.
+> See also: `03-ssh-key-inventory.md` — the SSH key audit will need to be revisited when splitting out the work SSH config.
+
+## Current state (as of 2026-04-02)
+
+The doc below was written before a refactor. The file structure has since changed — there is no `main_config`. The actual files involved are:
+
+```
+shared/.config/gitconfig/accounts/outcode         ← Outcode git identity (email, signing key)
+shared/.config/gitconfig/accounts/identity        ← contains personal identity AND Outcode includeIf block
+shared/.config/ssh/configs/03-azure.conf          ← Azure DevOps SSH host config
+shared/.config/ssh/pubs/azure_outcode.pub         ← Outcode SSH public key
+```
+
+### Note on history exposure
+
+Both personal (`wilber.carrascal@gmail.com`) and work (`Wilber.Carrascal@outcodesoftware.com`) emails are already in public git history. The separation going forward is hygiene, not a fix for a past leak.
+
+## What needs to happen (Option B implementation)
+
+1. **Move entirely to `dotfiles-work`:**
+   - `shared/.config/gitconfig/accounts/outcode`
+   - `shared/.config/ssh/configs/03-azure.conf`
+   - `shared/.config/ssh/pubs/azure_outcode.pub`
+
+2. **Split `accounts/identity`:**
+   - Keep in `dotfiles`: personal identity + personal `includeIf` blocks
+   - Add to `dotfiles-work`: a new file (e.g. `accounts/outcode-include`) with just the Outcode `includeIf` stanza
+
+3. **Create `dotfiles-work` repo** (private GitHub repo, same Stow structure as this one)
+
+4. **New machine setup:** stow both repos — `dotfiles` first, then `dotfiles-work` layers on top
+
+This is a multi-step task that touches SSH config, git identity, and repo structure. Revisit alongside `03-ssh-key-inventory.md`.
+
+---
+
+## Original proposal (for reference)
+
 ## What's currently in this repo that's work-related
 
 ```
