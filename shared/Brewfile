@@ -37,7 +37,7 @@ cask "zed"
 cask "claude-code"
 
 # Shell tools
-cargo "eza"
+brew "eza"
 
 # VSCode extensions — general purpose only
 # Project-specific extensions belong in workspace .vscode/extensions.json
