@@ -8,5 +8,3 @@
 [includeIf "gitdir:~/Projects/"]
     path =  ~/.config/gitconfig/accounts/personal
 
-[includeIf "gitdir:~/Projects/Work/Outcode/"]
-    path =  ~/.config/gitconfig/accounts/outcode

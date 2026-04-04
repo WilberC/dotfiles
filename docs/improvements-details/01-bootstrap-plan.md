@@ -50,7 +50,25 @@ done
 - **Linux**: `xargs sudo apt-get install -y < linux/Aptfile`
 - **WSL2**: same as Linux
 
-### 5. Post-install hints
+### 5. Clone and stow dotfiles-work
+
+After personal dotfiles are stowed and packages are installed, the SSH agent (via 1Password) will be available — so we can clone the private work repo using the already-configured SSH key.
+
+```bash
+DOTFILES_WORK_REPO="git@github.com:WilberC/dotfiles-work.git"
+DOTFILES_WORK_DIR="$HOME/Projects/Personal/dotfiles-work"
+
+if [ ! -d "$DOTFILES_WORK_DIR" ]; then
+  git clone "$DOTFILES_WORK_REPO" "$DOTFILES_WORK_DIR"
+fi
+
+cd "$DOTFILES_WORK_DIR"
+stow --restow shared
+```
+
+This works because by the time this step runs, the personal dotfiles SSH config and 1Password agent are already in place, giving access to private GitHub repos.
+
+### 6. Post-install hints
 
 Print a short checklist reminding the user to:
 - Open 1Password and enable the SSH agent
@@ -71,4 +89,5 @@ dotfiles/
 1. Write `install.sh` with OS detection and stow logic (no package installs yet)
 2. Add Brewfile (point 2)
 3. Wire package install into `install.sh`
-4. Add post-install hint output
+4. Add dotfiles-work clone + stow step (step 5)
+5. Add post-install hint output

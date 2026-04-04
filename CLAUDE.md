@@ -33,7 +33,7 @@ stow shared
   - `.config/lazygit/` — Lazygit with `difft` + `delta`
   - `.config/ghostty/` — Ghostty terminal
   - `.config/zed/` — Zed editor
-- `scripts/` — Utility scripts (`until_failure`, `install_bfg`)
+- `scripts/` — Utility scripts (`until_failure`) — stowed to `~/scripts/`, aliased in `98-aliases.zsh`
 
 ## Key Architecture Decisions
 

@@ -1,39 +1,27 @@
 # Work/Personal Separation — What's Being Proposed
 
 > **Decision (2026-04-02):** Go with **Option B**. This repo stays public as personal dotfiles. Work config moves to a private `dotfiles-work` repo.
+> **Status (2026-04-04):** Separation complete. Work files moved to `dotfiles-work/` (gitignored here, lives at `git@github.com:WilberC/dotfiles-work.git`). Bootstrap plan updated to auto-clone it.
 > See also: `03-ssh-key-inventory.md` — the SSH key audit will need to be revisited when splitting out the work SSH config.
 
-## Current state (as of 2026-04-02)
+## Current state (as of 2026-04-04) — DONE
 
-The doc below was written before a refactor. The file structure has since changed — there is no `main_config`. The actual files involved are:
+The separation has been completed. Work files now live in `dotfiles-work/` (gitignored in this repo):
 
 ```
-shared/.config/gitconfig/accounts/outcode         ← Outcode git identity (email, signing key)
-shared/.config/gitconfig/accounts/identity        ← contains personal identity AND Outcode includeIf block
-shared/.config/ssh/configs/03-azure.conf          ← Azure DevOps SSH host config
-shared/.config/ssh/pubs/azure_outcode.pub         ← Outcode SSH public key
+dotfiles-work/shared/.config/gitconfig/accounts/outcode         ← Outcode git identity (email, signing key)
+dotfiles-work/shared/.config/gitconfig/accounts/outcode-include ← Outcode includeIf stanza
+dotfiles-work/shared/.config/ssh/configs/03-azure.conf          ← Azure DevOps SSH host config
+dotfiles-work/shared/.config/ssh/pubs/azure_outcode.pub         ← Outcode SSH public key
 ```
+
+`accounts/identity` in this repo now contains only personal identity + personal `includeIf` blocks.
+
+The `dotfiles-work/` directory is the source of truth that will be pushed to `git@github.com:WilberC/dotfiles-work.git`.
 
 ### Note on history exposure
 
 Both personal (`wilber.carrascal@gmail.com`) and work (`Wilber.Carrascal@outcodesoftware.com`) emails are already in public git history. The separation going forward is hygiene, not a fix for a past leak.
-
-## What needs to happen (Option B implementation)
-
-1. **Move entirely to `dotfiles-work`:**
-   - `shared/.config/gitconfig/accounts/outcode`
-   - `shared/.config/ssh/configs/03-azure.conf`
-   - `shared/.config/ssh/pubs/azure_outcode.pub`
-
-2. **Split `accounts/identity`:**
-   - Keep in `dotfiles`: personal identity + personal `includeIf` blocks
-   - Add to `dotfiles-work`: a new file (e.g. `accounts/outcode-include`) with just the Outcode `includeIf` stanza
-
-3. **Create `dotfiles-work` repo** (private GitHub repo, same Stow structure as this one)
-
-4. **New machine setup:** stow both repos — `dotfiles` first, then `dotfiles-work` layers on top
-
-This is a multi-step task that touches SSH config, git identity, and repo structure. Revisit alongside `03-ssh-key-inventory.md`.
 
 ---
 

@@ -61,7 +61,7 @@ git-exclude .env.local  # ignore a file without touching .gitignore
 
 ## Scripts
 
-These live in `shared/scripts/` (stowed to `~/scripts/`). See `07-scripts-discoverability.md` for PATH notes.
+These live in `shared/scripts/` (stowed to `~/scripts/`). Accessible via alias.
 
 | Script | What it does |
 |--------|-------------|
