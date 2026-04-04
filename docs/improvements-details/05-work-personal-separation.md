@@ -6,7 +6,7 @@
 
 ## Current state (as of 2026-04-04) — DONE
 
-The separation has been completed. `dotfiles-work/` uses a **company-per-stow-package** structure — each employer gets its own folder (e.g. `outcode/`) that is stowed independently:
+The separation has been completed. `dotfiles-work/` uses a **company-per-stow-package** structure — each employer gets its own folder that is stowed independently:
 
 ```
 dotfiles-work/
@@ -14,20 +14,23 @@ dotfiles-work/
     .config/
       gitconfig/
         accounts/
-          outcode         ← Outcode git identity (email, signing key)
-          outcode-include ← includeIf stanza activating outcode for ~/Projects/Work/Outcode/
+          outcode          ← Outcode git identity ([user] block only)
+          outcode.gitdir   ← one line: ~/Projects/Work/Outcode/ (triggers routing)
       ssh/
         configs/
-          outcode-azure.conf  ← Azure DevOps SSH host config (named for Outcode, not generic)
+          outcode-azure.conf  ← Azure DevOps SSH host config
         pubs/
           azure_outcode.pub   ← Outcode SSH public key
+  refresh.sh                  ← regenerates ~/.config/gitconfig/work.conf from .gitdir files
 ```
+
+**How auto-discovery works:**
+- **SSH**: `~/.ssh/config` has `Include ~/.config/ssh/configs/*.conf` — any `.conf` stowed there is picked up automatically.
+- **Git**: `~/.gitconfig` includes `~/.config/gitconfig/work.conf`. Running `refresh.sh` generates that file by scanning all `~/.config/gitconfig/accounts/*.gitdir` files. Personal dotfiles never need to change.
 
 In the personal repo, `shared/.config/ssh/configs/03-azure.conf` is kept as a placeholder for personal Azure connections (currently empty).
 
-`accounts/identity` in this repo now contains only personal identity + personal `includeIf` blocks.
-
-The `dotfiles-work/` directory is the source of truth pushed to `git@github.com:WilberC/dotfiles-work.git`. Adding a new employer means creating a new stow package folder alongside `outcode/`.
+The `dotfiles-work/` directory is the source of truth pushed to `git@github.com:WilberC/dotfiles-work.git`.
 
 ### Note on history exposure
 
