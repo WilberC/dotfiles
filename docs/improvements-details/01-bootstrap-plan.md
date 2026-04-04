@@ -63,10 +63,13 @@ if [ ! -d "$DOTFILES_WORK_DIR" ]; then
 fi
 
 cd "$DOTFILES_WORK_DIR"
-stow --restow shared
+# Each company is its own stow package — stow all of them
+for dir in */; do
+  stow --restow "${dir%/}"
+done
 ```
 
-This works because by the time this step runs, the personal dotfiles SSH config and 1Password agent are already in place, giving access to private GitHub repos.
+This works because by the time this step runs, the personal dotfiles SSH config and 1Password agent are already in place, giving access to private GitHub repos. Each employer in `dotfiles-work` is a separate stow package (e.g. `outcode/`) so adding a new one is just creating a new folder.
 
 ### 6. Post-install hints
 

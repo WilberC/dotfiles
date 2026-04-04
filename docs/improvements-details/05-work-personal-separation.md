@@ -6,18 +6,28 @@
 
 ## Current state (as of 2026-04-04) — DONE
 
-The separation has been completed. Work files now live in `dotfiles-work/` (gitignored in this repo):
+The separation has been completed. `dotfiles-work/` uses a **company-per-stow-package** structure — each employer gets its own folder (e.g. `outcode/`) that is stowed independently:
 
 ```
-dotfiles-work/shared/.config/gitconfig/accounts/outcode         ← Outcode git identity (email, signing key)
-dotfiles-work/shared/.config/gitconfig/accounts/outcode-include ← Outcode includeIf stanza
-dotfiles-work/shared/.config/ssh/configs/03-azure.conf          ← Azure DevOps SSH host config
-dotfiles-work/shared/.config/ssh/pubs/azure_outcode.pub         ← Outcode SSH public key
+dotfiles-work/
+  outcode/                                          ← stow package (stow outcode)
+    .config/
+      gitconfig/
+        accounts/
+          outcode         ← Outcode git identity (email, signing key)
+          outcode-include ← includeIf stanza activating outcode for ~/Projects/Work/Outcode/
+      ssh/
+        configs/
+          outcode-azure.conf  ← Azure DevOps SSH host config (named for Outcode, not generic)
+        pubs/
+          azure_outcode.pub   ← Outcode SSH public key
 ```
+
+In the personal repo, `shared/.config/ssh/configs/03-azure.conf` is kept as a placeholder for personal Azure connections (currently empty).
 
 `accounts/identity` in this repo now contains only personal identity + personal `includeIf` blocks.
 
-The `dotfiles-work/` directory is the source of truth that will be pushed to `git@github.com:WilberC/dotfiles-work.git`.
+The `dotfiles-work/` directory is the source of truth pushed to `git@github.com:WilberC/dotfiles-work.git`. Adding a new employer means creating a new stow package folder alongside `outcode/`.
 
 ### Note on history exposure
 
