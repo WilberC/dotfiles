@@ -17,6 +17,7 @@ brew "bfs"
 brew "fzf"
 
 # Git tooling (required by lazygit config)
+brew "gh"
 brew "lazygit"
 brew "git-delta"
 brew "difftastic"

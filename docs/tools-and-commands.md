@@ -6,6 +6,7 @@ A quick reference for the tools installed via `shared/Brewfile` and the commands
 
 | Tool | Command | What it does |
 |------|---------|-------------|
+| [gh](https://cli.github.com/) | `gh` | GitHub CLI — PRs, issues, releases, repo management from the terminal. Run `gh auth login` once after install |
 | [lazygit](https://github.com/jesseduffield/lazygit) | `lazygit` / `lg` | Terminal UI for git — stage hunks, rebase, manage branches |
 | [git-delta](https://github.com/dandavison/delta) | automatic (pager) | Syntax-highlighted `git diff` / `git show` output with side-by-side view |
 | [difftastic](https://github.com/Wilfred/difftastic) | `git difftool` | Structural diff — understands syntax, not just lines |
