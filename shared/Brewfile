@@ -20,6 +20,7 @@ brew "fzf"
 brew "lazygit"
 brew "git-delta"
 brew "difftastic"
+brew "bfg"
 
 # Dev tools
 brew "mise"

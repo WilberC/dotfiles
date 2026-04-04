@@ -9,6 +9,7 @@ A quick reference for the tools installed via `shared/Brewfile` and the commands
 | [lazygit](https://github.com/jesseduffield/lazygit) | `lazygit` / `lg` | Terminal UI for git — stage hunks, rebase, manage branches |
 | [git-delta](https://github.com/dandavison/delta) | automatic (pager) | Syntax-highlighted `git diff` / `git show` output with side-by-side view |
 | [difftastic](https://github.com/Wilfred/difftastic) | `git difftool` | Structural diff — understands syntax, not just lines |
+| [bfg](https://rtyley.github.io/bfg-repo-cleaner/) | `bfg` | Rewrite git history — remove secrets or large files accidentally committed |
 
 ### Diff cheatsheet
 
@@ -65,7 +66,6 @@ These live in `shared/scripts/` (stowed to `~/scripts/`). See `07-scripts-discov
 | Script | What it does |
 |--------|-------------|
 | `until_failure` | Runs a command repeatedly until it exits non-zero — useful for debugging flaky tests |
-| `install_bfg` | Downloads and installs [BFG Repo Cleaner](https://rtyley.github.io/bfg-repo-cleaner/) for scrubbing git history |
 
 ## Terminal & editors
 
