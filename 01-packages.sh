@@ -104,3 +104,8 @@ rm -f "${AQUA_YAML}.bak"
 
 aqua install --all
 success "CLI tools installed (registry ${AQUA_REGISTRY_REF})"
+
+# ─── language runtimes via mise ────────────────────────────────────────────────
+info "Installing language runtimes via mise..."
+mise install --yes
+success "Language runtimes installed"
