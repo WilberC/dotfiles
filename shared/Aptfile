@@ -4,17 +4,10 @@ stow
 # General utilities
 unar
 bfs
-fzf
 
 # Git tooling
-# git-delta and difftastic have no apt package — install manually (see post-install hints)
-gh
-lazygit
 bfg
 
 # Dev tools
 mise
 libpq-dev
-
-# Shell tools
-eza

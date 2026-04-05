@@ -10,18 +10,17 @@ brew "stow"
 # General utilities
 brew "unar"
 brew "bfs"
-brew "fzf"
 
-# Git tooling (required by lazygit config)
-brew "gh"
-brew "lazygit"
-brew "git-delta"
-brew "difftastic"
+# Git tooling
 brew "bfg"
 
 # Dev tools
 brew "mise"
 brew "libpq"
+
+# CLI tool manager (manages lazygit, delta, difftastic, gh, eza, fzf)
+tap "aquaproj/aqua"
+brew "aquaproj/aqua/aqua"
 
 # Containers
 cask "orbstack"
@@ -31,6 +30,3 @@ cask "zed"
 
 # AI
 cask "claude-code"
-
-# Shell tools
-brew "eza"

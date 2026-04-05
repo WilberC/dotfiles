@@ -79,29 +79,12 @@ if [[ "$PLATFORM" == "osx" ]]; then
   success "Packages installed"
 else
   info "Adding apt repositories..."
-  # GitHub CLI
-  if [[ ! -f /etc/apt/sources.list.d/github-cli.list ]]; then
-    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
-      sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg &>/dev/null
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | \
-      sudo tee /etc/apt/sources.list.d/github-cli.list &>/dev/null
-  fi
-  # lazygit
-  sudo add-apt-repository -y ppa:lazygit-team/release &>/dev/null
   # mise
   if [[ ! -f /etc/apt/sources.list.d/mise.list ]]; then
     curl -fsSL https://mise.jdx.dev/gpg-key.pub | gpg --dearmor | \
       sudo tee /etc/apt/trusted.gpg.d/mise-archive-keyring.gpg &>/dev/null
     echo "deb [signed-by=/etc/apt/trusted.gpg.d/mise-archive-keyring.gpg arch=$(dpkg --print-architecture)] https://mise.jdx.dev/deb stable main" | \
       sudo tee /etc/apt/sources.list.d/mise.list &>/dev/null
-  fi
-  # eza
-  if [[ ! -f /etc/apt/sources.list.d/gierens.list ]]; then
-    sudo mkdir -p /etc/apt/keyrings
-    wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | \
-      sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg &>/dev/null
-    echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | \
-      sudo tee /etc/apt/sources.list.d/gierens.list &>/dev/null
   fi
   success "Apt repositories configured"
 
@@ -111,7 +94,22 @@ else
   success "Packages installed"
 fi
 
-# ─── 5. verify personal setup ─────────────────────────────────────────────────
+# ─── 5. install aqua + CLI tools ──────────────────────────────────────────────
+info "Installing CLI tools via aqua..."
+if ! command -v aqua &>/dev/null; then
+  if [[ "$PLATFORM" == "osx" ]]; then
+    brew install aquaproj/aqua/aqua &>/dev/null
+  else
+    curl -sSfL https://raw.githubusercontent.com/aquaproj/aqua-installer/main/aqua-installer | bash &>/dev/null
+    export PATH="$HOME/.local/share/aquaproj-aqua/bin:$PATH"
+  fi
+  success "aqua installed"
+fi
+export AQUA_GLOBAL_CONFIG="$HOME/.config/aquaproj-aqua/aqua.yaml"
+aqua install --all
+success "CLI tools installed"
+
+# ─── 6. verify personal setup ─────────────────────────────────────────────────
 info "Verifying personal setup..."
 
 echo ""
@@ -132,7 +130,7 @@ else
   abort "Cannot continue — GitHub SSH is required to clone dotfiles-work."
 fi
 
-# ─── 6. clone and install dotfiles-work ───────────────────────────────────────
+# ─── 7. clone and install dotfiles-work ───────────────────────────────────────
 info "Setting up dotfiles-work..."
 DOTFILES_WORK_REPO="git@github.com:WilberC/dotfiles-work.git"
 DOTFILES_WORK_DIR="$HOME/Projects/Personal/dotfiles-work"
@@ -146,7 +144,7 @@ fi
 
 bash "$DOTFILES_WORK_DIR/install.sh"
 
-# ─── 7. post-install hints ────────────────────────────────────────────────────
+# ─── 8. post-install hints ────────────────────────────────────────────────────
 echo ""
 echo -e "${BOLD}All done! Manual steps remaining:${RESET}"
 echo ""
@@ -160,8 +158,6 @@ if [[ "$PLATFORM" == "osx" ]]; then
   echo ""
 else
   echo -e "  ${BOLD}Install manually (no apt package available):${RESET}"
-  echo "    - git-delta   https://github.com/dandavison/delta/releases"
-  echo "    - difftastic  https://github.com/Wilfred/difftastic/releases"
   echo "    - Zed         https://zed.dev/docs/linux"
   echo "    - Claude Code https://docs.anthropic.com/claude-code"
   echo "    - VSCode      https://code.visualstudio.com/docs/setup/linux"
