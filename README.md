@@ -23,6 +23,18 @@ bash install.sh
 >
 > This is required for SSH authentication (GitHub) and to clone the private work configs.
 
+## Running individual steps
+
+`install.sh` is a thin orchestrator. Each step can be run standalone:
+
+```sh
+bash 01-packages.sh     # prereqs, stow, apt/brew packages, aqua CLI tools
+bash 02-verify-ssh.sh   # git identity + GitHub SSH test
+bash 03-work.sh         # clone dotfiles-work + post-install hints
+```
+
+Useful when you want to re-run only one step — e.g. `bash 02-verify-ssh.sh` to debug SSH without reinstalling packages.
+
 ## Fresh WSL2 install
 
 To fully reset Ubuntu and start from scratch, run these from **PowerShell on Windows**:
