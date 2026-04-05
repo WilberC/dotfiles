@@ -69,6 +69,17 @@ else
   sudo apt-get update -qq
   grep -v '^#\|^[[:space:]]*$' "$DOTFILES_DIR/shared/Aptfile" | xargs sudo apt-get install -y -qq
   success "Packages installed"
+
+  # ─── default shell ──────────────────────────────────────────────────────────
+  ZSH_BIN="$(which zsh)"
+  if [[ "$SHELL" != "$ZSH_BIN" ]]; then
+    info "Setting zsh as default shell..."
+    grep -qxF "$ZSH_BIN" /etc/shells || echo "$ZSH_BIN" | sudo tee -a /etc/shells &>/dev/null
+    chsh -s "$ZSH_BIN"
+    success "Default shell set to zsh (takes effect on next login)"
+  else
+    success "zsh already default shell"
+  fi
 fi
 
 # ─── CLI tools via aqua ────────────────────────────────────────────────────────
