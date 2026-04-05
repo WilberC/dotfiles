@@ -10,7 +10,7 @@ Setup runs in two phases:
 ## Quick start
 
 ```sh
-git clone git@github.com:WilberC/dotfiles.git ~/dotfiles
+git clone https://github.com/WilberC/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 bash install.sh
 ```
