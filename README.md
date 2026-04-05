@@ -23,6 +23,23 @@ bash install.sh
 >
 > This is required for SSH authentication (GitHub) and to clone the private work configs.
 
+## Fresh WSL2 install
+
+To fully reset Ubuntu and start from scratch, run these from **PowerShell on Windows**:
+
+```powershell
+# See installed distros and their names
+wsl --list --verbose
+
+# Remove the distro (destructive — deletes all data inside)
+wsl --unregister Ubuntu
+
+# Reinstall
+wsl --install -d Ubuntu
+```
+
+After Ubuntu is back up, follow the Quick start steps above.
+
 ## Docs
 
 - [Install guide](docs/install.md) — what the installer does, step by step
