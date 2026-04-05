@@ -32,6 +32,7 @@ if [[ "$PLATFORM" == "osx" ]]; then
   echo ""
 else
   echo -e "  ${BOLD}Install manually (no apt package available):${RESET}"
+  echo "    - bfg         https://rtyley.github.io/bfg-repo-cleaner (requires Java)"
   echo "    - Zed         https://zed.dev/docs/linux"
   echo "    - Claude Code https://docs.anthropic.com/claude-code"
   echo "    - VSCode      https://code.visualstudio.com/docs/setup/linux"

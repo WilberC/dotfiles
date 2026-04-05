@@ -8,9 +8,6 @@ stow
 unar
 bfs
 
-# Git tooling
-bfg
-
 # Dev tools
 mise
 libpq-dev
