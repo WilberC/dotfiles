@@ -1,28 +1,19 @@
 <h2 align="center">wilber/dotfiles</h2>
 
-## Prerequisites
+## Quick start
 
-1. [GNU/Stow](https://www.gnu.org/software/stow/)
-
-## Installation
-
-1. Clone onto your machine:
-
-```bash
-git clone git@github.com:wilber/dotfiles.git ~/dotfiles
-```
-
-2. Install the configuration files you need/want:
-
-```bash
+```sh
+git clone git@github.com:WilberC/dotfiles.git ~/dotfiles
 cd ~/dotfiles
-stow zsh
-stow git
-stow osx
+bash install.sh
 ```
 
-3. Edit/Replace/Create new config files and restow them:
+> Make sure 1Password is open with the SSH agent enabled before running — it's needed to verify SSH connections and clone the private work configs.
 
-```bash
-stow -R zsh # the folder that contains the new config file
-```
+## Docs
+
+- [Install guide](docs/install.md) — what the installer does, step by step
+- [SSH config](docs/ssh-config.md) — key inventory, 1Password pattern, adding new hosts
+- [Git config structure](docs/git-config-structure.md) — identity switching, conditional includes
+- [Zsh config](docs/zsh-config.md) — how to modify and extend
+- [Tools and commands](docs/tools-and-commands.md) — everything installed via Brewfile

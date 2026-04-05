@@ -1,0 +1,22 @@
+[column]
+  ui = auto
+[branch]
+  sort = -committerdate
+[diff]
+  algorithm = histogram
+  colorMoved = default
+  mnemonicPrefix = true
+  renames = true
+  tool = difftastic
+[difftool]
+  prompt = false
+[difftool "difftastic"]
+  cmd = difft "$LOCAL" "$REMOTE"
+[feature]
+  experimental = false
+[help]
+  autocorrect = prompt
+[log]
+  follow = true
+[tag]
+  sort = -version:refname

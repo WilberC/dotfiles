@@ -3,23 +3,16 @@
 		"always_allow_tool_actions": true
 	},
 	"auto_install_extensions": {
-		"bamboo-theme": true,
 		"biome": true,
 		"catppuccin-icons": true,
-		"chaos-theory-theme": true,
 		"codebook": true,
 		"comment": true,
 		"csv": true,
 		"dockerfile": true,
-		"dune-theme": true,
 		"emmet": true,
-		"flexoki-themes": true,
 		"git-firefly": true,
-		"github-plus-theme": true,
 		"html": true,
 		"jetbrains-themes": true,
-		"modus-themes": true,
-		"ninja": true,
 		"ruby": true,
 		"sql": true,
 		"stimulus": true,
@@ -28,6 +21,7 @@
 	},
 	"auto_signature_help": true,
 	"autosave": "on_window_change",
+	"format_on_save": "on",
 	"buffer_font_family": "Berkeley Mono",
 	"buffer_font_size": 19,
 	"buffer_line_height": "comfortable",
@@ -35,12 +29,8 @@
 		"source.action.useSortedKeys.biome": true,
 		"source.fixAll": true,
 		"source.fixAll.biome": true,
-		"source.fixAll.eslint": true,
 		"source.fixAll.ruby_lsp": true,
 		"source.organizeImports.biome": true
-	},
-	"collaboration_panel": {
-		"dock": "right"
 	},
 	"colorize_brackets": true,
 	"diagnostics": {

@@ -1,47 +1,14 @@
-[column]
-  ui = auto
-[branch]
-  sort = -committerdate
-[commit]
-  gpgsign = true
-  verbose = true
 [core]
   excludesfile = ~/.global_gitignore
   fsmonitor = true
   untrackedcache = true
-[diff]
-  algorithm = histogram
-  colorMoved = default
-  mnemonicPrefix = true
-  renames = true
-[feature]
-  experimental = false
-[fetch]
-  all = true
-  prune = true
-  pruneTags = true
-[gpg]
-  format = ssh
-[help]
-  autocorrect = prompt
-[include]
-  path = ~/.gitconfig-os-specific
 [init]
   defaultBranch = main
-[merge]
-  conflictStyle = zdiff3
-[pull]
-  rebase = true
-[push]
-  default = simple
-  autoSetupRemote = true
-  followTags = true
-[rebase]
-  autoSquash = true
-  autoStash = true
-  updateRefs = true
-[rerere]
-  autoUpdate = true
-  enabled = true
 [include]
-  path = ~/.config/gitconfig/main_config
+  path = ~/.gitconfig-os-specific
+  path = ~/.config/gitconfig/accounts/identity
+  path = ~/.config/gitconfig/work.conf
+  path = ~/.config/gitconfig/signing
+  path = ~/.config/gitconfig/ui
+  path = ~/.config/gitconfig/workflow
+  path = ~/.config/gitconfig/delta
