@@ -102,5 +102,6 @@ AQUA_YAML="$DOTFILES_DIR/shared/.config/aquaproj-aqua/aqua.yaml"
 sed -i.bak "s/    ref: .*/    ref: ${AQUA_REGISTRY_REF} # updated automatically by 01-packages.sh on install/" "$AQUA_YAML"
 rm -f "${AQUA_YAML}.bak"
 
+aqua update
 aqua install --all
 success "CLI tools installed (registry ${AQUA_REGISTRY_REF})"
