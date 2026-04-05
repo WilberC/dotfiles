@@ -1,6 +1,10 @@
 # Tools and Commands Reference
 
-A quick reference for the tools installed via `shared/Brewfile` and the commands they expose. The Brewfile is cross-platform — macOS-only entries are guarded with `if OS.mac?`.
+A quick reference for the tools and the commands they expose.
+
+- **CLI tools** (lazygit, delta, difftastic, gh, eza, fzf) — managed by [aqua](https://aquaproj.github.io/) via `shared/.config/aquaproj-aqua/aqua.yaml`
+- **System packages** — `shared/Brewfile` (macOS) or `shared/Aptfile` (Linux/WSL2)
+- **Language runtimes** — mise
 
 ## Git tooling
 
@@ -27,7 +31,8 @@ In lazygit, press `<tab>` to switch between the delta and difftastic pager views
 | Tool | Command | What it does |
 |------|---------|-------------|
 | [eza](https://github.com/eza-community/eza) | `ls` / `ll` / `tree` | Modern `ls` replacement — icons, git status, long format, tree view |
-| [mise](https://mise.jdx.dev/) | `mise` | Tool version manager (replaces nvm, rbenv, pyenv, etc.) |
+| [aqua](https://aquaproj.github.io/) | `aqua` | CLI tool manager — installs lazygit, delta, difftastic, gh, eza, fzf. Config at `shared/.config/aquaproj-aqua/aqua.yaml` |
+| [mise](https://mise.jdx.dev/) | `mise` | Language runtime manager (replaces nvm, rbenv, pyenv, etc.) |
 | [unar](https://theunarchiver.com/command-line) | `unar <archive>` | Extract any archive format (zip, rar, 7z, tar, etc.) |
 | [bfs](https://github.com/tavianator/bfs) | `bfs` | Breadth-first `find` alternative — faster on large trees, same syntax |
 | [fzf](https://github.com/junegunn/fzf) | `fzf` | Fuzzy finder — interactive selector for any list; pipes well with `bfs` |
