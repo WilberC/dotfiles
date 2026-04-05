@@ -109,3 +109,27 @@ success "CLI tools installed (registry ${AQUA_REGISTRY_REF})"
 info "Installing language runtimes via mise..."
 mise install --yes
 success "Language runtimes installed"
+
+# ─── manual installs ───────────────────────────────────────────────────────────
+echo ""
+echo -e "${BOLD}Install manually (no package manager available):${RESET}"
+echo ""
+if [[ "$PLATFORM" == "osx" ]]; then
+  echo "  - 1Password   https://1password.com/downloads/mac"
+  echo "  - VSCode      https://code.visualstudio.com"
+  echo "                (sign in to sync extensions automatically)"
+else
+  echo "  - bfg         https://rtyley.github.io/bfg-repo-cleaner (requires Java)"
+  echo "  - Zed         https://zed.dev/docs/linux"
+  echo "  - Claude Code https://docs.anthropic.com/claude-code"
+  echo "  - VSCode      https://code.visualstudio.com/docs/setup/linux"
+  echo "                (sign in to sync extensions automatically)"
+fi
+
+# ─── next steps ────────────────────────────────────────────────────────────────
+echo ""
+echo -e "${BOLD}Next steps:${RESET}"
+echo ""
+echo "  bash 02-verify-ssh.sh   — verify git identity and GitHub SSH access"
+echo "  bash 03-work.sh         — clone and configure dotfiles-work"
+echo ""
