@@ -72,7 +72,7 @@ else
 
   # ─── default shell ──────────────────────────────────────────────────────────
   ZSH_BIN="$(which zsh)"
-  if [[ "$SHELL" != "$ZSH_BIN" ]]; then
+  if [[ "$(getent passwd "$USER" | cut -d: -f7)" != "$ZSH_BIN" ]]; then
     info "Setting zsh as default shell..."
     grep -qxF "$ZSH_BIN" /etc/shells || echo "$ZSH_BIN" | sudo tee -a /etc/shells &>/dev/null
     chsh -s "$ZSH_BIN"
