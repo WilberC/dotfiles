@@ -2,7 +2,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/aquaproj/aqua/main/json-schema/aqua-yaml.json
 registries:
   - type: standard
-    ref: v4.0.0 # updated automatically by 01-packages.sh on install
+    ref: v4.492.0 # updated automatically by 01-packages.sh on install
 
 packages:
   # Git tooling

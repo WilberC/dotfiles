@@ -14,3 +14,4 @@ java    = "temurin-25"   # LTS (Eclipse Temurin)
 bun     = "latest"       # no LTS cadence; track latest stable
 uv      = "latest"       # no LTS cadence; track latest stable
 poetry  = "latest"       # Python dependency manager
+rust    = "1.94.1"       # stable release

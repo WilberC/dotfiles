@@ -8,14 +8,16 @@ info "Verifying personal setup..."
 
 echo ""
 echo -e "  ${BOLD}Git identity${RESET}"
-GIT_NAME="$(git config --global user.name || true)"
-GIT_EMAIL="$(git config --global user.email || true)"
+GIT_NAME="$(git config --includes --global user.name || true)"
+GIT_EMAIL="$(git config --includes --global user.email || true)"
 [[ -n "$GIT_NAME" ]]  && success "name:  $GIT_NAME"  || warn "user.name not set"
 [[ -n "$GIT_EMAIL" ]] && success "email: $GIT_EMAIL" || warn "user.email not set"
 
 echo ""
 echo -e "  ${BOLD}SSH — GitHub (critical)${RESET}"
-SSH_RESULT="$(ssh -T git@github.com 2>&1 || true)"
+SSH_CMD="ssh"
+[[ "$PLATFORM" == "wsl2" ]] && SSH_CMD="ssh.exe"
+SSH_RESULT="$($SSH_CMD -T -o StrictHostKeyChecking=accept-new git@github.com 2>&1 || true)"
 if echo "$SSH_RESULT" | grep -q "successfully authenticated"; then
   success "GitHub SSH OK"
 else
