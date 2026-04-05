@@ -94,5 +94,13 @@ if ! command -v aqua &>/dev/null; then
   success "aqua installed"
 fi
 export AQUA_GLOBAL_CONFIG="$HOME/.config/aquaproj-aqua/aqua.yaml"
+
+# Pin registry to the latest release tag (branch names are not allowed)
+AQUA_REGISTRY_REF=$(curl -s "https://api.github.com/repos/aquaproj/aqua-registry/releases/latest" \
+  | \grep -Po '"tag_name": *"\K[^"]*')
+AQUA_YAML="$DOTFILES_DIR/shared/.config/aquaproj-aqua/aqua.yaml"
+sed -i.bak "s/    ref: .*/    ref: ${AQUA_REGISTRY_REF} # updated automatically by 01-packages.sh on install/" "$AQUA_YAML"
+rm -f "${AQUA_YAML}.bak"
+
 aqua install --all
-success "CLI tools installed"
+success "CLI tools installed (registry ${AQUA_REGISTRY_REF})"
