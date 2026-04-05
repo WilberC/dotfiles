@@ -11,3 +11,11 @@ bfs
 # Dev tools
 mise
 libpq-dev
+
+# Ruby build dependencies (required by mise/ruby-build to compile Ruby from source)
+build-essential
+libssl-dev
+libreadline-dev
+zlib1g-dev
+libffi-dev
+libyaml-dev
