@@ -2,6 +2,14 @@
 
 ## Quick start
 
+**Linux / WSL2** — upgrade system packages first:
+
+```sh
+sudo apt-get update && sudo apt-get upgrade -y
+```
+
+Then on all platforms:
+
 ```sh
 git clone https://github.com/WilberC/dotfiles.git ~/dotfiles
 cd ~/dotfiles

@@ -32,10 +32,12 @@ Identifies the platform (`osx`, `linux`, or `wsl2`) to apply the right configs a
 - Installs `stow`
 
 **Linux / WSL2:**
-- Runs `apt-get update && apt-get upgrade`
+- Runs `apt-get update` (package lists only — upgrade is intentionally skipped to keep re-runs fast)
 - Adds the git PPA for the latest git version
 - Installs `git` and `stow`
 - Installs Homebrew if missing
+
+> Run `sudo apt-get upgrade` manually before running `install.sh` if you want to upgrade system packages first.
 
 ### 3. Stow personal dotfiles
 

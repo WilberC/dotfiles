@@ -53,9 +53,9 @@ if [[ "$PLATFORM" == "osx" ]]; then
 
 else
   # Linux / WSL2
-  info "Updating system packages..."
-  sudo apt-get update -qq && sudo apt-get upgrade -y -qq
-  success "System packages updated"
+  info "Updating package lists..."
+  sudo apt-get update -qq
+  success "Package lists updated"
 
   sudo add-apt-repository -y ppa:git-core/ppa &>/dev/null
   sudo apt-get update -qq
@@ -120,8 +120,15 @@ bash "$DOTFILES_WORK_DIR/install.sh"
 
 # ─── 7. post-install hints ────────────────────────────────────────────────────
 echo ""
-echo -e "${BOLD}All done! A few manual steps remaining:${RESET}"
+echo -e "${BOLD}All done! Manual steps remaining:${RESET}"
 echo ""
-echo "  1. Set up tool versions:   mise install"
-echo "  2. Sign into GitHub CLI:   gh auth login"
+echo -e "  ${BOLD}All platforms${RESET}"
+echo "    - Set up tool versions:  mise install"
+echo "    - Sign into GitHub CLI:  gh auth login"
 echo ""
+if [[ "$PLATFORM" != "osx" ]]; then
+  echo -e "  ${BOLD}Install manually (no Homebrew package available on Linux/WSL2):${RESET}"
+  echo "    - Zed          https://zed.dev/docs/linux"
+  echo "    - Claude Code  https://docs.anthropic.com/claude-code"
+  echo ""
+fi
