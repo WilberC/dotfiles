@@ -46,24 +46,3 @@ end
 
 # Shell tools
 brew "eza"
-
-# VSCode extensions — general purpose only
-# Project-specific extensions belong in workspace .vscode/extensions.json
-# On WSL2, `code` CLI is proxied from the Windows host so extensions install fine
-if OS.mac? || IS_WSL2
-  vscode "enkia.tokyo-night"
-  vscode "pkief.material-icon-theme"
-  vscode "eamodio.gitlens"
-  vscode "christian-kohler.path-intellisense"
-  vscode "codezombiech.gitignore"
-  vscode "mikestead.dotenv"
-  vscode "aaron-bond.better-comments"
-  vscode "oderwat.indent-rainbow"
-  vscode "streetsidesoftware.code-spell-checker"
-  vscode "usernamehw.errorlens"
-  vscode "EditorConfig.EditorConfig"
-  vscode "mechatroner.rainbow-csv"
-  vscode "yzhang.markdown-all-in-one"
-  vscode "humao.rest-client"
-  vscode "sleistner.vscode-fileutils"
-end

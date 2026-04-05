@@ -16,7 +16,12 @@ cd ~/dotfiles
 bash install.sh
 ```
 
-> Make sure 1Password is open with the SSH agent enabled before running — it's needed to verify SSH connections and clone the private work configs.
+> **Important:** 1Password must be installed and configured before running the installer:
+> 1. Enable the **SSH agent** in 1Password Settings → Developer
+> 2. Enable **CLI integration** in 1Password Settings → Developer
+> 3. Make sure 1Password is **unlocked** before running
+>
+> This is required for SSH authentication (GitHub) and to clone the private work configs.
 
 ## Docs
 

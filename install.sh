@@ -126,9 +126,15 @@ echo -e "  ${BOLD}All platforms${RESET}"
 echo "    - Set up tool versions:  mise install"
 echo "    - Sign into GitHub CLI:  gh auth login"
 echo ""
-if [[ "$PLATFORM" != "osx" ]]; then
+if [[ "$PLATFORM" == "osx" ]]; then
+  echo -e "  ${BOLD}Recommended${RESET}"
+  echo "    - VSCode  (sign in to sync extensions automatically)"
+  echo ""
+else
   echo -e "  ${BOLD}Install manually (no Homebrew package available on Linux/WSL2):${RESET}"
-  echo "    - Zed          https://zed.dev/docs/linux"
+  echo "    - Zed     https://zed.dev/docs/linux"
   echo "    - Claude Code  https://docs.anthropic.com/claude-code"
+  echo "    - VSCode  https://code.visualstudio.com/docs/setup/linux"
+  echo "              (sign in to sync extensions automatically)"
   echo ""
 fi
