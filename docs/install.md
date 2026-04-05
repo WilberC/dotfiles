@@ -35,7 +35,6 @@ Identifies the platform (`osx`, `linux`, or `wsl2`) to apply the right configs a
 - Runs `apt-get update` (package lists only — upgrade is intentionally skipped to keep re-runs fast)
 - Adds the git PPA for the latest git version
 - Installs `git` and `stow`
-- Installs Homebrew if missing
 
 > Run `sudo apt-get upgrade` manually before running `install.sh` if you want to upgrade system packages first.
 
@@ -45,11 +44,18 @@ Symlinks configs into `~` for: `git`, `zsh`, `shared`, and the platform director
 
 ### 4. Install packages
 
+**macOS** — via Homebrew:
 ```sh
 brew bundle --file=shared/Brewfile
 ```
 
-Homebrew manages all packages on every platform. See [tools-and-commands.md](tools-and-commands.md) for what's installed.
+**Linux / WSL2** — via apt, after configuring official apt repos for `gh`, `lazygit`, `mise`, and `eza`:
+```sh
+# packages listed in shared/Aptfile
+apt-get install ...
+```
+
+Note: `git-delta` and `difftastic` have no apt package — they are listed in the post-install hints for manual install. See [tools-and-commands.md](tools-and-commands.md) for the full package list.
 
 ### 5. Verify personal setup
 

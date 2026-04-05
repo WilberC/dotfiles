@@ -29,4 +29,5 @@ bash install.sh
 - [SSH config](docs/ssh-config.md) — key inventory, 1Password pattern, adding new hosts
 - [Git config structure](docs/git-config-structure.md) — identity switching, conditional includes
 - [Zsh config](docs/zsh-config.md) — how to modify and extend
-- [Tools and commands](docs/tools-and-commands.md) — everything installed via Brewfile
+- [Package inventory](docs/packages.md) — all packages, per-platform availability at a glance
+- [Tools and commands](docs/tools-and-commands.md) — usage reference for installed tools

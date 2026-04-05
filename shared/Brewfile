@@ -1,14 +1,8 @@
-IS_WSL2 = OS.linux? && (File.read("/proc/version").downcase.include?("microsoft") rescue false)
-
 # Terminal
-if OS.mac?
-  cask "ghostty"
-end
+cask "ghostty"
 
 # Fonts
-if OS.mac?
-  cask "font-jetbrains-mono-nerd-font"
-end
+cask "font-jetbrains-mono-nerd-font"
 
 # Core dotfiles utility
 brew "stow"
@@ -30,19 +24,13 @@ brew "mise"
 brew "libpq"
 
 # Containers
-if OS.mac?
-  cask "orbstack"
-end
+cask "orbstack"
 
 # Editors
-if OS.mac?
-  cask "zed"
-end
+cask "zed"
 
 # AI
-if OS.mac?
-  cask "claude-code"
-end
+cask "claude-code"
 
 # Shell tools
 brew "eza"

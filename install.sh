@@ -57,17 +57,11 @@ else
   sudo apt-get update -qq
   success "Package lists updated"
 
+  # Latest git — needed before stowing dotfiles
   sudo add-apt-repository -y ppa:git-core/ppa &>/dev/null
   sudo apt-get update -qq
   sudo apt-get install -y git stow &>/dev/null
   success "git and stow installed"
-
-  if ! command -v brew &>/dev/null && [[ ! -x "/home/linuxbrew/.linuxbrew/bin/brew" ]]; then
-    warn "Homebrew not found — installing..."
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  fi
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-  success "Homebrew present"
 fi
 
 # ─── 3. stow personal dotfiles ────────────────────────────────────────────────
@@ -79,9 +73,43 @@ for dir in git zsh shared "$PLATFORM"; do
 done
 
 # ─── 4. install packages ──────────────────────────────────────────────────────
-info "Installing packages via Brewfile..."
-brew bundle --file="$DOTFILES_DIR/shared/Brewfile"
-success "Packages installed"
+if [[ "$PLATFORM" == "osx" ]]; then
+  info "Installing packages via Brewfile..."
+  brew bundle --file="$DOTFILES_DIR/shared/Brewfile"
+  success "Packages installed"
+else
+  info "Adding apt repositories..."
+  # GitHub CLI
+  if [[ ! -f /etc/apt/sources.list.d/github-cli.list ]]; then
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | \
+      sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg &>/dev/null
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | \
+      sudo tee /etc/apt/sources.list.d/github-cli.list &>/dev/null
+  fi
+  # lazygit
+  sudo add-apt-repository -y ppa:lazygit-team/release &>/dev/null
+  # mise
+  if [[ ! -f /etc/apt/sources.list.d/mise.list ]]; then
+    curl -fsSL https://mise.jdx.dev/gpg-key.pub | gpg --dearmor | \
+      sudo tee /etc/apt/trusted.gpg.d/mise-archive-keyring.gpg &>/dev/null
+    echo "deb [signed-by=/etc/apt/trusted.gpg.d/mise-archive-keyring.gpg arch=$(dpkg --print-architecture)] https://mise.jdx.dev/deb stable main" | \
+      sudo tee /etc/apt/sources.list.d/mise.list &>/dev/null
+  fi
+  # eza
+  if [[ ! -f /etc/apt/sources.list.d/gierens.list ]]; then
+    sudo mkdir -p /etc/apt/keyrings
+    wget -qO- https://raw.githubusercontent.com/eza-community/eza/main/deb.asc | \
+      sudo gpg --dearmor -o /etc/apt/keyrings/gierens.gpg &>/dev/null
+    echo "deb [signed-by=/etc/apt/keyrings/gierens.gpg] http://deb.gierens.de stable main" | \
+      sudo tee /etc/apt/sources.list.d/gierens.list &>/dev/null
+  fi
+  success "Apt repositories configured"
+
+  info "Installing packages via Aptfile..."
+  sudo apt-get update -qq
+  grep -v '^#\|^[[:space:]]*$' "$DOTFILES_DIR/shared/Aptfile" | xargs sudo apt-get install -y -qq
+  success "Packages installed"
+fi
 
 # ─── 5. verify personal setup ─────────────────────────────────────────────────
 info "Verifying personal setup..."
@@ -131,10 +159,12 @@ if [[ "$PLATFORM" == "osx" ]]; then
   echo "    - VSCode  (sign in to sync extensions automatically)"
   echo ""
 else
-  echo -e "  ${BOLD}Install manually (no Homebrew package available on Linux/WSL2):${RESET}"
-  echo "    - Zed     https://zed.dev/docs/linux"
-  echo "    - Claude Code  https://docs.anthropic.com/claude-code"
-  echo "    - VSCode  https://code.visualstudio.com/docs/setup/linux"
-  echo "              (sign in to sync extensions automatically)"
+  echo -e "  ${BOLD}Install manually (no apt package available):${RESET}"
+  echo "    - git-delta   https://github.com/dandavison/delta/releases"
+  echo "    - difftastic  https://github.com/Wilfred/difftastic/releases"
+  echo "    - Zed         https://zed.dev/docs/linux"
+  echo "    - Claude Code https://docs.anthropic.com/claude-code"
+  echo "    - VSCode      https://code.visualstudio.com/docs/setup/linux"
+  echo "                  (sign in to sync extensions automatically)"
   echo ""
 fi
