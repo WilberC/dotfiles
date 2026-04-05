@@ -31,7 +31,7 @@ In lazygit, press `<tab>` to switch between the delta and difftastic pager views
 | Tool | Command | What it does |
 |------|---------|-------------|
 | [eza](https://github.com/eza-community/eza) | `ls` / `ll` / `tree` | Modern `ls` replacement — icons, git status, long format, tree view |
-| [aqua](https://aquaproj.github.io/) | `aqua` | CLI tool manager — installs lazygit, delta, difftastic, gh, eza, fzf. Config at `shared/.config/aquaproj-aqua/aqua.yaml` |
+| [aqua](https://aquaproj.github.io/) | `aqua` | CLI tool manager — installs lazygit, delta, difftastic, gh, eza, fzf. Config at `shared/.config/aquaproj-aqua/aqua.yaml`. Update all tools: `aqua update -c ~/.config/aquaproj-aqua/aqua.yaml` |
 | [mise](https://mise.jdx.dev/) | `mise` | Language runtime manager (replaces nvm, rbenv, pyenv, etc.) |
 | [unar](https://theunarchiver.com/command-line) | `unar <archive>` | Extract any archive format (zip, rar, 7z, tar, etc.) |
 | [bfs](https://github.com/tavianator/bfs) | `bfs` | Breadth-first `find` alternative — faster on large trees, same syntax |
