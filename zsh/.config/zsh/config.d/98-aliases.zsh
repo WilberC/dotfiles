@@ -39,6 +39,12 @@ alias lg='lazygit'
 alias dev='bin/dev'
 alias until_failure='~/scripts/until_failure'
 
+# Claude Code
+alias cc='claude'
+alias cca='claude --dangerously-skip-permissions'  # all permissions, no prompts
+alias ccr='claude --resume'                         # resume last conversation
+alias ccp='claude --print'                          # non-interactive, print response and exit
+
 alias ls='eza --group-directories-first --icons -A'
 alias ll='eza --group-directories-first --icons -Al --git'
 alias tree='eza --tree -a --git-ignore'

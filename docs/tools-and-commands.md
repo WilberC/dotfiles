@@ -73,6 +73,15 @@ These live in `shared/scripts/` (stowed to `~/scripts/`). Accessible via alias.
 |--------|-------------|
 | `until_failure` | Runs a command repeatedly until it exits non-zero — useful for debugging flaky tests |
 
+## Claude Code
+
+| Alias | Command | What it does |
+|-------|---------|-------------|
+| `cc` | `claude` | Claude Code CLI |
+| `cca` | `claude --dangerously-skip-permissions` | Run with all permissions — no prompts |
+| `ccr` | `claude --resume` | Resume the last conversation |
+| `ccp` | `claude --print` | Non-interactive: print response and exit |
+
 ## Terminal & editors
 
 | Tool | Notes |
