@@ -39,7 +39,7 @@ if [[ "$PLATFORM" == "osx" ]]; then
   fi
   success "Xcode CLI tools present"
 
-  if ! command -v brew &>/dev/null; then
+  if ! command -v brew &>/dev/null && [[ ! -x "/opt/homebrew/bin/brew" ]] && [[ ! -x "/usr/local/bin/brew" ]]; then
     warn "Homebrew not found — installing..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi
@@ -62,11 +62,11 @@ else
   sudo apt-get install -y git stow &>/dev/null
   success "git and stow installed"
 
-  if ! command -v brew &>/dev/null; then
+  if ! command -v brew &>/dev/null && [[ ! -x "/home/linuxbrew/.linuxbrew/bin/brew" ]]; then
     warn "Homebrew not found — installing..."
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
   fi
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
   success "Homebrew present"
 fi
 
