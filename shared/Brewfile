@@ -28,5 +28,3 @@ cask "orbstack"
 # Editors
 cask "zed"
 
-# AI
-cask "claude-code"

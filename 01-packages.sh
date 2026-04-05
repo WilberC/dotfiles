@@ -62,8 +62,10 @@ else
       sudo tee /etc/apt/trusted.gpg.d/mise-archive-keyring.gpg &>/dev/null
     echo "deb [signed-by=/etc/apt/trusted.gpg.d/mise-archive-keyring.gpg arch=$(dpkg --print-architecture)] https://mise.jdx.dev/deb stable main" | \
       sudo tee /etc/apt/sources.list.d/mise.list &>/dev/null
+    success "Apt repositories configured"
+  else
+    success "Apt repositories already configured"
   fi
-  success "Apt repositories configured"
 
   info "Installing packages via Aptfile..."
   sudo apt-get update -qq
@@ -83,8 +85,8 @@ else
 fi
 
 # ─── CLI tools via aqua ────────────────────────────────────────────────────────
-info "Installing CLI tools via aqua..."
 if ! command -v aqua &>/dev/null; then
+  info "Installing aqua..."
   if [[ "$PLATFORM" == "osx" ]]; then
     brew install aquaproj/aqua/aqua &>/dev/null
   else
@@ -92,6 +94,8 @@ if ! command -v aqua &>/dev/null; then
     export PATH="$HOME/.local/share/aquaproj-aqua/bin:$PATH"
   fi
   success "aqua installed"
+else
+  success "aqua already installed"
 fi
 export AQUA_GLOBAL_CONFIG="$HOME/.config/aquaproj-aqua/aqua.yaml"
 
@@ -102,13 +106,23 @@ AQUA_YAML="$DOTFILES_DIR/shared/.config/aquaproj-aqua/aqua.yaml"
 sed -i.bak "s/    ref: .*/    ref: ${AQUA_REGISTRY_REF} # updated automatically by 01-packages.sh on install/" "$AQUA_YAML"
 rm -f "${AQUA_YAML}.bak"
 
+info "Installing CLI tools via aqua (registry ${AQUA_REGISTRY_REF})..."
 aqua install --all
-success "CLI tools installed (registry ${AQUA_REGISTRY_REF})"
+success "CLI tools ready"
 
 # ─── language runtimes via mise ────────────────────────────────────────────────
 info "Installing language runtimes via mise..."
 mise install --yes
-success "Language runtimes installed"
+success "Language runtimes ready"
+
+# ─── Claude Code ───────────────────────────────────────────────────────────────
+if ! command -v claude &>/dev/null; then
+  info "Installing Claude Code..."
+  curl -fsSL https://claude.ai/install.sh | bash
+  success "Claude Code installed"
+else
+  success "Claude Code already installed"
+fi
 
 # ─── manual installs ───────────────────────────────────────────────────────────
 echo ""
@@ -121,7 +135,6 @@ if [[ "$PLATFORM" == "osx" ]]; then
 else
   echo "  - bfg         https://rtyley.github.io/bfg-repo-cleaner (requires Java)"
   echo "  - Zed         https://zed.dev/docs/linux"
-  echo "  - Claude Code https://docs.anthropic.com/claude-code"
   echo "  - VSCode      https://code.visualstudio.com/docs/setup/linux"
   echo "                (sign in to sync extensions automatically)"
 fi
