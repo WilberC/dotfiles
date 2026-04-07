@@ -5,12 +5,12 @@ set -euo pipefail
 source "$(dirname "$0")/_common.sh"
 
 SECRETS_REPO="git@github.com:WilberC/dotfiles-secrets.git"
-SECRETS_DIR="$HOME/dotfiles-secrets"
+SECRETS_DIR="$DOTFILES_DIR/dotfiles-secrets"
 
 info "Setting up dotfiles-secrets..."
 if [[ ! -d "$SECRETS_DIR" ]]; then
   git clone "$SECRETS_REPO" "$SECRETS_DIR"
-  success "Cloned dotfiles-secrets → $SECRETS_DIR"
+  success "Cloned dotfiles-secrets"
 else
   success "dotfiles-secrets already present"
 fi
