@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 # Full setup — runs all steps in order.
-# To run a single step: bash 01-packages.sh / 02-verify-ssh.sh / 03-work.sh
+# To run a single step: bash 01-packages.sh / 02-verify-ssh.sh / 03-secrets.sh / 04-work.sh
 set -euo pipefail
 DIR="$(cd "$(dirname "$0")" && pwd)"
 
 bash "$DIR/01-packages.sh"
 bash "$DIR/02-verify-ssh.sh"
-bash "$DIR/03-work.sh"
+bash "$DIR/03-secrets.sh"
+bash "$DIR/04-work.sh"
 
 # ─── project folder structure ─────────────────────────────────────────────────
 echo ""
