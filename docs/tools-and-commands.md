@@ -73,6 +73,26 @@ These live in `shared/scripts/` (stowed to `~/scripts/`). Accessible via alias.
 |--------|-------------|
 | `until_failure` | Runs a command repeatedly until it exits non-zero — useful for debugging flaky tests |
 
+## Secrets manager
+
+Lives at `~/dotfiles/dotfiles-secrets/bin/secrets` (cloned by `03-secrets.sh`).
+
+| Command | What it does |
+|---------|-------------|
+| `secrets link` | Symlink `.env` from secrets repo into the current project dir |
+| `secrets unlink` | Remove the `.env` symlink from the current dir |
+| `secrets status` | Show link status for the current dir |
+| `secrets link-all` | Create all symlinks defined in `config.json` |
+| `secrets add <category> <key>` | Register a new project (`work\|personal\|others`) |
+| `secrets list` | Show all projects and their link status |
+| `secrets encrypt` | Zip + encrypt `secrets/` → `secrets.zip.enc` |
+| `secrets decrypt` | Decrypt `secrets.zip.enc` → `secrets/` |
+
+```sh
+secrets add work outcode/portal-backend
+cd ~/Projects/Work/outcode/portal-backend && secrets link
+```
+
 ## Claude Code
 
 | Alias | Command | What it does |
@@ -81,6 +101,23 @@ These live in `shared/scripts/` (stowed to `~/scripts/`). Accessible via alias.
 | `cca` | `claude --dangerously-skip-permissions` | Run with all permissions — no prompts |
 | `ccr` | `claude --resume` | Resume the last conversation |
 | `ccp` | `claude --print` | Non-interactive: print response and exit |
+
+### Global skills
+
+Skills live in `claude/.claude/skills/` (stowed to `~/.claude/skills/`). To add a new global skill:
+
+```sh
+cd ~/dotfiles/claude
+npx skills add <url> --skill <name>
+# then commit the result
+```
+
+Example:
+
+```sh
+cd ~/dotfiles/claude
+npx skills add https://github.com/github/awesome-copilot --skill git-commit
+```
 
 ## Terminal & editors
 

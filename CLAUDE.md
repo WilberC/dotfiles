@@ -17,6 +17,9 @@ stow -R zsh
 
 # Also stow shared configs
 stow shared
+
+# Stow Claude Code global skills
+stow claude
 ```
 
 ## Repository Structure
@@ -34,6 +37,7 @@ stow shared
   - `.config/ghostty/` — Ghostty terminal
   - `.config/zed/` — Zed editor
 - `scripts/` — Utility scripts (`until_failure`) — stowed to `~/scripts/`, aliased in `98-aliases.zsh`
+- `claude/` — Claude Code global skills (`~/.claude/skills/`)
 
 ## Key Architecture Decisions
 

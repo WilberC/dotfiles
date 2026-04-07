@@ -35,6 +35,8 @@ alias -s {log,out}='tail -F'
 # Use `< file` to quickly view the contents of any text file.
 READNULLCMD=$PAGER
 
+alias secrets='~/dotfiles/dotfiles-secrets/bin/secrets'
+
 alias lg='lazygit'
 alias dev='bin/dev'
 alias until_failure='~/scripts/until_failure'
