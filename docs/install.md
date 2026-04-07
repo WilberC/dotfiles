@@ -64,12 +64,21 @@ Note: `git-delta` and `difftastic` have no apt package — they are listed in th
 
 ### 6. Clone and install dotfiles-work
 
-Clones `git@github.com:WilberC/dotfiles-work.git` into `~/Projects/Personal/dotfiles-work` and runs its `install.sh`, which:
+Clones `git@github.com:WilberC/dotfiles-work.git` into `~/dotfiles/dotfiles-work` and runs its `install.sh`, which:
 - Stows all company packages
 - Regenerates `~/.config/gitconfig/work.conf`
+- Creates `~/Projects/Work/<Company>` for each company package
 - Verifies each company's git identity and SSH connection
 
-### 7. Post-install hints
+### 7. Create project folders
+
+Creates the base project directory structure:
+- `~/Projects/Personal/`
+- `~/Projects/Others/`
+
+`~/Projects/Work/<Company>` dirs are created by `dotfiles-work/install.sh` (step 6).
+
+### 8. Post-install hints
 
 Prints a checklist for the remaining manual steps:
 - `mise install` — set up tool versions
@@ -80,5 +89,5 @@ Prints a checklist for the remaining manual steps:
 | Task | Command |
 |------|---------|
 | Refresh symlinks after a config change | `stow --restow <package>` |
-| Add a new work company | `bash ~/Projects/Personal/dotfiles-work/add-company.sh` |
-| Regenerate git work routing | `bash ~/Projects/Personal/dotfiles-work/refresh.sh` |
+| Add a new work company | `bash ~/dotfiles/dotfiles-work/add-company.sh` |
+| Regenerate git work routing | `bash ~/dotfiles/dotfiles-work/refresh.sh` |

@@ -7,7 +7,7 @@ source "$(dirname "$0")/_common.sh"
 # ─── clone and install dotfiles-work ──────────────────────────────────────────
 info "Setting up dotfiles-work..."
 DOTFILES_WORK_REPO="git@github.com:WilberC/dotfiles-work.git"
-DOTFILES_WORK_DIR="$HOME/Projects/Personal/dotfiles-work"
+DOTFILES_WORK_DIR="$DOTFILES_DIR/dotfiles-work"
 
 if [[ ! -d "$DOTFILES_WORK_DIR" ]]; then
   git clone "$DOTFILES_WORK_REPO" "$DOTFILES_WORK_DIR"
