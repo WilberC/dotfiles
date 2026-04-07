@@ -45,7 +45,7 @@ fi
 info "Stowing dotfiles ($PLATFORM)..."
 cd "$DOTFILES_DIR"
 for dir in git zsh shared "$PLATFORM"; do
-  stow --restow "$dir"
+  stow --restow --no-folding "$dir"
   success "stowed $dir"
 done
 
