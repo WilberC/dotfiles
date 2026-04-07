@@ -7,7 +7,7 @@
 [include]
   path = ~/.gitconfig-os-specific
   path = ~/.config/gitconfig/accounts/identity
-  path = ~/.config/gitconfig/work.conf
+  path = ~/.config/gitconfig/work
   path = ~/.config/gitconfig/signing
   path = ~/.config/gitconfig/ui
   path = ~/.config/gitconfig/workflow

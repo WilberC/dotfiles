@@ -66,7 +66,7 @@ Note: `git-delta` and `difftastic` have no apt package — they are listed in th
 
 Clones `git@github.com:WilberC/dotfiles-work.git` into `~/dotfiles/dotfiles-work` and runs its `install.sh`, which:
 - Stows all company packages
-- Regenerates `~/.config/gitconfig/work.conf`
+- Regenerates `~/.config/gitconfig/work`
 - Creates `~/Projects/Work/<Company>` for each company package
 - Verifies each company's git identity and SSH connection
 
