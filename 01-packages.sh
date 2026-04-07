@@ -44,7 +44,7 @@ fi
 # ─── stow dotfiles ─────────────────────────────────────────────────────────────
 info "Stowing dotfiles ($PLATFORM)..."
 cd "$DOTFILES_DIR"
-for dir in git zsh shared "$PLATFORM"; do
+for dir in git zsh shared "$PLATFORM" ai-skills; do
   stow --restow --no-folding "$dir"
   success "stowed $dir"
 done
