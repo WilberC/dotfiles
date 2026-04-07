@@ -104,19 +104,28 @@ cd ~/Projects/Work/outcode/portal-backend && secrets link
 
 ### Global skills
 
-Skills live in `claude/.claude/skills/` (stowed to `~/.claude/skills/`). To add a new global skill:
+Skills are stored in `ai-skills/.agents/skills/` (stowed so `~/.agents/` is a symlink into dotfiles). Each AI agent (Claude Code, Qwen, etc.) gets its own symlinks pointing there (e.g. `~/.claude/skills/<name>` → `../../.agents/skills/<name>`).
+
+Since `~/.agents/` is a symlink into dotfiles, any new skill installed from anywhere lands directly in the repo.
+
+To add a new global skill:
 
 ```sh
-cd ~/dotfiles/claude
 npx skills add <url> --skill <name>
-# then commit the result
+# then commit from ~/dotfiles
 ```
 
 Example:
 
 ```sh
-cd ~/dotfiles/claude
 npx skills add https://github.com/github/awesome-copilot --skill git-commit
+```
+
+On a new machine, after cloning dotfiles:
+
+```sh
+stow ai-skills   # restores ~/.agents symlink
+# then re-run npx skills add for each skill to recreate per-agent symlinks
 ```
 
 ## Terminal & editors
