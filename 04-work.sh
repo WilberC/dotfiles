@@ -25,6 +25,7 @@ echo ""
 echo -e "  ${BOLD}All platforms${RESET}"
 echo "    - Set up tool versions:  mise install"
 echo "    - Sign into GitHub CLI:  gh auth login"
+echo "    - Decrypt secrets:       secrets decrypt"
 echo ""
 if [[ "$PLATFORM" == "osx" ]]; then
   echo -e "  ${BOLD}Recommended${RESET}"
