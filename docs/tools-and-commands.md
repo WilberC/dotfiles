@@ -75,7 +75,7 @@ These live in `shared/scripts/` (stowed to `~/scripts/`). Accessible via alias.
 
 ## Secrets manager
 
-Lives at `~/dotfiles/dotfiles-secrets/bin/secrets` (cloned by `03-secrets.sh`).
+Lives at `~/dotfiles/dotfiles-secrets/`. See its [README](../dotfiles-secrets/README.md) for full setup and workflows.
 
 | Command | What it does |
 |---------|-------------|
@@ -85,12 +85,21 @@ Lives at `~/dotfiles/dotfiles-secrets/bin/secrets` (cloned by `03-secrets.sh`).
 | `secrets link-all` | Create all symlinks defined in `config.json` |
 | `secrets add <category> <key>` | Register a new project (`work\|personal\|others`) |
 | `secrets list` | Show all projects and their link status |
-| `secrets encrypt` | Zip + encrypt `secrets/` → `secrets.zip.enc` |
-| `secrets decrypt` | Decrypt `secrets.zip.enc` → `secrets/` |
+| `secrets encrypt` | Zip + encrypt `secrets/` → `secrets.zip.enc`, then commit & push |
+| `secrets decrypt [-f]` | Decrypt `secrets.zip.enc` → `secrets/` — asks confirmation if `secrets/` exists; `--force` skips it |
 
 ```sh
+# Add and link a project
 secrets add work outcode/portal-backend
 cd ~/Projects/Work/outcode/portal-backend && secrets link
+
+# Encrypt after editing secrets (commits + pushes automatically)
+secrets encrypt
+
+# Roll back to a previous version
+git log --oneline secrets.zip.enc          # find the commit
+git show <sha>:secrets.zip.enc > secrets.zip.enc
+secrets decrypt --force
 ```
 
 ## Claude Code
