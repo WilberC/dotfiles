@@ -16,6 +16,8 @@ cd ~/dotfiles
 bash install.sh
 ```
 
+> **Prerequisites:** The terminal must use a [Nerd Font](https://www.nerdfonts.com/font-downloads) for the prompt icons to render correctly (recommended: **MesloLGS NF**, which the p10k wizard installs automatically on first run).
+
 > **Important:** 1Password must be installed and configured before running the installer:
 > 1. Enable the **SSH agent** in 1Password Settings → Developer
 > 2. Enable **CLI integration** in 1Password Settings → Developer
