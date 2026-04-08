@@ -60,3 +60,11 @@ After Ubuntu is back up, follow the Quick start steps above.
 - [Zsh config](docs/zsh-config.md) — how to modify and extend
 - [Package inventory](docs/packages.md) — all packages, per-platform availability at a glance
 - [Tools and commands](docs/tools-and-commands.md) — usage reference for installed tools
+
+## Note
+
+This repo is for **personal use**. You're welcome to use the structure as a reference or copy patterns from it, but it is not intended to be used directly by others — it has many personal and private integrations with separate private repos (e.g. `dotfiles-work`, `dotfiles-secrets`) that won't be accessible.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE) — you are free to use, copy, modify, and distribute the structure and patterns found here.
