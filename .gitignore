@@ -2,3 +2,7 @@
 dotfiles-work/
 dotfiles-secrets/
 shared/.config/gitconfig/work
+ai-skills/
+
+# Keep these
+!ai-skills/.*/skills
