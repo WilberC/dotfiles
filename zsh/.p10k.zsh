@@ -52,6 +52,7 @@
     context                   # user@host
     dir                       # current directory
     vcs                       # git status
+    status                    # exit code of last command
     command_execution_time    # previous command duration
     # =========================[ Line #2 ]=========================
     newline                   # \n
@@ -62,9 +63,10 @@
   # Right prompt segments.
   typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
     # =========================[ Line #1 ]=========================
-    # command_execution_time  # previous command duration
-    # virtualenv              # python virtual environment
-    # context                 # user@host
+    node_version              # node.js version (shown in node projects)
+    go_version                # go version (shown in go projects)
+    rust_version              # rust version (shown in rust projects)
+    python_version            # python version (shown in python projects)
     time                      # current time
     # =========================[ Line #2 ]=========================
     newline                   # \n
@@ -96,9 +98,38 @@
 
   # Grey Python Virtual Environment.
   typeset -g POWERLEVEL9K_VIRTUALENV_FOREGROUND=$grey
-  # Don't show Python version.
-  typeset -g POWERLEVEL9K_VIRTUALENV_SHOW_PYTHON_VERSION=false
+  # Show Python version inside the venv segment (e.g. "venv 3.11.2").
+  typeset -g POWERLEVEL9K_VIRTUALENV_SHOW_PYTHON_VERSION=true
   typeset -g POWERLEVEL9K_VIRTUALENV_{LEFT,RIGHT}_DELIMITER=
+
+  # Exit status: show descriptive label for known codes, number for unknown ones.
+  typeset -g POWERLEVEL9K_STATUS_OK=false                          # hide on success
+  typeset -g POWERLEVEL9K_STATUS_ERROR=true                        # show on failure
+  typeset -g POWERLEVEL9K_STATUS_ERROR_FOREGROUND=$red
+  typeset -g POWERLEVEL9K_STATUS_ERROR_CONTENT_EXPANSION='${${${${P9K_STATUS}:#1}:+"✘ ${P9K_STATUS}"}:-${${${P9K_STATUS}:#126}:+"✘ ${P9K_STATUS}"}}'
+  # Map well-known exit codes to readable labels.
+  _p10k_exit_label() {
+    case $P9K_STATUS in
+      1)   echo '✘ error' ;;
+      2)   echo '✘ bad usage' ;;
+      126) echo '✘ permission denied' ;;
+      127) echo '✘ not found' ;;
+      130) echo '✘ interrupted' ;;
+      137) echo '✘ killed' ;;
+      *)   echo "✘ $P9K_STATUS" ;;
+    esac
+  }
+  typeset -g POWERLEVEL9K_STATUS_ERROR_CONTENT_EXPANSION='$(_p10k_exit_label)'
+
+  # Language version segments — only appear when inside a relevant project.
+  typeset -g POWERLEVEL9K_NODE_VERSION_FOREGROUND=$cyan
+  typeset -g POWERLEVEL9K_NODE_VERSION_PROJECT_ONLY=true           # only show in node projects
+  typeset -g POWERLEVEL9K_GO_VERSION_FOREGROUND=$cyan
+  typeset -g POWERLEVEL9K_GO_VERSION_PROJECT_ONLY=true             # only show in go projects
+  typeset -g POWERLEVEL9K_RUST_VERSION_FOREGROUND=$cyan
+  typeset -g POWERLEVEL9K_RUST_VERSION_PROJECT_ONLY=true           # only show in rust projects
+  typeset -g POWERLEVEL9K_PYTHON_VERSION_FOREGROUND=$cyan
+  typeset -g POWERLEVEL9K_PYTHON_VERSION_PROJECT_ONLY=true         # only show in python projects
 
   # Blue current directory.
   typeset -g POWERLEVEL9K_DIR_FOREGROUND=$blue
@@ -109,9 +140,14 @@
   typeset -g POWERLEVEL9K_CONTEXT_TEMPLATE="%F{$grey}%n@%m%f"
   # Don't show context unless root or in SSH.
   typeset -g POWERLEVEL9K_CONTEXT_{DEFAULT,SUDO}_CONTENT_EXPANSION=
+  # SSH: show a distinct yellow "⇒ user@host" so it's immediately obvious.
+  typeset -g POWERLEVEL9K_CONTEXT_REMOTE_FOREGROUND=$yellow
+  typeset -g POWERLEVEL9K_CONTEXT_REMOTE_TEMPLATE="%F{$yellow}⇒ %n@%m%f"
+  typeset -g POWERLEVEL9K_CONTEXT_REMOTE_SUDO_FOREGROUND=$red
+  typeset -g POWERLEVEL9K_CONTEXT_REMOTE_SUDO_TEMPLATE="%F{$red}⇒ %n@%m%f"
 
-  # Show previous command duration only if it's >= 5s.
-  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=5
+  # Show previous command duration only if it's >= 2s.
+  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=2
   # Don't show fractional seconds. Thus, 7s rather than 7.3s.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_PRECISION=0
   # Duration format: 1d 2h 3m 4s.
