@@ -6,6 +6,8 @@
 
 [ ! -d ~/.local/bin ] && mkdir -p ~/.local/bin
 
+[[ -d ~/dotfiles/dotfiles-secrets/completions ]] && fpath=(~/dotfiles/dotfiles-secrets/completions $fpath)
+
 path=(
   $HOME/.local/share/aquaproj-aqua/bin
   $path
