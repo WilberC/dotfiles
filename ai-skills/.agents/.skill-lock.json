@@ -109,6 +109,15 @@
       "skillFolderHash": "a219d84b6783f63dba608686f723ef9f75619296",
       "installedAt": "2026-04-09T04:46:15.693Z",
       "updatedAt": "2026-04-09T04:46:15.693Z"
+    },
+    "make-interfaces-feel-better": {
+      "source": "jakubkrehel/make-interfaces-feel-better",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/jakubkrehel/make-interfaces-feel-better.git",
+      "skillPath": "skills/make-interfaces-feel-better/SKILL.md",
+      "skillFolderHash": "d534c899c77317e62bea2488473d9303e138bbea",
+      "installedAt": "2026-04-09T04:46:50.008Z",
+      "updatedAt": "2026-04-09T04:46:50.008Z"
     }
   },
   "dismissed": {
