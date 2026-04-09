@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm -rf /home/wilber/dotfiles/ai-skills/.claude/skills)",
+      "Bash(ln -s ../.agents/skills /home/wilber/dotfiles/ai-skills/.claude/skills)",
+      "Bash(rm -rf /home/wilber/dotfiles/ai-skills/.qwen/skills)",
+      "Bash(ln -s ../.agents/skills /home/wilber/dotfiles/ai-skills/.qwen/skills)",
+      "Bash(rm -rf /home/wilber/dotfiles/ai-skills/.kilocode/skills)",
+      "Bash(rm -rf /home/wilber/.claude/skills)",
+      "Bash(rm -rf /home/wilber/.qwen/skills)"
+    ]
+  }
+}

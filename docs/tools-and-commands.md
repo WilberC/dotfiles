@@ -113,7 +113,7 @@ secrets decrypt --force
 
 ### Global skills
 
-Skills are stored in `ai-skills/.agents/skills/` (stowed so `~/.agents/` is a symlink into dotfiles). Each AI agent (Claude Code, Qwen, etc.) gets its own symlinks pointing there (e.g. `~/.claude/skills/<name>` → `../../.agents/skills/<name>`).
+Skills are stored in `ai-skills/.agents/skills/` (stowed so `~/.agents/` is a symlink into dotfiles). Each agent dir (`.claude/`, `.qwen/`, `.kilocode/`) has a single `skills` symlink pointing to `../.agents/skills` — add a skill once and all agents pick it up automatically.
 
 Since `~/.agents/` is a symlink into dotfiles, any new skill installed from anywhere lands directly in the repo.
 
@@ -133,8 +133,7 @@ npx skills add https://github.com/github/awesome-copilot --skill git-commit
 On a new machine, after cloning dotfiles:
 
 ```sh
-stow ai-skills   # restores ~/.agents symlink
-# then re-run npx skills add for each skill to recreate per-agent symlinks
+stow ai-skills   # restores ~/.agents symlink and per-agent skills symlinks
 ```
 
 ## Terminal & editors

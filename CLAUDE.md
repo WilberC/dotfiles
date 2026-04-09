@@ -37,7 +37,7 @@ stow ai-skills
   - `.config/ghostty/` — Ghostty terminal
   - `.config/zed/` — Zed editor
 - `scripts/` — Utility scripts (`until_failure`) — stowed to `~/scripts/`, aliased in `98-aliases.zsh`
-- `ai-skills/` — Global AI agent skills. Skills source is `.agents/skills/`, with per-agent symlinks (`.claude/skills/`, `.qwen/skills/`, etc.) pointing there. See `docs/tools-and-commands.md` for the workflow.
+- `ai-skills/` — Global AI agent skills. Source of truth is `.agents/skills/`. Each agent dir (`.claude/`, `.qwen/`, `.kilocode/`) has a `skills` symlink pointing to `../.agents/skills` — add a skill once, all agents pick it up automatically. See `docs/tools-and-commands.md` for the workflow.
 
 ## Key Architecture Decisions
 
