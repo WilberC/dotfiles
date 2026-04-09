@@ -27,6 +27,15 @@
       "skillFolderHash": "28ce19935b2b48708af69e47e7686936a249c08b",
       "installedAt": "2026-04-09T04:37:44.369Z",
       "updatedAt": "2026-04-09T04:37:44.369Z"
+    },
+    "python-design-patterns": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/wshobson/agents.git",
+      "skillPath": "plugins/python-development/skills/python-design-patterns/SKILL.md",
+      "skillFolderHash": "d14f37b9654a3e70b1efa2ceae5b9b3bb706d46e",
+      "installedAt": "2026-04-09T04:38:54.827Z",
+      "updatedAt": "2026-04-09T04:38:54.827Z"
     }
   },
   "dismissed": {
