@@ -2,7 +2,7 @@
 dotfiles-work/
 dotfiles-secrets/
 shared/.config/gitconfig/work
-ai-skills/
 
-# Keep these
-!ai-skills/.*/skills
+# ai-skills: track config and skill definitions, ignore generated/temp files
+ai-skills/.claude/todos/
+ai-skills/.claude/*.log
