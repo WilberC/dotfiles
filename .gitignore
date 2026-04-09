@@ -3,6 +3,8 @@ dotfiles-work/
 dotfiles-secrets/
 shared/.config/gitconfig/work
 
-# ai-skills: track config and skill definitions, ignore generated/temp files
+# ai-skills: track skill definitions and agent configs, ignore generated/temp files
+ai-skills/**/*.log
 ai-skills/.claude/todos/
-ai-skills/.claude/*.log
+ai-skills/skills-lock.json
+ai-skills/.agents/.skill-lock.json
