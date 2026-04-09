@@ -72,6 +72,15 @@
       "skillFolderHash": "af7ac990b4eba6550d81fcf8e116db01ac44f694",
       "installedAt": "2026-04-09T04:41:46.832Z",
       "updatedAt": "2026-04-09T04:41:46.832Z"
+    },
+    "angular-component": {
+      "source": "analogjs/angular-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/analogjs/angular-skills.git",
+      "skillPath": "skills/angular-component/SKILL.md",
+      "skillFolderHash": "06078729bd6a679a5a73af0c2f3d4da9ad62c21e",
+      "installedAt": "2026-04-09T04:42:02.979Z",
+      "updatedAt": "2026-04-09T04:42:02.979Z"
     }
   },
   "dismissed": {
