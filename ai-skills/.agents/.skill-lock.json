@@ -45,6 +45,15 @@
       "skillFolderHash": "58eb4fb554c116976c2f223ae10c47a51817d143",
       "installedAt": "2026-04-09T04:39:22.364Z",
       "updatedAt": "2026-04-09T04:39:22.364Z"
+    },
+    "python-type-safety": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/wshobson/agents.git",
+      "skillPath": "plugins/python-development/skills/python-type-safety/SKILL.md",
+      "skillFolderHash": "6bc30a129da124b9015a2adde4cda8f686bf24b8",
+      "installedAt": "2026-04-09T04:39:45.354Z",
+      "updatedAt": "2026-04-09T04:39:45.354Z"
     }
   },
   "dismissed": {
