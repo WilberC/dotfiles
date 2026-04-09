@@ -90,6 +90,16 @@
       "skillFolderHash": "60081f96437f211d54fced7f3934c4e533fdef4b",
       "installedAt": "2026-04-09T04:42:23.611Z",
       "updatedAt": "2026-04-09T04:42:23.611Z"
+    },
+    "ui-ux-pro-max": {
+      "source": "nextlevelbuilder/ui-ux-pro-max-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git",
+      "skillPath": ".claude/skills/ui-ux-pro-max/SKILL.md",
+      "skillFolderHash": "75e1acaafe8b08e59d4b86fc253ac7873aff6bba",
+      "pluginName": "ui-ux-pro-max",
+      "installedAt": "2026-04-09T04:45:03.072Z",
+      "updatedAt": "2026-04-09T04:45:03.072Z"
     }
   },
   "dismissed": {
