@@ -6,5 +6,7 @@ shared/.config/gitconfig/work
 # ai-skills: track skill definitions and agent configs, ignore generated/temp files
 ai-skills/**/*.log
 ai-skills/.claude/todos/
+ai-skills/.qwen/todos/
+ai-skills/.kilocode/todos/
 ai-skills/skills-lock.json
 ai-skills/.agents/.skill-lock.json
