@@ -36,6 +36,15 @@
       "skillFolderHash": "d14f37b9654a3e70b1efa2ceae5b9b3bb706d46e",
       "installedAt": "2026-04-09T04:38:54.827Z",
       "updatedAt": "2026-04-09T04:38:54.827Z"
+    },
+    "python-anti-patterns": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/wshobson/agents.git",
+      "skillPath": "plugins/python-development/skills/python-anti-patterns/SKILL.md",
+      "skillFolderHash": "58eb4fb554c116976c2f223ae10c47a51817d143",
+      "installedAt": "2026-04-09T04:39:22.364Z",
+      "updatedAt": "2026-04-09T04:39:22.364Z"
     }
   },
   "dismissed": {
