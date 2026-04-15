@@ -10,3 +10,5 @@ ai-skills/.qwen/todos/
 ai-skills/.kilocode/todos/
 ai-skills/skills-lock.json
 ai-skills/.agents/.skill-lock.json
+
+*.pyc
