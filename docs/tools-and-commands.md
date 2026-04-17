@@ -54,6 +54,20 @@ mise ls                # list installed tools
 mise exec -- <cmd>     # run a command with mise-managed tools
 ```
 
+### tokens — KV cache converter
+
+```sh
+tokens                              # reference table: archetypes × context sizes
+tokens 262144                       # 256K tokens → VRAM per archetype
+tokens 24gb                         # 24 GB VRAM → max tokens per archetype
+tokens 1gb + 2gb                    # sum GB values → token equivalents
+tokens calc 36 8 128 fp16           # custom model (layers kv_heads head_dim prec)
+tokens calc 36 8 128 fp16 24gb      # custom model + specific VRAM constraint
+tokens calc 80 8 128 q4 262144      # custom model + specific token count
+```
+
+Precisions: `fp16` `bf16` `fp32` `q8` `q4` `q2`. KV cache only — model weights not included.
+
 ### Shell git helpers
 
 | Command | What it does |

@@ -43,6 +43,7 @@ function help {
     _help_section "Development"
     _help_cmd "dev"            "Run development server (bin/dev)"
     _help_cmd "until_failure"  "Run command until it exits non-zero"
+    _help_cmd "tokens"         "Convert tokens ↔ GB VRAM (KV cache). tokens <N>, tokens <N>gb, or sum with +"
 
     _help_section "AI Assistants"
     _help_cmd "cc"    "claude"
@@ -93,6 +94,26 @@ function help {
         printf "Run command repeatedly until it exits non-zero.\n"
         printf "\n${yellow}Example:${reset}\n"
         _help_example "until_failure npm test"
+        ;;
+      "tokens")
+        printf "${cyan}${bold}tokens${reset} — Convert tokens ↔ GB VRAM (KV cache)\n"
+        printf "Reference table or custom model calc via architecture params.\n"
+        printf "\n${yellow}Usage:${reset}\n"
+        _help_cmd "tokens"                                    "Reference table — archetype archs × common context sizes"
+        _help_cmd "tokens <N>"                               "N tokens → VRAM per archetype"
+        _help_cmd "tokens <N>gb"                             "N GB VRAM → max tokens per archetype"
+        _help_cmd "tokens A + B"                             "Sum values (same unit), then convert"
+        _help_cmd "tokens calc <layers> <kv_heads> [head_dim=128] [prec=fp16]"  "Custom model table"
+        _help_cmd "tokens calc ... <N>|<N>gb"                "Custom model + specific context or VRAM"
+        printf "\n${yellow}Precisions:${reset} fp16 bf16 fp32 q8 q4 q2\n"
+        printf "\n${yellow}Examples:${reset}\n"
+        _help_example "tokens                         # reference table"
+        _help_example "tokens 262144                  # 256K tokens → GB per archetype"
+        _help_example "tokens 24gb                    # 24 GB → max tokens per archetype"
+        _help_example "tokens 1gb + 2gb               # sum → token counts"
+        _help_example "tokens calc 36 8 128 fp16      # custom model full table"
+        _help_example "tokens calc 36 8 128 fp16 24gb # custom model + 24 GB VRAM"
+        _help_example "tokens calc 80 8 128 q4 128k   # Llama 70B q4, 128K context"
         ;;
       "myip")
         printf "${cyan}${bold}myip${reset}\n"
