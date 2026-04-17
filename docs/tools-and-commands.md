@@ -111,6 +111,14 @@ secrets decrypt --force
 | `ccr` | `claude --resume` | Resume the last conversation |
 | `ccp` | `claude --print` | Non-interactive: print response and exit |
 
+## Qwen Code
+
+| Alias | Command | What it does |
+|-------|---------|-------------|
+| `qwen` | `qwen --yolo` | Qwen CLI with default YOLO mode (no permission prompts) |
+
+See [`docs/qwen-config.md`](qwen-config.md) for configuration examples and settings.
+
 ### Global skills
 
 Skills are stored in `ai-skills/.agents/skills/` (stowed so `~/.agents/` is a symlink into dotfiles). Each agent dir (`.claude/`, `.qwen/`, `.kilocode/`) has a single `skills` symlink pointing to `../.agents/skills` — add a skill once and all agents pick it up automatically.

@@ -1,0 +1,34 @@
+{
+    "env": {
+        "LMSTUDIO_API_KEY": "sk-lm-THIS:IS-YOUR-TOKEN"
+    },
+    "modelProviders": {
+        "openai": [
+            {
+                "id": "qwen/qwen3.5-9b",
+                "name": "qwen/qwen3.5-9b (LM Studio)",
+                "envKey": "LMSTUDIO_API_KEY",
+                "baseUrl": "http://localhost:1234/v1",
+                "generationConfig": {
+                    "timeout": 60000,
+                    "samplingParams": {
+                        "temperature": 0.5
+                    }
+                }
+            }
+        ]
+    },
+    "$version": 3,
+    "ide": {
+        "enabled": true,
+        "hasSeenNudge": true
+    },
+    "security": {
+        "auth": {
+            "selectedType": "openai"
+        }
+    },
+    "model": {
+        "name": "qwen/qwen3.5-9b"
+    }
+}

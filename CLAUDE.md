@@ -39,6 +39,15 @@ stow ai-skills
 - `scripts/` — Utility scripts (`until_failure`) — stowed to `~/scripts/`, aliased in `98-aliases.zsh`
 - `ai-skills/` — Global AI agent skills. Source of truth is `.agents/skills/`. Each agent dir (`.claude/`, `.qwen/`, `.kilocode/`) has a `skills` symlink pointing to `../.agents/skills` — add a skill once, all agents pick it up automatically. See `docs/tools-and-commands.md` for the workflow.
 
+## Agent-Specific Configuration
+
+Each AI agent has its own configuration directory:
+- `.claude/` — Claude Code settings and prompts
+- `.qwen/` — Qwen Code settings (see [`docs/qwen-config.md`](docs/qwen-config.md))
+- `.kilocode/` — Kilocode settings
+
+See [`ai-skills/.qwen/example.settings.json`](ai-skills/.qwen/example.settings.json) for an example Qwen configuration.
+
 ## Key Architecture Decisions
 
 **Platform split**: OS-specific files live in `osx/`, `linux/`, `wsl2/`. Anything that works everywhere goes in `shared/` or `zsh/`.

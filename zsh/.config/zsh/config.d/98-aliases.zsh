@@ -47,6 +47,9 @@ alias cca='claude --dangerously-skip-permissions'  # all permissions, no prompts
 alias ccr='claude --resume'                         # resume last conversation
 alias ccp='claude --print'                          # non-interactive, print response and exit
 
+# Qwen Code
+alias qwen='qwen --yolo'                            # default YOLO mode (no permission prompts)
+
 alias ls='eza --group-directories-first --icons -A'
 alias ll='eza --group-directories-first --icons -Al --git'
 alias tree='eza --tree -a --git-ignore'
