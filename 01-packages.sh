@@ -124,6 +124,15 @@ else
   success "Claude Code already installed"
 fi
 
+# ─── Qwen Code ────────────────────────────────────────────────────────────────
+if ! command -v qwen &>/dev/null; then
+  info "Installing Qwen Code..."
+  bash -c "$(curl -fsSL https://qwen-code-assets.oss-cn-hangzhou.aliyuncs.com/installation/install-qwen.sh)" -s --source qwenchat
+  success "Qwen Code installed"
+else
+  success "Qwen Code already installed"
+fi
+
 # ─── manual installs ───────────────────────────────────────────────────────────
 echo ""
 echo -e "${BOLD}Install manually (no package manager available):${RESET}"
