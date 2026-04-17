@@ -65,4 +65,14 @@ See [`ai-skills/.qwen/example.settings.json`](ai-skills/.qwen/example.settings.j
 
 - If there is an util command tool or something that should be noted add to docs/tools-and-commands.md so is easy to know what tools are available. Only add the necessary ones so we keep it clean and only with the needed one.
 
+## Maintaining the `help` command
+
+`zsh/.config/zsh/commands/help.zsh` documents all custom aliases and functions. Keep it in sync when adding/removing commands:
+
+- **New alias in `98-aliases.zsh`** → add a `_help_cmd` line under the right section in the `help` listing, and a `case` block if it needs detailed help.
+- **New function in `commands/*.zsh`** → same as above.
+- **Removed command** → remove its `_help_cmd` line and `case` block.
+- Sections: Navigation, File Operations, Directory Listing, Git, Secrets, Development, AI Assistants, Network. Add a new `_help_section` if a command doesn't fit any existing one.
+- Only document custom/non-obvious commands. External tools (gh, bfg, delta…) have their own `--help`.
+
 - ALL CHANGES MUST BE JUST INSIDE THIS FOLDER, NEVER OUTSIDE IT.
