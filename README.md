@@ -67,6 +67,10 @@ After Ubuntu is back up, follow the Quick start steps above.
 
 This repo is for **personal use**. You're welcome to use the structure as a reference or copy patterns from it, but it is not intended to be used directly by others — it has many personal and private integrations with separate private repos (e.g. `dotfiles-work`, `dotfiles-secrets`) that won't be accessible.
 
+## Possible Improvements
+
+- **[Agent symlink isolation](docs/agent-symlinks.md)** — Currently all agents (`caveman`, `qwen`, `claude`) share the same `.agents/skills` symlink, so changes to one affect all. This is problematic because `caveman` has a special Claude installation (via plugin) and separate configs for Qwen/Kilocode. See the proposed solution using union mounts or wrapper scripts to isolate agent-specific skill directories.
+
 ## License
 
 This project is licensed under the [MIT License](LICENSE) — you are free to use, copy, modify, and distribute the structure and patterns found here.
