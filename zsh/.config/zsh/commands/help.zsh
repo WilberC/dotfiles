@@ -1,113 +1,63 @@
-# Help command - lists all custom shell aliases and functions
 function help {
   local cmd="${1:-}"
 
   if [ -z "$cmd" ]; then
-    # List all available commands
     cat << 'EOF'
 === Custom Shell Commands & Aliases ===
 
-Navigation (without cd, thanks to AUTO_CD):
+Navigation (AUTO_CD — no cd needed):
   ..              Go up one directory
   ~               Home directory
   ~-2             2nd most recently visited directory
-  /               Root directory
 
 File Operations:
-  %=              Paste mode - paste code without prompt issues
-  < file          View file contents (uses pager)
+  %=              Paste mode (paste code without prompt issues)
+  < file          View file contents in pager
 
 Directory Listing:
   ls              List files with icons, dotfiles, dirs first
   ll              Long format with git status per file
-  tree            Directory tree view (respects .gitignore)
+  tree            Directory tree (respects .gitignore)
+  treed           Dirs only tree
+  tt              treed -L 2
+  ttt             treed -L 3
 
-Git Tools:
-  lg / lazygit    Terminal UI for git operations
-  gh              GitHub CLI - PRs, issues, releases
-  bfg             Git history rewriting (remove secrets/large files)
-  delta           Syntax-highlighted git diff output
-  difftastic      Structural/AST diff view
+Git:
+  lg              lazygit — terminal UI for git
+  git-exclude     Add pattern to .git/info/exclude (local-only, not committed)
 
-Secrets Manager:
+Secrets:
   secrets         Manage encrypted secrets across projects
-                  See ~/dotfiles/dotfiles-secrets/ for details
 
-Development Tools:
-  dev             Run development server (~/bin/dev)
+Development:
+  dev             Run development server (bin/dev)
   until_failure   Run command until it exits non-zero
 
 AI Assistants:
-  cc              Claude Code CLI
-  cca             Claude Code with all permissions (no prompts)
-  ccr             Resume last Claude conversation
-  ccp             Claude Code print response and exit
-  qwen            Qwen Code CLI (YOLO mode, no prompts)
+  cc              claude
+  cca             claude --dangerously-skip-permissions
+  ccr             claude --resume
+  ccp             claude --print
+  qwen            qwen --yolo
 
-Git Functions:
-  git-exclude     Add pattern to .git/info/exclude (local-only)
+Network:
+  myip            Get public IP
+  listening       List TCP listening ports (optional: listening <pattern>)
 
-Type 'help <command>' for detailed usage information.
+Type 'help <command>' for details.
 EOF
   else
-    # Show detailed help for specific command
     case "$cmd" in
       "%=")
         cat << 'EOF'
 %= (Paste Mode)
----------------
-Allows you to paste example code without the shell complaining about the
-pasted prompt symbol.
-
-Usage: Just paste your code normally after using this alias.
-
-Example:
-  %= <paste-your-code-here>
-EOF
-        ;;
-      "alias -s {css,gradle,html,js,json,md,patch,properties,txt,xml,yml}")
-        cat << 'EOF'
-File Type Associations (Text Files)
-------------------------------------
-These file extensions are automatically opened with your pager (less).
-
-Usage: Just type the filename and press Enter.
-
-Supported extensions:
-  .css  .gradle .html .js  .json .md  .patch .properties .txt .xml .yml
-
-Example:
-  package.json    # Opens in pager for viewing JSON
-EOF
-        ;;
-      "alias -s gz")
-        cat << 'EOF'
-alias -s gz
------------
-List gzip archive contents without extracting.
-
-Usage:
-  file.gz         # Shows compressed file listing
-EOF
-        ;;
-      "alias -s {log,out}")
-        cat << 'EOF'
-alias -s {log,out}
-------------------
-Follow tail output for log and out files.
-
-Usage:
-  app.log         # Opens in pager with auto-follow
-  server.out      # Opens in pager with auto-follow
+Paste code into terminal without shell complaining about prompt symbols.
+Usage: %= <paste-your-code>
 EOF
         ;;
       "secrets")
         cat << 'EOF'
-secrets (Secrets Manager)
---------------------------
-Manage encrypted secrets across projects.
-
-Commands:
+secrets — Manage encrypted secrets across projects
   secrets link                    Symlink .env from secrets repo to current project
   secrets unlink                  Remove the .env symlink
   secrets status                  Show link status for current directory
@@ -118,185 +68,81 @@ Commands:
   secrets decrypt [-f]            Decrypt secrets.zip.enc → secrets/
 
 Examples:
-  secrets add work outcode/portal-backend
-  cd ~/Projects/Work/outcode/portal-backend && secrets link
-  secrets encrypt                # After editing, encrypt and push
-EOF
-        ;;
-      "lg")
-        cat << 'EOF'
-lg (lazygit)
-------------
-Terminal-based UI for git operations.
-
-Usage:
-  lg                    # Launch lazygit
-  lazygit               # Same as above (full command name)
-
-Features:
-  - Stage hunks, rebase, manage branches
-  - View diffs with syntax highlighting
-  - Press TAB to switch between delta and difftastic views
-EOF
-        ;;
-      "dev")
-        cat << 'EOF'
-dev
----
-Run your development server.
-
-Usage:
-  dev                    # Start the development server
-
-Location: ~/bin/dev
-EOF
-        ;;
-      "until_failure")
-        cat << 'EOF'
-until_failure
--------------
-Run a command repeatedly until it exits with non-zero status.
-
-Usage:
-  until_failure <command>
-
-Example:
-  until_failure npm test    # Keep running tests until one fails
-EOF
-        ;;
-      "cc"|"cca"|"ccr"|"ccp")
-        cat << 'EOF'
-Claude Code Aliases
---------------------
-  cc         - claude                           Standard CLI
-  cca        - claude --dangerously-skip-permissions  All permissions, no prompts
-  ccr        - claude --resume                  Resume last conversation
-  ccp        - claude --print                   Non-interactive print and exit
-
-Examples:
-  cc <prompt>                     # Ask Claude a question
-  cca "init all"                 # Initialize with full permissions
-  ccr                            # Continue previous conversation
-EOF
-        ;;
-      "qwen")
-        cat << 'EOF'
-qwen (Qwen Code)
-----------------
-Qwen AI assistant with YOLO mode enabled.
-
-Usage:
-  qwen <command>     # Run Qwen command directly
-  qwen --help        # See all available Qwen commands
-
-Mode: YOLO (You Only Learn Once) - no permission prompts by default
-EOF
-        ;;
-      "ls")
-        cat << 'EOF'
-ls (eza alias)
---------------
-Modern replacement for ls with icons and git status.
-
-Usage:
-  ls              # List files with icons, dotfiles visible, dirs first
-EOF
-        ;;
-      "ll")
-        cat << 'EOF'
-ll (eza long alias)
--------------------
-Long format listing with git status indicators.
-
-Usage:
-  ll              # Long format with git status per file
-EOF
-        ;;
-      "tree")
-        cat << 'EOF'
-tree (eza tree alias)
-----------------------
-Directory tree view that respects .gitignore.
-
-Usage:
-  tree            # Show directory tree with git info
+  secrets add work myorg/myrepo
+  cd ~/Projects/myrepo && secrets link
 EOF
         ;;
       "git-exclude")
         cat << 'EOF'
 git-exclude <pattern>
----------------------
-Add a pattern to the current repository's .git/info/exclude file.
-This creates a local-only exclusion that is never committed.
-
-Usage:
-  git-exclude <pattern>
+Add pattern to .git/info/exclude — local only, never committed.
 
 Examples:
-  git-exclude .env.local      # Ignore .env.local in this repo only
-  git-exclude node_modules    # Exclude node_modules locally
-  git-exclude "*.log"         # Exclude all log files locally
-
-Note: This does not modify .gitignore - it's purely local to this repository.
+  git-exclude .env.local
+  git-exclude "*.log"
 EOF
         ;;
-      "gh")
+      "until_failure")
         cat << 'EOF'
-gh (GitHub CLI)
----------------
-Full-featured GitHub command-line interface.
+until_failure <command>
+Run command repeatedly until it exits non-zero.
 
-Common commands:
-  gh auth login                    # Login to GitHub
-  gh pr create                     # Create a new pull request
-  gh pr list                       # List pull requests
-  gh issue create                  # Create a new issue
-  gh repo clone <owner/repo>       # Clone a repository
+Example:
+  until_failure npm test
 EOF
         ;;
-      "bfg")
+      "myip")
         cat << 'EOF'
-bfg (Before Git)
-----------------
-Rewrite git history - useful for removing accidentally committed secrets or large files.
-
-Common use cases:
-  Remove sensitive data from history
-  Replace large files with smaller alternatives
+myip
+Get your public IP via Cloudflare DNS.
 EOF
         ;;
-      "delta"|"difftastic")
+      "listening")
         cat << 'EOF'
-delta / difftastic
--------------------
-Syntax-highlighted diff viewers that understand file structure and syntax.
+listening [pattern]
+List processes listening on TCP ports.
 
-Usage:
-  git diff              # Shows delta (automatic pager, side-by-side view)
-  git difftool          # Shows difftastic (structural/AST diff)
-  git difftool <file>   # Show difftastic for a specific file
+Examples:
+  listening          # all
+  listening 3000     # filter by port or name
+EOF
+        ;;
+      "cc"|"cca"|"ccr"|"ccp")
+        cat << 'EOF'
+Claude Code aliases:
+  cc    claude
+  cca   claude --dangerously-skip-permissions
+  ccr   claude --resume
+  ccp   claude --print
+EOF
+        ;;
+      "qwen")
+        cat << 'EOF'
+qwen — Qwen Code in YOLO mode (no permission prompts)
+Usage: qwen <prompt>
+EOF
+        ;;
+      "lg")
+        cat << 'EOF'
+lg — lazygit terminal UI
+  Stage hunks, rebase, manage branches, view diffs
+  TAB to switch between delta and difftastic views
+EOF
+        ;;
+      "tree"|"treed"|"tt"|"ttt")
+        cat << 'EOF'
+tree      eza --tree (respects .gitignore)
+treed     tree --only-dirs
+tt        treed -L 2
+ttt       treed -L 3
 
-In lazygit: Press TAB to switch between delta and difftastic views.
+Examples:
+  tree --levels=2
+  treed ~/projects
 EOF
         ;;
       *)
-        echo "Unknown command: $cmd"
-        echo ""
-        cat << 'EOF'
-Available commands for detailed help:
-  %=              Paste mode
-  < file          View file contents
-  secrets         Secrets manager
-  lg / lazygit    Git terminal UI
-  dev             Development server
-  until_failure   Run command until failure
-  cc / cca / ccr / ccp  Claude Code aliases
-  qwen            Qwen Code CLI
-  ls              List files (eza)
-  ll              Long format (eza)
-  tree            Directory tree
-  git-exclude     Local git excludes
-EOF
+        echo "No detailed help for '$cmd'. Try: $cmd --help"
         ;;
     esac
   fi
