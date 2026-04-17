@@ -53,3 +53,6 @@ alias qwen='qwen --yolo'                            # default YOLO mode (no perm
 alias ls='eza --group-directories-first --icons -A'
 alias ll='eza --group-directories-first --icons -Al --git'
 alias tree='eza --tree -a --git-ignore'
+alias treed='tree --only-dirs'                      # dirs only, 2 levels deep
+alias tt='treed -L 2'                               # dirs only, 2 levels deep
+alias ttt='treed -L 3'                              # dirs only, 3 levels deep
