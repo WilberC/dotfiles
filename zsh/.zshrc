@@ -22,3 +22,5 @@ done
 unset conf
 
 z4h compile -- $ZDOTDIR/{.zshenv,.zprofile,.zshrc,.zlogin,.zlogout}
+
+. "$HOME/.local/bin/env"

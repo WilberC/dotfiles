@@ -1,4 +1,8 @@
 {
+  "enabledPlugins": {
+    "caveman@caveman": true,
+    "frontend-design@claude-plugins-official": true
+  },
   "extraKnownMarketplaces": {
     "caveman": {
       "source": {
@@ -7,8 +11,5 @@
       }
     }
   },
-  "skipDangerousModePermissionPrompt": true,
-  "enabledPlugins": {
-    "caveman@caveman": true
-  }
+  "skipDangerousModePermissionPrompt": true
 }
