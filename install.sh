@@ -100,7 +100,7 @@ run_stow() {
   success "git shared"
 
   info "Stowing: $platform"
-  stow "$platform"
+  stow -d os -t ~ "$platform"
   success "$platform"
 }
 
