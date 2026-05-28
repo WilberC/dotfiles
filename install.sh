@@ -87,6 +87,13 @@ install_stow_apt() {
   fi
 }
 
+create_project_dirs() {
+  step "project directories"
+  local dotfiles_dir
+  dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  bash "$dotfiles_dir/scripts/setup-dirs.sh"
+}
+
 run_stow() {
   local platform="$1"
   local dotfiles_dir
@@ -156,6 +163,7 @@ case "$CHOSEN" in
     ;;
 esac
 
+create_project_dirs
 run_stow "$CHOSEN"
 
 echo ""
