@@ -1,24 +1,43 @@
-<h2 align="center">kucho/dotfiles</h2>
+<h2 align="center">wilberc/dotfiles</h2>
 
 ## Prerequisites
-1. [GNU/Stow](https://www.gnu.org/software/stow/)
 
-##  Installation
+- [GNU Stow](https://www.gnu.org/software/stow/)
 
-1. Clone onto your machine:
-  ```bash
-  git clone git@github.com:kucho/dotfiles.git ~/dotfiles
-  ```
+## Packages
 
-2. Install the configuration files you need/want:
-  ```bash
-  cd ~/dotfiles
-  stow zsh
-  stow git
-  stow osx
-  ```
+| Package  | Contents                                          | Platform     |
+|----------|---------------------------------------------------|--------------|
+| `fish`   | Fish shell config, functions, plugins             | All          |
+| `git`    | `.gitconfig`, global `.gitignore`                 | All          |
+| `shared` | Ghostty, Zed, lazygit, mise, amp, scripts, agents | All          |
+| `linux`  | OS-specific git config, SSH, local bin            | Linux        |
+| `osx`    | OS-specific git config, SSH, LaunchAgents         | macOS        |
+| `wsl2`   | OS-specific git config, 1Password socket, Zsh     | WSL2         |
 
-3. Edit/Replace/Create new config files and restow them:
-  ```bash
-  stow -R zsh # the folder that contains the new config file
-  ```
+## Installation
+
+```bash
+git clone git@github.com:wilberc/dotfiles.git ~/dotfiles
+cd ~/dotfiles
+```
+
+Stow the packages you need:
+
+```bash
+# All platforms
+stow fish git shared
+
+# Pick one OS package
+stow linux   # Linux
+stow osx     # macOS
+stow wsl2    # WSL2
+```
+
+## Updating configs
+
+After editing a config file, restow its package:
+
+```bash
+stow -R shared
+```
