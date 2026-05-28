@@ -28,10 +28,12 @@ Stow the packages you need:
 stow git shared
 
 # Pick one OS package
-stow linux   # Linux
-stow osx     # macOS
-stow wsl2    # WSL2
+stow -d os -t ~ linux   # Linux
+stow -d os -t ~ osx     # macOS
+stow -d os -t ~ wsl2    # WSL2
 ```
+
+> **Stow flags:** `-d <dir>` sets the package directory (where stow looks for packages). `-t <target>` sets where symlinks are created. OS packages need `-t ~` explicitly because `-d os` shifts stow's default target away from `~`.
 
 ## Updating configs
 
