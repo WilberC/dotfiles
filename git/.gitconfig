@@ -12,6 +12,11 @@
   colorMoved = default
   mnemonicPrefix = true
   renames = true
+  tool = difftastic
+[difftool]
+  prompt = false
+[difftool "difftastic"]
+  cmd = difft "$LOCAL" "$REMOTE"
 [feature]
   experimental = false
 [fetch]
@@ -22,6 +27,8 @@
   format = ssh
 [help]
   autocorrect = prompt
+[log]
+  follow = true
 [include]
   path = ~/.gitconfig-os-specific
 [init]
@@ -41,6 +48,8 @@
 [rerere]
   autoUpdate = true
   enabled = true
+[tag]
+  sort = -version:refname
 [url "git@github.com:"]
   insteadOf = https://github.com/
 [user]

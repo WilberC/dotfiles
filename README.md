@@ -35,6 +35,19 @@ stow -d os -t ~ wsl2    # WSL2
 
 > **Stow flags:** `-d <dir>` sets the package directory (where stow looks for packages). `-t <target>` sets where symlinks are created. OS packages need `-t ~` explicitly because `-d os` shifts stow's default target away from `~`.
 
+## Repository structure
+
+```
+dotfiles/
+├── git/          # .gitconfig, global .gitignore
+├── shared/       # Fish, Ghostty, Zed, lazygit, mise, scripts, agents
+├── os/           # OS-specific packages (linux, osx, wsl2)
+├── scripts/      # Setup scripts (not stowed)
+├── docs/         # Notes and tech debt
+├── projects.conf # Project directory layout (read by scripts/setup-dirs.sh)
+└── install.sh    # Bootstrap script
+```
+
 ## install.sh
 
 Run `./install.sh` to bootstrap a new machine. The script:
@@ -48,6 +61,12 @@ Run `./install.sh` to bootstrap a new machine. The script:
 5. **Stows** the OS package from `os/<platform>`
 
 Idempotent — safe to re-run, skips already-installed tools.
+
+**Project directories** are created from `projects.conf` during install. To run that step alone:
+
+```bash
+bash scripts/setup-dirs.sh
+```
 
 ## Updating configs
 
