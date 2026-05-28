@@ -10,9 +10,9 @@
 |----------|---------------------------------------------------|--------------|
 | `git`    | `.gitconfig`, global `.gitignore`                 | All          |
 | `shared` | Fish, Ghostty, Zed, lazygit, mise, amp, scripts, agents | All     |
-| `linux`  | OS-specific git config, SSH, local bin            | Linux        |
-| `osx`    | OS-specific git config, SSH, LaunchAgents         | macOS        |
-| `wsl2`   | OS-specific git config, 1Password socket, Zsh     | WSL2         |
+| `os/linux`  | OS-specific git config, SSH, local bin         | Linux        |
+| `os/osx`    | OS-specific git config, SSH, LaunchAgents      | macOS        |
+| `os/wsl2`   | OS-specific git config, 1Password socket, Zsh  | WSL2         |
 
 ## Installation
 
@@ -34,6 +34,20 @@ stow -d os -t ~ wsl2    # WSL2
 ```
 
 > **Stow flags:** `-d <dir>` sets the package directory (where stow looks for packages). `-t <target>` sets where symlinks are created. OS packages need `-t ~` explicitly because `-d os` shifts stow's default target away from `~`.
+
+## install.sh
+
+Run `./install.sh` to bootstrap a new machine. The script:
+
+1. **Detects** the OS (WSL2, Linux, macOS)
+2. **Prompts** to confirm or override the detected platform
+3. **Installs dependencies** per platform:
+   - `osx` — Xcode CLT → Homebrew → stow via `brew`
+   - `linux` / `wsl2` — `apt update && upgrade` → stow via `apt`
+4. **Stows** `git` and `shared` (all platforms)
+5. **Stows** the OS package from `os/<platform>`
+
+Idempotent — safe to re-run, skips already-installed tools.
 
 ## Updating configs
 
