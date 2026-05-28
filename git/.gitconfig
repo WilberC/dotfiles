@@ -3,7 +3,7 @@
 [column]
   ui = auto
 [commit]
-  gpgsign = true
+  gpgsign = false
   verbose = true
 [core]
   excludesfile = ~/.global_gitignore
@@ -43,7 +43,3 @@
   enabled = true
 [url "git@github.com:"]
   insteadOf = https://github.com/
-[user]
-  email = kuchox@pm.me
-  name = Victor Rodriguez
-  signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO8svbpnhW1fbLEKhF/9ckmLS0yE1s4GdWt+SlsYb1pe
