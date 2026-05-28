@@ -9,11 +9,13 @@ status = { missing_tools = "always" }
 [tools]
 ast-grep = "latest"
 biome = "latest"
+bfs = "latest"
 delta = "latest"
 difftastic = "latest"
 elasticsearch = "7"
 elixir = "latest"
 erlang = "latest"
+eza = "latest"
 fzf = "latest"
 gh = "latest"
 go = "latest"
