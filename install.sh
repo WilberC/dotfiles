@@ -168,3 +168,11 @@ run_stow "$CHOSEN"
 
 echo ""
 success "Done. Dotfiles stowed for ${BOLD}$CHOSEN${RESET}."
+
+echo ""
+read -rp "$(echo -e "${BOLD}Set up work configs?${RESET} ${DIM}Requires SSH + 1Password agent [y/N]${RESET}: ")" SETUP_WORK
+if [[ "${SETUP_WORK,,}" == "y" ]]; then
+  bash "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/scripts/setup-work.sh"
+else
+  info "Skipped. Run manually anytime: ${BOLD}bash scripts/setup-work.sh${RESET}"
+fi
