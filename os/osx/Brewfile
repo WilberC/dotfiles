@@ -1,0 +1,32 @@
+# ── Brews ─────────────────────────────────────────
+
+# Shell
+brew "fish"
+
+# Dev tools
+brew "libpq"
+
+# ── Casks ─────────────────────────────────────────
+
+# Terminal
+cask "ghostty"
+
+# AI
+cask "claude-code"
+
+# Editors
+cask "visual-studio-code"
+cask "zed"
+
+# Productivity
+cask "obsidian"
+
+# Fonts
+cask "font-jetbrains-mono-nerd-font"
+
+# Browsers
+cask "chromium"
+cask "zen-browser"
+
+# Containers
+cask "orbstack"

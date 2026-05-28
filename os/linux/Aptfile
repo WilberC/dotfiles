@@ -1,0 +1,34 @@
+# ── Packages ──────────────────────────────────────
+
+# Shell
+fish
+
+# Dev tools
+libpq-dev
+
+# Browsers
+chromium-browser
+
+# ── Manual installs (need extra repo/PPA or custom installer) ─────────────────
+
+# Terminal
+# ghostty
+
+# AI
+# claude-code  (npm install -g @anthropic-ai/claude-code)
+
+# Editors
+# visual-studio-code
+# zed
+
+# Productivity
+# obsidian
+
+# Fonts
+# font-jetbrains-mono-nerd-font
+
+# Browsers
+# zen-browser
+
+# Containers
+# docker
