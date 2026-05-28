@@ -8,9 +8,8 @@
 
 | Package  | Contents                                          | Platform     |
 |----------|---------------------------------------------------|--------------|
-| `fish`   | Fish shell config, functions, plugins             | All          |
 | `git`    | `.gitconfig`, global `.gitignore`                 | All          |
-| `shared` | Ghostty, Zed, lazygit, mise, amp, scripts, agents | All          |
+| `shared` | Fish, Ghostty, Zed, lazygit, mise, amp, scripts, agents | All     |
 | `linux`  | OS-specific git config, SSH, local bin            | Linux        |
 | `osx`    | OS-specific git config, SSH, LaunchAgents         | macOS        |
 | `wsl2`   | OS-specific git config, 1Password socket, Zsh     | WSL2         |
@@ -26,7 +25,7 @@ Stow the packages you need:
 
 ```bash
 # All platforms
-stow fish git shared
+stow git shared
 
 # Pick one OS package
 stow linux   # Linux
