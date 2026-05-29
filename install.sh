@@ -94,6 +94,20 @@ create_project_dirs() {
   bash "$dotfiles_dir/scripts/setup-dirs.sh"
 }
 
+stow_force() {
+  local conflicts
+  conflicts=$(stow -n "$@" 2>&1 | grep "existing target is not owned by stow:" | sed 's/.*existing target is not owned by stow: //')
+
+  if [[ -n "$conflicts" ]]; then
+    while IFS= read -r file; do
+      warn "Removing conflicting file: ~/$file"
+      rm -f ~/"$file"
+    done <<< "$conflicts"
+  fi
+
+  stow "$@"
+}
+
 run_stow() {
   local platform="$1"
   local dotfiles_dir
@@ -103,11 +117,11 @@ run_stow() {
   cd "$dotfiles_dir"
 
   info "Stowing: git shared"
-  stow git shared
+  stow_force git shared
   success "git shared"
 
   info "Stowing: $platform"
-  stow -d os -t ~ "$platform"
+  stow_force -d os -t ~ "$platform"
   success "$platform"
 }
 
