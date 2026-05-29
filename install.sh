@@ -99,7 +99,7 @@ create_project_dirs() {
 
 stow_force() {
   local conflicts
-  conflicts=$(stow -n "$@" 2>&1 | grep "existing target is not owned by stow:" | sed 's/.*existing target is not owned by stow: //')
+  conflicts=$(stow --no-folding -n "$@" 2>&1 | grep "existing target is not owned by stow:" | sed 's/.*existing target is not owned by stow: //')
 
   if [[ -n "$conflicts" ]]; then
     while IFS= read -r file; do
@@ -108,7 +108,7 @@ stow_force() {
     done <<< "$conflicts"
   fi
 
-  stow "$@"
+  stow --no-folding "$@"
 }
 
 run_stow() {
