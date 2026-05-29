@@ -90,6 +90,32 @@ install_stow_apt() {
   fi
 }
 
+set_default_fish() {
+  step "default shell → fish"
+
+  if ! command -v fish &>/dev/null; then
+    warn "fish not found — skipping shell change"
+    return
+  fi
+
+  local fish_bin
+  fish_bin=$(command -v fish)
+
+  if [[ "$SHELL" == "$fish_bin" ]]; then
+    success "fish already default shell"
+    return
+  fi
+
+  if ! grep -qF "$fish_bin" /etc/shells; then
+    info "Adding $fish_bin to /etc/shells..."
+    echo "$fish_bin" | sudo tee -a /etc/shells > /dev/null
+  fi
+
+  info "Setting default shell to fish..."
+  chsh -s "$fish_bin"
+  success "Default shell set to fish — restart terminal to apply"
+}
+
 create_project_dirs() {
   step "project directories"
   local dotfiles_dir
@@ -182,6 +208,15 @@ esac
 
 create_project_dirs
 run_stow "$CHOSEN"
+
+case "$CHOSEN" in
+  osx|linux)
+    set_default_fish
+    ;;
+  wsl2)
+    info "wsl2 uses zsh — skipping fish default"
+    ;;
+esac
 
 echo ""
 success "Done. Dotfiles stowed for ${BOLD}$CHOSEN${RESET}."
