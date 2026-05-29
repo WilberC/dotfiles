@@ -40,20 +40,23 @@ install_xcode_clt() {
   read -r
 }
 
+activate_brew() {
+  if [[ -f /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+  elif [[ -f /usr/local/bin/brew ]]; then
+    eval "$(/usr/local/bin/brew shellenv)"
+  fi
+}
+
 install_brew() {
+  activate_brew
   if command -v brew &>/dev/null; then
     success "Homebrew already installed"
     return
   fi
   info "Installing Homebrew..."
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-  # add brew to PATH for the rest of this script (Apple Silicon path)
-  if [[ -f /opt/homebrew/bin/brew ]]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-  elif [[ -f /usr/local/bin/brew ]]; then
-    eval "$(/usr/local/bin/brew shellenv)"
-  fi
+  activate_brew
   success "Homebrew installed"
 }
 
