@@ -5,6 +5,8 @@ brew "fish"
 
 # Dev tools
 brew "libpq"
+brew "libyaml"
+brew "starship"
 
 # ── Casks ─────────────────────────────────────────
 
@@ -26,7 +28,7 @@ cask "font-jetbrains-mono-nerd-font"
 
 # Browsers
 cask "chromium"
-cask "zen-browser"
+cask "zen"
 
 # Containers
 cask "orbstack"

@@ -103,8 +103,8 @@ stow_force() {
 
   if [[ -n "$conflicts" ]]; then
     while IFS= read -r file; do
-      warn "Removing conflicting file: ~/$file"
-      rm -f ~/"$file"
+      warn "Removing conflicting path: ~/$file"
+      rm -rf ~/"$file"
     done <<< "$conflicts"
   fi
 

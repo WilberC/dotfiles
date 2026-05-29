@@ -1,2 +1,3 @@
 *known_hosts*
 /linux/.local/bin
+shared/.config/fish/fish_variables
