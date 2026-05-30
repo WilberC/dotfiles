@@ -15,3 +15,4 @@ if not type -q fisher
 end
 
 starship init fish | source
+atuin init fish | source
