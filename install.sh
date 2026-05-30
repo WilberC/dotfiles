@@ -210,11 +210,8 @@ create_project_dirs
 run_stow "$CHOSEN"
 
 case "$CHOSEN" in
-  osx|linux)
+  osx|linux|wsl2)
     set_default_fish
-    ;;
-  wsl2)
-    info "wsl2 uses zsh — skipping fish default"
     ;;
 esac
 
