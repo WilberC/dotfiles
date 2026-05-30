@@ -24,6 +24,9 @@ chromium-browser
 # Productivity
 # obsidian
 
+# 1Password CLI (requires custom repo)
+# https://developer.1password.com/docs/cli/get-started/#install
+
 # Fonts
 # font-jetbrains-mono-nerd-font
 

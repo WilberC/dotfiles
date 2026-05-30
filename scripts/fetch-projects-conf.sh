@@ -33,7 +33,8 @@ vault_flag=()
 [[ -n "$OP_VAULT" ]] && vault_flag=(--vault "$OP_VAULT")
 
 info "Fetching projects.conf from 1Password (item: $OP_ITEM)..."
-if op item get "$OP_ITEM" "${vault_flag[@]}" --fields notesPlain 2>/dev/null > "$CONF"; then
+if op item get "$OP_ITEM" "${vault_flag[@]}" --fields notesPlain 2>/dev/null \
+    | sed '1s/^"//; $d' > "$CONF"; then
   success "projects.conf saved to $CONF"
 else
   error "Item '$OP_ITEM' not found in 1Password"
