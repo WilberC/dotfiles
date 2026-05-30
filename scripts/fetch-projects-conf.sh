@@ -26,7 +26,7 @@ fi
 
 if ! op whoami &>/dev/null 2>&1; then
   info "Not signed in to 1Password — signing in..."
-  op signin || { error "1Password sign-in failed"; exit 1; }
+  eval "$(op signin)" || { error "1Password sign-in failed"; exit 1; }
 fi
 
 vault_flag=()
