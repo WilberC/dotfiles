@@ -14,7 +14,8 @@
             launchctl setenv XDG_DATA_HOME "$HOME/.local/share" &amp;&amp;
             launchctl setenv XDG_STATE_HOME "$HOME/.local/state" &amp;&amp;
             launchctl setenv XDG_RUNTIME_DIR "$HOME/.local/run" &amp;&amp;
-            launchctl setenv XDG_BIN_HOME "$HOME/.local/bin"
+            launchctl setenv XDG_BIN_HOME "$HOME/.local/bin" &amp;&amp;
+            launchctl setenv SHELL /opt/homebrew/bin/fish
         </string>
     </array>
     <key>RunAtLoad</key>

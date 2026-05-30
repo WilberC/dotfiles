@@ -25,6 +25,7 @@ cask "obsidian"
 
 # Fonts
 cask "font-jetbrains-mono-nerd-font"
+cask "font-monaspice-nerd-font"
 
 # Browsers
 cask "chromium"
