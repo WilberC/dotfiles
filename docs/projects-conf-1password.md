@@ -11,6 +11,26 @@
 5. Choose a vault (e.g. **Personal**)
 6. Click **Save**
 
+## Test the fetch
+
+After saving in 1Password, verify the script can pull it:
+
+```bash
+bash scripts/fetch-projects-conf.sh
+```
+
+Then inspect the result:
+
+```bash
+cat projects.conf
+```
+
+Confirm directories look correct, then delete the local copy — it will be fetched automatically on next install:
+
+```bash
+rm projects.conf
+```
+
 ## Update later
 
 1. Find the `dotfiles/projects.conf` item
