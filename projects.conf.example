@@ -1,0 +1,33 @@
+# Project directories to create on setup.
+# Paths are relative to ~. Lines starting with # are ignored.
+#
+# The real projects.conf is private and stored in 1Password.
+# scripts/setup-dirs.sh fetches it automatically when missing.
+#
+# ── First-time setup ──────────────────────────────────────────────────────────
+#
+#   1. Copy this file and edit it with your layout:
+#        cp projects.conf.example projects.conf
+#
+#   2. Store it in 1Password:
+#        op document create projects.conf --title "dotfiles/projects.conf"
+#
+#   3. Delete the local copy (it's now in 1Password):
+#        rm projects.conf
+#
+#   On next install, setup-dirs.sh will fetch it automatically.
+#   To override the item name or vault:
+#        OP_PROJECTS_CONF_ITEM="my/item" bash scripts/setup-dirs.sh
+#        OP_PROJECTS_CONF_VAULT="Work" bash scripts/setup-dirs.sh
+#
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Personal projects
+Projects/Personal
+
+# Work — one line per client
+Projects/Work/ClientA
+Projects/Work/ClientB
+
+# Experiments / throwaway work
+Projects/Sandbox
