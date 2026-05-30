@@ -4,7 +4,6 @@
 brew "fish"
 
 # Dev tools
-brew "1password-cli"
 brew "libpq"
 brew "libyaml"
 brew "starship"
@@ -33,3 +32,6 @@ cask "zen"
 
 # Containers
 cask "orbstack"
+
+# CLI tools
+cask "1password-cli"
