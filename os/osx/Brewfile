@@ -4,6 +4,7 @@
 brew "fish"
 
 # Dev tools
+brew "1password-cli"
 brew "libpq"
 brew "libyaml"
 brew "starship"
