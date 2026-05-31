@@ -4,6 +4,7 @@
 fish
 
 # Dev tools
+bat
 libpq-dev
 zip
 
