@@ -5,6 +5,7 @@ fish
 
 # Dev tools
 libpq-dev
+zip
 
 # Browsers
 chromium-browser
