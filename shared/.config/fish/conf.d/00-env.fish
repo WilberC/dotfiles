@@ -4,6 +4,11 @@ test -d ~/.local/bin; or mkdir -p ~/.local/bin
 
 fish_add_path -aP ~/.local/bin
 fish_add_path -aP ~/.cargo/bin
+if test -d ~/dotfiles-secrets/bin
+    fish_add_path -aP ~/dotfiles-secrets/bin
+else
+    echo "warn: ~/dotfiles-secrets not found — 'secrets' unavailable" >&2
+end
 
 set -gx PAGER less
 
