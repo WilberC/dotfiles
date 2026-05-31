@@ -4,6 +4,9 @@
 brew "fish"
 
 # Dev tools
+brew "bat"
+tap "Franvy/gtab"
+brew "gtab" # run `gtab init` once after install
 brew "libpq"
 brew "libyaml"
 brew "starship"
