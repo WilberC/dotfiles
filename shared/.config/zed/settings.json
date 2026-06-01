@@ -94,7 +94,7 @@
 			}
 		},
 		"Ruby": {
-			"language_servers": ["ruby-lsp", "codebook"]
+			"language_servers": ["codebook"]
 		},
 		"SQL": {
 			"formatter": {
