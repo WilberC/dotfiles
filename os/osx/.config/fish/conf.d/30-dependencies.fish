@@ -12,3 +12,6 @@ fish_add_path -aP /opt/homebrew/opt/libpq/bin
 # Homebrew settings
 set -gx HOMEBREW_NO_ANALYTICS 1
 set -gx HOMEBREW_NO_ENV_HINTS 1
+
+# gtab
+alias g gtab

@@ -20,4 +20,4 @@ window-padding-color=extend
 window-width = 120
 
 # gtab managed include
-config-file = ~/.config/gtab/ghostty-shortcut.conf
+config-file = "~/.config/gtab/ghostty-shortcut.conf"
