@@ -188,7 +188,8 @@
 			"GIT_EDITOR": "zed --wait"
 		},
 		"font_family": "MonaspiceNe Nerd Font Mono",
-		"line_height": "standard"
+		"line_height": "standard",
+		"working_directory": "current_project_directory"
 	},
 	"theme": {
 		"dark": "Ayu Dark",
