@@ -25,10 +25,12 @@ cask "zed"
 
 # Productivity
 cask "obsidian"
+# TODO: install Better Mouse manually — https://better-mouse.com
 
 # Fonts
 cask "font-jetbrains-mono-nerd-font"
 cask "font-monaspice-nerd-font"
+# TODO: install Berkeley Mono manually — https://usgraphics.com/products/berkeley-mono
 
 # Browsers
 cask "chromium"
