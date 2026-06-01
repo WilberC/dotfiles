@@ -9,6 +9,10 @@ set -gx SSH_AUTH_SOCK ~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/age
 # Add libpq to path
 fish_add_path -aP /opt/homebrew/opt/libpq/bin
 
+# OpenSSL flags required for psycopg2 and other packages that compile C extensions
+set -gx LDFLAGS "-L/opt/homebrew/opt/openssl@3/lib"
+set -gx CPPFLAGS "-I/opt/homebrew/opt/openssl@3/include"
+
 # Homebrew settings
 set -gx HOMEBREW_NO_ANALYTICS 1
 set -gx HOMEBREW_NO_ENV_HINTS 1
