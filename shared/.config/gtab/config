@@ -1,2 +1,2 @@
-close_tab=false
-ghostty_shortcut=cmd+gtabtabtab
+close_tab=true
+ghostty_shortcut=cmd+g
