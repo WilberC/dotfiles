@@ -1,6 +1,8 @@
 alpha-blending = linear-corrected
 auto-update = download
 clipboard-paste-protection = false
+clipboard-read = allow
+keybind = super+v=text:\x16
 confirm-close-surface = false
 cursor-style = block
 cursor-style-blink = false
