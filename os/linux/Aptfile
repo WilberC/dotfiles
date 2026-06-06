@@ -4,9 +4,19 @@
 fish
 
 # Dev tools
+autoconf
 bat
+bison
+build-essential
+libffi-dev
+libgdbm-dev
+libncurses-dev
 libpq-dev
+libreadline-dev
+libyaml-dev
+pkg-config
 zip
+zlib1g-dev
 
 # Browsers
 chromium-browser

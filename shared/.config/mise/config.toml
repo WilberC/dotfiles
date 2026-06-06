@@ -4,7 +4,7 @@ _.file = "~/.env.default"
 [settings]
 idiomatic_version_file_enable_tools = ["ruby"]
 ruby = { compile = true }
-status = { missing_tools = "always" }
+status = { missing_tools = "never" }
 
 [tools]
 ast-grep = "latest"
@@ -35,9 +35,9 @@ yarn = "latest"
 zoxide = "latest"
 
 # Node.js
-"npm:@earendil-works/pi-coding-agent" = "latest"
-"npm:@herb-tools/language-server" = "latest"
-"npm:agent-browser" = "latest"
-"npm:@anthropic-ai/claude-code" = { version = "latest", os = ["linux"] }
-"npm:@openai/codex" = "latest"
-"npm:opencode-ai" = "latest"
+"npm:@earendil-works/pi-coding-agent" = { version = "latest", depends = ["node"] }
+"npm:@herb-tools/language-server" = { version = "latest", depends = ["node"] }
+"npm:agent-browser" = { version = "latest", depends = ["node"] }
+"npm:@anthropic-ai/claude-code" = { version = "latest", os = ["linux"], depends = ["node"] }
+"npm:@openai/codex" = { version = "latest", depends = ["node"] }
+"npm:opencode-ai" = { version = "latest", depends = ["node"] }
