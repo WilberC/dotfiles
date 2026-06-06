@@ -124,14 +124,27 @@ create_project_dirs() {
 }
 
 stow_force() {
+  local output
+  local status
   local conflicts
-  conflicts=$(stow --no-folding -n "$@" 2>&1 | grep "existing target is not owned by stow:" | sed 's/.*existing target is not owned by stow: //')
+
+  set +e
+  output=$(stow --no-folding -n "$@" 2>&1)
+  status=$?
+  set -e
+  conflicts=$(printf '%s\n' "$output" | sed -nE \
+    -e 's/^[[:space:]]*\* existing target is not owned by stow: //p' \
+    -e 's/^[[:space:]]*\* existing target is neither a link nor a directory: //p' \
+    -e 's/^.*existing target is not owned by stow: //p')
 
   if [[ -n "$conflicts" ]]; then
     while IFS= read -r file; do
       warn "Removing conflicting path: ~/$file"
       rm -rf ~/"$file"
     done <<< "$conflicts"
+  elif (( status != 0 )); then
+    printf '%s\n' "$output" >&2
+    return "$status"
   fi
 
   stow --no-folding "$@"
