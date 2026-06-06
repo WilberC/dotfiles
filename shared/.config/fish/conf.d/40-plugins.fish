@@ -14,7 +14,18 @@ if not type -q fisher
   curl -sL https://git.io/fisher | source
 end
 
-starship init fish | source
-atuin init fish | source
-zoxide init fish | source
-fzf --fish | source
+if command -q starship
+    starship init fish | source
+end
+
+if command -q atuin
+    atuin init fish | source
+end
+
+if command -q zoxide
+    zoxide init fish | source
+end
+
+if command -q fzf
+    fzf --fish | source
+end

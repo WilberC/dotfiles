@@ -54,5 +54,3 @@
   enabled = true
 [tag]
   sort = -version:refname
-[url "git@github.com:"]
-  insteadOf = https://github.com/
