@@ -1,0 +1,12 @@
+[Unit]
+Description=Remove Windows Zone.Identifier marker files from WSL home
+Documentation=man:inotifywait(1)
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/watch-zone-identifiers %h
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=default.target
