@@ -167,6 +167,26 @@ run_stow() {
   success "$platform"
 }
 
+setup_zone_identifier_watcher() {
+  step "Zone.Identifier watcher"
+
+  if ! command -v systemctl &>/dev/null || [[ ! -d /run/systemd/system ]]; then
+    warn "systemd is not running — skipping watcher auto-start"
+    info "Start it manually anytime: clean-zone-watch ~"
+    return
+  fi
+
+  if ! command -v inotifywait &>/dev/null; then
+    warn "inotifywait not found — install Aptfile packages, then re-run install.sh"
+    return
+  fi
+
+  info "Enabling watcher for $HOME..."
+  systemctl --user daemon-reload
+  systemctl --user enable --now watch-zone-identifiers.service
+  success "Zone.Identifier watcher enabled"
+}
+
 # --- platform select ---
 DETECTED=$(detect_os)
 
@@ -221,6 +241,12 @@ esac
 
 create_project_dirs
 run_stow "$CHOSEN"
+
+case "$CHOSEN" in
+  wsl2)
+    setup_zone_identifier_watcher
+    ;;
+esac
 
 case "$CHOSEN" in
   osx|linux|wsl2)
