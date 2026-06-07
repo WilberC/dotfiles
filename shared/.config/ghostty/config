@@ -2,7 +2,7 @@ alpha-blending = linear-corrected
 auto-update = download
 clipboard-paste-protection = false
 clipboard-read = allow
-keybind = super+v=text:\x16
+keybind = super+v=paste_from_clipboard
 confirm-close-surface = false
 cursor-style = block
 cursor-style-blink = false
