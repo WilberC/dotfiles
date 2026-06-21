@@ -41,7 +41,34 @@ git commit -m "title" -m "body paragraph"
 - Limit to 60 characters maximum
 - Capitalize the first word of the main subject
 - Use imperative mood ("add feature" not "adds feature")
-- Use a short area prefix for readability when helpful (avoid generic "fix:" or "feature:" prefixes)
+- Use a conventional commit prefix when the repository expects one:
+  `<type>(<scope>): <description>`.
+- Use a short scope for readability when helpful. Avoid vague scopes such as
+  `misc`, `general`, or `changes`.
+
+**Conventional commit types:**
+
+| Type       | Purpose                        |
+| ---------- | ------------------------------ |
+| `feat`     | New feature                    |
+| `fix`      | Bug fix                        |
+| `docs`     | Documentation only             |
+| `style`    | Formatting/style, no logic     |
+| `refactor` | Code refactor, no feature/fix  |
+| `perf`     | Performance improvement        |
+| `test`     | Add/update tests               |
+| `build`    | Build system/dependencies      |
+| `ci`       | CI/config changes              |
+| `chore`    | Maintenance/misc               |
+| `revert`   | Revert commit                  |
+
+**Scope:**
+- Prefer the smallest meaningful area affected by the change, such as a package,
+  command, feature, module, integration, or config area.
+- Omit scope when the change is repository-wide or when a scope would be forced.
+- Use lowercase, concise scopes that match repository naming where possible.
+- If multiple unrelated scopes are needed, split the commit instead of broadening
+  the scope.
 
 **Body:**
 - Prefer a cohesive narrative over a changelog. The diff already shows what files changed and how.
@@ -61,6 +88,8 @@ git commit -m "title" -m "body paragraph"
   - Observed: what you measured or saw.
   - Risk: what the old code could cause.
 - Keep language repository-facing and neutral; describe the change, not the reviewer.
+- Never mention AI, agents, assistants, Claude, Codex, or similar tooling as
+  authors, contributors, co-authors, reviewers, or sources of the change.
 - When available, include brief concrete evidence in the narrative (counts, example output, reproducible symptom).
 - Call out intent preservation when refactoring tests or structure (what coverage/behavior remains the same).
 
