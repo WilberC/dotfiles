@@ -3,13 +3,19 @@
 set -g script_path (realpath (status filename))
 set -g shared_dir (dirname (dirname (dirname "$script_path")))
 set -g skills_dir "$shared_dir/.agents/skills"
-set -g agent_names Codex Claude
-set -g agent_global_dirs "$HOME/.agents/skills" "$HOME/.claude/skills"
-set -g agent_project_dirs ".agents/skills" ".claude/skills"
-set -g agent_syncable false true
+set -g target_names Codex Claude
+set -g target_dirs "$HOME/.codex/skills" "$HOME/.claude/skills"
+set -g target_project_dirs ".agents/skills" ".claude/skills"
+
+function c
+    set_color $argv[1]
+    printf '%s' $argv[2..-1]
+    set_color normal
+end
 
 function fail
-    echo "sync-skills: $argv" >&2
+    c red "sync-skills: " >&2
+    echo "$argv" >&2
     exit 1
 end
 
@@ -27,87 +33,85 @@ function add_selected_index --argument-names value max
     end
 end
 
-function add_selected_agent --argument-names token
+function add_selected_target --argument-names token
     if string match -rq '^[0-9]+$' -- "$token"
-        add_selected_index "$token" (count $agent_names)
+        add_selected_index "$token" (count $target_names)
         return
     end
 
     set -l normalized_token (string lower -- "$token")
 
-    for index in (seq 1 (count $agent_names))
-        if test "$normalized_token" = (string lower -- "$agent_names[$index]")
-            add_selected_index "$index" (count $agent_names)
+    for index in (seq 1 (count $target_names))
+        if test "$normalized_token" = (string lower -- "$target_names[$index]")
+            add_selected_index "$index" (count $target_names)
             return
         end
     end
 
-    fail "unknown agent: $token"
+    fail "unknown target: $token"
 end
 
 function pretty_path --argument-names path
     string replace -- "$HOME" '~' "$path"
 end
 
-function sync_selected_skills
-    for target in $selected_targets
-        set -l target_index (contains --index -- "$target" $agent_names)
-        set -l target_dir "$agent_global_dirs[$target_index]"
+function resolved_path --argument-names path
+    readlink -f "$path" 2>/dev/null
+end
 
-        mkdir -p "$target_dir"
+function sync_selected_skills_to_target --argument-names target target_dir
+    mkdir -p "$target_dir"
 
-        for skill in $selected_skills
-            set -l source_path "$skills_dir/$skill"
-            set -l link_path "$target_dir/$skill"
+    c brblue "Creating $target links:"
+    echo ""
 
-            if test -L "$link_path"
-                set -l current_target (readlink "$link_path")
+    for skill in $selected_skills
+        set -l source_path "$skills_dir/$skill"
+        set -l link_path "$target_dir/$skill"
 
-                if test "$link_path" -ef "$source_path"
-                    printf "  = %s -> %s\n" (pretty_path "$link_path") (pretty_path "$source_path")
-                    continue
-                end
+        if test -L "$link_path"
+            set -l current_target (readlink "$link_path")
 
-                fail "link already exists with different target: "(pretty_path "$link_path")" -> $current_target"
+            if test "$link_path" -ef "$source_path"
+                printf "  %s %s %s %s\n" (c brblack '=') (c cyan (pretty_path "$link_path")) (c brblack '->') (pretty_path "$source_path")
+                continue
             end
 
-            if test -e "$link_path"
-                fail "path already exists and is not a symlink: "(pretty_path "$link_path")
+            if test (resolved_path "$link_path/SKILL.md") = (resolved_path "$source_path/SKILL.md")
+                rm "$link_path"
+                ln -s "$source_path" "$link_path"
+                printf "  %s %s %s %s %s\n" (c yellow '~') (c cyan (pretty_path "$link_path")) (c brblack '->') (pretty_path "$source_path") (c brblack "(refreshed from $current_target)")
+                continue
             end
 
-            ln -s "$source_path" "$link_path"
-            printf "  + %s -> %s\n" (pretty_path "$link_path") (pretty_path "$source_path")
+            fail "link already exists with different target: "(pretty_path "$link_path")" -> $current_target"
         end
+
+        if test -e "$link_path"
+            if test (resolved_path "$link_path/SKILL.md") = (resolved_path "$source_path/SKILL.md")
+                fail "path already exists and is not a symlinked skill folder: "(pretty_path "$link_path")". Move it aside, then rerun sync-skills so the whole skill folder can be linked."
+            end
+
+            fail "path already exists and is not a symlink: "(pretty_path "$link_path")
+        end
+
+        ln -s "$source_path" "$link_path"
+        printf "  %s %s %s %s\n" (c green '+') (c cyan (pretty_path "$link_path")) (c brblack '->') (pretty_path "$source_path")
     end
 end
 
-function print_agent_paths
-    echo "Agent skill paths:"
+function print_paths
+    c brblue "Skill paths:"
+    echo ""
+    printf "  %s %s\n" (c brblack 'source:') (c cyan (pretty_path "$skills_dir"))
 
-    for index in (seq 1 (count $agent_names))
-        set -l agent_name "$agent_names[$index]"
-        set -l global_dir "$agent_global_dirs[$index]"
-        set -l project_dir "$agent_project_dirs[$index]"
-        set -l status_text "selectable"
+    for index in (seq 1 (count $target_names))
+        set -l target "$target_names[$index]"
+        set -l target_dir "$target_dirs[$index]"
+        set -l project_dir "$target_project_dirs[$index]"
 
-        if test "$agent_syncable[$index]" != true
-            set status_text "info only; handled by dotfiles"
-        end
-
-        printf "  - %s: global %s, project %s (%s)\n" "$agent_name" (pretty_path "$global_dir") "$project_dir" "$status_text"
+        printf "  %s %s %s %s\n" (c brblack "$target:") (c cyan (pretty_path "$target_dir")) (c brblack 'project') (c cyan "$project_dir")
     end
-end
-
-function selectable_agent_indexes
-    set -l indexes
-
-    for index in (seq 1 (count $agent_names))
-        if test "$agent_syncable[$index]" = true
-            set -a indexes "$index"
-        end
-    end
-
-    printf '%s\n' $indexes
 end
 
 function select_skills_with_fzf
@@ -123,11 +127,13 @@ function select_skills_with_fzf
 end
 
 function select_skills_with_prompt
-    echo "Skills in $skills_dir:"
+    c brblue "Skills in "
+    c cyan (pretty_path "$skills_dir")
+    echo ":"
 
     set -l index 1
     for skill in $skills
-        printf "  %d) %s\n" $index "$skill"
+        printf "  %s %s\n" (c yellow "$index)") "$skill"
         set index (math $index + 1)
     end
 
@@ -180,16 +186,16 @@ end
 function select_targets_with_fzf
     set -l target_options
 
-    for index in (selectable_agent_indexes)
-        set -l target_name "$agent_names[$index]"
-        set -l target_dir "$agent_global_dirs[$index]"
+    for index in (seq 1 (count $target_names))
+        set -l target "$target_names[$index]"
+        set -l target_dir "$target_dirs[$index]"
 
-        set -a target_options "$target_name ("(pretty_path "$target_dir")")"
+        set -a target_options "$target ("(pretty_path "$target_dir")")"
     end
 
     set -l selected_target_options (printf '%s\n' $target_options | fzf \
         --multi \
-        --prompt 'Agents> ' \
+        --prompt 'Targets> ' \
         --header 'Space: select  Ctrl-A: all  Ctrl-D: none  Enter: confirm' \
         --bind 'space:toggle,ctrl-a:select-all,ctrl-d:deselect-all' \
         --marker '* ' \
@@ -205,35 +211,29 @@ function select_targets_with_fzf
 end
 
 function select_targets_with_prompt
-    echo "Agents:"
+    c brblue "Targets:"
+    echo ""
 
-    set -l index 1
-    for target in $agent_names
-        set -l target_dir "$agent_global_dirs[$index]"
-        set -l project_dir "$agent_project_dirs[$index]"
-        set -l status_text "selectable"
+    for index in (seq 1 (count $target_names))
+        set -l target "$target_names[$index]"
+        set -l target_dir "$target_dirs[$index]"
+        set -l project_dir "$target_project_dirs[$index]"
 
-        if test "$agent_syncable[$index]" != true
-            set status_text "info only"
-        end
-
-        printf "  %d) %s (global %s, project %s; %s)\n" $index "$target" (pretty_path "$target_dir") "$project_dir" "$status_text"
-        set index (math $index + 1)
+        printf "  %s %s %s %s %s %s\n" (c yellow "$index)") "$target" (c brblack 'global') (c cyan (pretty_path "$target_dir")) (c brblack 'project') (c cyan "$project_dir")
     end
 
     echo ""
-    read --prompt-str "Select agents (2, Claude, all): " selection
+    read --prompt-str "Select targets (1, 2, Codex, Claude, all): " selection
 
     set -g selected_indexes
-    set -l target_count (count $agent_names)
     set -l normalized_selection (string lower -- (string trim -- "$selection"))
 
     if test -z "$normalized_selection"
-        fail "no agents selected"
+        fail "no targets selected"
     end
 
     if test "$normalized_selection" = all -o "$normalized_selection" = '*'
-        set selected_indexes (selectable_agent_indexes)
+        set selected_indexes (seq 1 (count $target_names))
     else
         set -l tokens (string replace -a ',' ' ' -- "$normalized_selection" | string split ' ')
 
@@ -242,18 +242,14 @@ function select_targets_with_prompt
                 continue
             end
 
-            add_selected_agent "$token"
+            add_selected_target "$token"
         end
     end
 
     set -g selected_targets
 
     for selected_index in $selected_indexes
-        if test "$agent_syncable[$selected_index]" != true
-            fail "$agent_names[$selected_index] is info only; Codex uses "(pretty_path "$agent_global_dirs[$selected_index]")" globally and $agent_project_dirs[$selected_index] per project"
-        end
-
-        set -ga selected_targets "$agent_names[$selected_index]"
+        set -ga selected_targets "$target_names[$selected_index]"
     end
 end
 
@@ -264,7 +260,9 @@ end
 set -g skills (command find "$skills_dir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
 
 if test (count $skills) -eq 0
-    echo "No skills found in $skills_dir"
+    c yellow "No skills found in "
+    c cyan (pretty_path "$skills_dir")
+    echo ""
     exit 0
 end
 
@@ -285,10 +283,9 @@ if test (count $selected_skills) -eq 0
 end
 
 echo ""
-echo "Selected skills: "(string join ', ' $selected_skills)" ("(pretty_path "$skills_dir")")"
+printf "%s %s\n" (c brblack 'Selected skills:') (c green (string join ', ' $selected_skills))
 echo ""
-print_agent_paths
-echo ""
+print_paths
 
 set -g selected_targets
 
@@ -296,26 +293,21 @@ if command -q fzf; and isatty stdin
     select_targets_with_fzf
 
     if test $status -ne 0
-        fail "agent selection cancelled"
+        fail "target selection cancelled"
     end
 else
     select_targets_with_prompt
 end
 
 if test (count $selected_targets) -eq 0
-    fail "no agents selected"
+    fail "no targets selected"
 end
 
 echo ""
-echo "Sync targets:"
+printf "%s %s\n" (c brblack 'Selected targets:') (c green (string join ', ' $selected_targets))
+echo ""
 
 for target in $selected_targets
-    set -l target_index (contains --index -- "$target" $agent_names)
-    set -l target_dir "$agent_global_dirs[$target_index]"
-
-    printf "  - %s (%s)\n" "$target" (pretty_path "$target_dir")
+    set -l target_index (contains --index -- "$target" $target_names)
+    sync_selected_skills_to_target "$target" "$target_dirs[$target_index]"
 end
-
-echo ""
-echo "Creating links:"
-sync_selected_skills
