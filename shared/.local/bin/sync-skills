@@ -1,0 +1,321 @@
+#!/usr/bin/env fish
+
+set -g script_path (realpath (status filename))
+set -g shared_dir (dirname (dirname (dirname "$script_path")))
+set -g skills_dir "$shared_dir/.agents/skills"
+set -g agent_names Codex Claude
+set -g agent_global_dirs "$HOME/.agents/skills" "$HOME/.claude/skills"
+set -g agent_project_dirs ".agents/skills" ".claude/skills"
+set -g agent_syncable false true
+
+function fail
+    echo "sync-skills: $argv" >&2
+    exit 1
+end
+
+function add_selected_index --argument-names value max
+    if not string match -rq '^[0-9]+$' -- "$value"
+        fail "invalid selection: $value"
+    end
+
+    if test "$value" -lt 1 -o "$value" -gt "$max"
+        fail "selection out of range: $value"
+    end
+
+    if not contains -- "$value" $selected_indexes
+        set -ga selected_indexes "$value"
+    end
+end
+
+function add_selected_agent --argument-names token
+    if string match -rq '^[0-9]+$' -- "$token"
+        add_selected_index "$token" (count $agent_names)
+        return
+    end
+
+    set -l normalized_token (string lower -- "$token")
+
+    for index in (seq 1 (count $agent_names))
+        if test "$normalized_token" = (string lower -- "$agent_names[$index]")
+            add_selected_index "$index" (count $agent_names)
+            return
+        end
+    end
+
+    fail "unknown agent: $token"
+end
+
+function pretty_path --argument-names path
+    string replace -- "$HOME" '~' "$path"
+end
+
+function sync_selected_skills
+    for target in $selected_targets
+        set -l target_index (contains --index -- "$target" $agent_names)
+        set -l target_dir "$agent_global_dirs[$target_index]"
+
+        mkdir -p "$target_dir"
+
+        for skill in $selected_skills
+            set -l source_path "$skills_dir/$skill"
+            set -l link_path "$target_dir/$skill"
+
+            if test -L "$link_path"
+                set -l current_target (readlink "$link_path")
+
+                if test "$link_path" -ef "$source_path"
+                    printf "  = %s -> %s\n" (pretty_path "$link_path") (pretty_path "$source_path")
+                    continue
+                end
+
+                fail "link already exists with different target: "(pretty_path "$link_path")" -> $current_target"
+            end
+
+            if test -e "$link_path"
+                fail "path already exists and is not a symlink: "(pretty_path "$link_path")
+            end
+
+            ln -s "$source_path" "$link_path"
+            printf "  + %s -> %s\n" (pretty_path "$link_path") (pretty_path "$source_path")
+        end
+    end
+end
+
+function print_agent_paths
+    echo "Agent skill paths:"
+
+    for index in (seq 1 (count $agent_names))
+        set -l agent_name "$agent_names[$index]"
+        set -l global_dir "$agent_global_dirs[$index]"
+        set -l project_dir "$agent_project_dirs[$index]"
+        set -l status_text "selectable"
+
+        if test "$agent_syncable[$index]" != true
+            set status_text "info only; handled by dotfiles"
+        end
+
+        printf "  - %s: global %s, project %s (%s)\n" "$agent_name" (pretty_path "$global_dir") "$project_dir" "$status_text"
+    end
+end
+
+function selectable_agent_indexes
+    set -l indexes
+
+    for index in (seq 1 (count $agent_names))
+        if test "$agent_syncable[$index]" = true
+            set -a indexes "$index"
+        end
+    end
+
+    printf '%s\n' $indexes
+end
+
+function select_skills_with_fzf
+    set -g selected_skills (printf '%s\n' $skills | fzf \
+        --multi \
+        --prompt 'Skills> ' \
+        --header 'Space: select  Ctrl-A: all  Ctrl-D: none  Enter: confirm' \
+        --bind 'space:toggle,ctrl-a:select-all,ctrl-d:deselect-all' \
+        --marker '* ' \
+        --height 40% \
+        --layout reverse \
+        --border)
+end
+
+function select_skills_with_prompt
+    echo "Skills in $skills_dir:"
+
+    set -l index 1
+    for skill in $skills
+        printf "  %d) %s\n" $index "$skill"
+        set index (math $index + 1)
+    end
+
+    echo ""
+    read --prompt-str "Select skills (1, 1 3, 1-3, all): " selection
+
+    set -g selected_indexes
+    set -l skill_count (count $skills)
+    set -l normalized_selection (string lower -- (string trim -- "$selection"))
+
+    if test -z "$normalized_selection"
+        fail "no selection provided"
+    end
+
+    if test "$normalized_selection" = all -o "$normalized_selection" = '*'
+        set selected_indexes (seq 1 $skill_count)
+    else
+        set -l tokens (string replace -a ',' ' ' -- "$normalized_selection" | string split ' ')
+
+        for token in $tokens
+            if test -z "$token"
+                continue
+            end
+
+            if string match -rq '^[0-9]+-[0-9]+$' -- "$token"
+                set -l bounds (string split '-' -- "$token")
+                set -l start $bounds[1]
+                set -l end $bounds[2]
+
+                if test "$start" -gt "$end"
+                    fail "invalid range: $token"
+                end
+
+                for number in (seq $start $end)
+                    add_selected_index "$number" "$skill_count"
+                end
+            else
+                add_selected_index "$token" "$skill_count"
+            end
+        end
+    end
+
+    set -g selected_skills
+
+    for selected_index in $selected_indexes
+        set -ga selected_skills "$skills[$selected_index]"
+    end
+end
+
+function select_targets_with_fzf
+    set -l target_options
+
+    for index in (selectable_agent_indexes)
+        set -l target_name "$agent_names[$index]"
+        set -l target_dir "$agent_global_dirs[$index]"
+
+        set -a target_options "$target_name ("(pretty_path "$target_dir")")"
+    end
+
+    set -l selected_target_options (printf '%s\n' $target_options | fzf \
+        --multi \
+        --prompt 'Agents> ' \
+        --header 'Space: select  Ctrl-A: all  Ctrl-D: none  Enter: confirm' \
+        --bind 'space:toggle,ctrl-a:select-all,ctrl-d:deselect-all' \
+        --marker '* ' \
+        --height 40% \
+        --layout reverse \
+        --border)
+
+    set -g selected_targets
+
+    for option in $selected_target_options
+        set -ga selected_targets (string replace -r ' \(.+\)$' '' -- "$option")
+    end
+end
+
+function select_targets_with_prompt
+    echo "Agents:"
+
+    set -l index 1
+    for target in $agent_names
+        set -l target_dir "$agent_global_dirs[$index]"
+        set -l project_dir "$agent_project_dirs[$index]"
+        set -l status_text "selectable"
+
+        if test "$agent_syncable[$index]" != true
+            set status_text "info only"
+        end
+
+        printf "  %d) %s (global %s, project %s; %s)\n" $index "$target" (pretty_path "$target_dir") "$project_dir" "$status_text"
+        set index (math $index + 1)
+    end
+
+    echo ""
+    read --prompt-str "Select agents (2, Claude, all): " selection
+
+    set -g selected_indexes
+    set -l target_count (count $agent_names)
+    set -l normalized_selection (string lower -- (string trim -- "$selection"))
+
+    if test -z "$normalized_selection"
+        fail "no agents selected"
+    end
+
+    if test "$normalized_selection" = all -o "$normalized_selection" = '*'
+        set selected_indexes (selectable_agent_indexes)
+    else
+        set -l tokens (string replace -a ',' ' ' -- "$normalized_selection" | string split ' ')
+
+        for token in $tokens
+            if test -z "$token"
+                continue
+            end
+
+            add_selected_agent "$token"
+        end
+    end
+
+    set -g selected_targets
+
+    for selected_index in $selected_indexes
+        if test "$agent_syncable[$selected_index]" != true
+            fail "$agent_names[$selected_index] is info only; Codex uses "(pretty_path "$agent_global_dirs[$selected_index]")" globally and $agent_project_dirs[$selected_index] per project"
+        end
+
+        set -ga selected_targets "$agent_names[$selected_index]"
+    end
+end
+
+if not test -d "$skills_dir"
+    fail "skills directory not found: $skills_dir"
+end
+
+set -g skills (command find "$skills_dir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
+
+if test (count $skills) -eq 0
+    echo "No skills found in $skills_dir"
+    exit 0
+end
+
+set -g selected_skills
+
+if command -q fzf; and isatty stdin
+    select_skills_with_fzf
+
+    if test $status -ne 0
+        fail "selection cancelled"
+    end
+else
+    select_skills_with_prompt
+end
+
+if test (count $selected_skills) -eq 0
+    fail "no selection provided"
+end
+
+echo ""
+echo "Selected skills: "(string join ', ' $selected_skills)" ("(pretty_path "$skills_dir")")"
+echo ""
+print_agent_paths
+echo ""
+
+set -g selected_targets
+
+if command -q fzf; and isatty stdin
+    select_targets_with_fzf
+
+    if test $status -ne 0
+        fail "agent selection cancelled"
+    end
+else
+    select_targets_with_prompt
+end
+
+if test (count $selected_targets) -eq 0
+    fail "no agents selected"
+end
+
+echo ""
+echo "Sync targets:"
+
+for target in $selected_targets
+    set -l target_index (contains --index -- "$target" $agent_names)
+    set -l target_dir "$agent_global_dirs[$target_index]"
+
+    printf "  - %s (%s)\n" "$target" (pretty_path "$target_dir")
+end
+
+echo ""
+echo "Creating links:"
+sync_selected_skills
