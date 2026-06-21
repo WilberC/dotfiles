@@ -15,10 +15,11 @@ alias lg lazygit
 alias dev bin/dev
 alias until_failure ~/scripts/until_failure
 alias pi 'mise exec node@lts -- pi'
-alias codex 'mise exec node@lts -- codex'
+alias codex 'mise exec node@lts -- codex --dangerously-bypass-approvals-and-sandbox'
 
 # Claude Code
 alias cc claude
 alias cca 'claude --dangerously-skip-permissions'
+alias ccar 'claude --dangerously-skip-permissions --resume'
 alias ccr 'claude --resume'
 alias ccp 'claude --print'

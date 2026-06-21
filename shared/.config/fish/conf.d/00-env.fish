@@ -11,6 +11,7 @@ else
 end
 
 set -gx PAGER less
+set -gx CODEX_HOME "$HOME/.codex"
 
 # fzf — use bfs for faster file listing (breadth-first, respects ignores)
 set -gx FZF_DEFAULT_COMMAND 'bfs --type f 2>/dev/null'
