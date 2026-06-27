@@ -257,7 +257,15 @@ if not test -d "$skills_dir"
     fail "skills directory not found: $skills_dir"
 end
 
-set -g skills (command find "$skills_dir" -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort)
+set -g skills
+
+for skill_path in "$skills_dir"/*
+    if test -d "$skill_path"
+        set -ga skills (basename "$skill_path")
+    end
+end
+
+set skills (printf '%s\n' $skills | sort)
 
 if test (count $skills) -eq 0
     c yellow "No skills found in "
