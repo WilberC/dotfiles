@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+JAR="${PLANTUML_JAR:-$HOME/.local/share/plantuml/plantuml.jar}"
+
+find_java() {
+  if [[ -n "${PLANTUML_JAVA:-}" && -x "$PLANTUML_JAVA" ]]; then
+    printf '%s\n' "$PLANTUML_JAVA"
+    return 0
+  fi
+
+  if [[ -n "${JAVA_HOME:-}" && -x "$JAVA_HOME/bin/java" ]]; then
+    printf '%s\n' "$JAVA_HOME/bin/java"
+    return 0
+  fi
+
+  if command -v java >/dev/null 2>&1; then
+    command -v java
+    return 0
+  fi
+
+  for candidate in \
+    /opt/homebrew/opt/openjdk/bin/java \
+    /usr/local/opt/openjdk/bin/java
+  do
+    if [[ -x "$candidate" ]]; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+  done
+
+  return 1
+}
+
+if [[ ! -f "$JAR" ]]; then
+  echo "plantuml.jar not found: $JAR" >&2
+  echo "Run: bash scripts/install-plantuml.sh" >&2
+  exit 1
+fi
+
+JAVA_BIN="$(find_java || true)"
+if [[ -z "$JAVA_BIN" ]]; then
+  echo "Java was not found." >&2
+  echo "Run: bash scripts/install-plantuml.sh" >&2
+  exit 1
+fi
+
+exec "$JAVA_BIN" -jar "$JAR" "$@"
