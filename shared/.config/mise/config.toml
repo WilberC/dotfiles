@@ -40,4 +40,5 @@ zoxide = "latest"
 "npm:agent-browser" = { version = "latest", depends = ["node"] }
 "npm:@anthropic-ai/claude-code" = { version = "latest", os = ["linux"], depends = ["node"] }
 "npm:@openai/codex" = { version = "latest", depends = ["node"] }
+"npm:@ticktick/ticktick-cli" = { version = "latest", depends = ["node"] }
 "npm:opencode-ai" = { version = "latest", depends = ["node"] }
