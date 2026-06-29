@@ -1,4 +1,5 @@
 {
+	"format_on_save": "off",
 	"session": {
 		"trust_all_worktrees": true
 	},
