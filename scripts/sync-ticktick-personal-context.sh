@@ -30,6 +30,8 @@ Environment:
 
 The script stores shared/.agents/skills/ticktick/personal-context/ as a
 gzipped tar archive in a 1Password Document item.
+
+Set ASSUME_YES=1 to skip confirmation prompts.
 EOF
 }
 
@@ -61,6 +63,25 @@ require_command() {
 
 make_tmp_dir() {
   mktemp -d "${TMPDIR:-/tmp}/ticktick-personal-context.XXXXXX"
+}
+
+confirm() {
+  local prompt="$1"
+  local reply
+
+  if [[ "${ASSUME_YES:-}" == "1" ]]; then
+    return 0
+  fi
+
+  read -r -p "$prompt [y/N] " reply
+  case "$reply" in
+    y|Y|yes|YES)
+      ;;
+    *)
+      warn "Cancelled"
+      exit 0
+      ;;
+  esac
 }
 
 ensure_1password() {
@@ -138,6 +159,8 @@ push_context() {
   require_command tar
   ensure_1password
 
+  confirm "Upload $CONTEXT_DIR to 1Password item '$OP_ITEM'?"
+
   info "Creating archive from $CONTEXT_DIR..."
   tar -czf "$archive" -C "$SKILL_DIR" "$CONTEXT_NAME"
 
@@ -163,10 +186,11 @@ push_context() {
 pull_context() {
   TMP_DIR="$(make_tmp_dir)"
   local archive="$TMP_DIR/$ARCHIVE_NAME"
-  local backup=""
 
   require_command tar
   ensure_1password
+
+  confirm "Download 1Password item '$OP_ITEM' and replace $CONTEXT_DIR?"
 
   info "Downloading 1Password document: $OP_ITEM"
   if ! download_document "$archive"; then
@@ -179,22 +203,16 @@ pull_context() {
   validate_archive "$archive"
 
   if [[ -e "$CONTEXT_DIR" ]]; then
-    backup="${CONTEXT_DIR}.backup.$(date +%Y%m%d-%H%M%S)"
-    warn "Existing $CONTEXT_NAME/ found; moving it to $backup"
-    mv "$CONTEXT_DIR" "$backup"
+    warn "Removing existing $CONTEXT_NAME/ before extraction"
+    rm -rf "$CONTEXT_DIR"
   fi
 
   mkdir -p "$SKILL_DIR"
 
   if tar -xzf "$archive" -C "$SKILL_DIR"; then
     success "Downloaded $CONTEXT_NAME/ to $CONTEXT_DIR"
-    [[ -n "$backup" ]] && warn "Previous copy kept at $backup"
   else
     error "Extraction failed"
-    if [[ -n "$backup" && -e "$backup" ]]; then
-      mv "$backup" "$CONTEXT_DIR"
-      warn "Restored previous $CONTEXT_NAME/"
-    fi
     exit 1
   fi
 }
