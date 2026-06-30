@@ -1,0 +1,4 @@
+interface:
+  display_name: "TickTick Assistant"
+  short_description: "Personal TickTick task assistant"
+  default_prompt: "Use $ticktick to review my TickTick tasks and tell me what needs attention today."
