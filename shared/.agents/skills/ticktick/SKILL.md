@@ -44,6 +44,7 @@ Use `--json` for data gathering and internal reasoning. Convert raw JSON into co
 - Do not delete, bulk-complete, bulk-move, or reorganize without explicit confirmation.
 - For ambiguous task/project names, show candidates and ask the user to choose.
 - Understand common English, Spanish, and mixed phrasing for task state changes; ask only when the target or action is unclear.
+- Interpret "child list", "nested list", "sublist", "sub-list", or "list inside another list" as a TickTick project/list inside a project group/folder unless live data shows a more specific task hierarchy. Resolve this by checking `ticktick project group list --json` and matching projects from `ticktick project list --json` by `groupId`.
 - For assistant reports, be decisive but traceable: mention the data window and criteria used.
 - Keep personal inferences labeled as inferences, not facts.
 
