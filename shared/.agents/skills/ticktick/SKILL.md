@@ -13,6 +13,12 @@ Assume the `ticktick` CLI is already installed and authenticated. If a command f
 
 Use `--json` for data gathering and internal reasoning. Convert raw JSON into concise summaries, decisions, and next actions for the user.
 
+## Personal Context
+
+Before answering requests that depend on the user's personal TickTick conventions, aliases, recurring workflows, or preferred organization, check for local context files under `personal-context/` in this skill folder. That folder is intentionally git-ignored and may contain private notes such as list names, course mappings, task naming conventions, or personal project structure. Read only the files that are relevant to the current request, and treat those notes as hints to verify against live TickTick data rather than as guaranteed current state.
+
+Do not store personal TickTick context, list names, task names, project IDs, or private workflow details in the tracked skill files. Keep reusable, public TickTick behavior in this skill and its tracked references; keep user-specific facts in `personal-context/`.
+
 ## Default Workflow
 
 1. Classify the request:
@@ -35,6 +41,7 @@ Use `--json` for data gathering and internal reasoning. Convert raw JSON into co
 - `references/cli-operations.md`: Read before running TickTick CLI commands for tasks, projects, groups, columns, tags, comments, habits, focus, or countdowns.
 - `references/data-model.md`: Read when interpreting JSON fields, dates, priorities, statuses, reminders, recurrence, project data, habits, or focus records.
 - `references/safety.md`: Read before write, bulk, destructive, ambiguous, or error-prone actions.
+- `personal-context/`: If present, read relevant git-ignored local notes when the user asks about their personal TickTick setup, names a personal alias, or references known-but-private organization details.
 
 ## Core Rules
 
