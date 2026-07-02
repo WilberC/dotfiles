@@ -4,4 +4,3 @@ __pycache__/
 /linux/.local/bin
 shared/.config/fish/fish_variables
 shared/.config/zed/prompts/prompts-library-db.0.mdb/
-shared/.agents/skills/ticktick/personal-context/
