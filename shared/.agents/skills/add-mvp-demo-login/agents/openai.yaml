@@ -1,0 +1,4 @@
+interface:
+  display_name: "MVP Demo Login"
+  short_description: "Unlock and autofill MVP demo accounts"
+  default_prompt: "Use $add-mvp-demo-login to add a top-right demo account unlock and login autofill flow."
