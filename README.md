@@ -9,7 +9,7 @@
 | Package  | Contents                                          | Platform     |
 |----------|---------------------------------------------------|--------------|
 | `git`    | `.gitconfig`, global `.gitignore`                 | All          |
-| `shared` | Fish, Ghostty, Zed, lazygit, mise, amp, scripts, agents | All     |
+| `shared` | Fish, Ghostty, Zed, lazygit, mise, amp, scripts   | All          |
 | `os/linux`  | OS-specific git config, SSH, local bin         | Linux        |
 | `os/osx`    | OS-specific git config, SSH, LaunchAgents      | macOS        |
 | `os/wsl2`   | OS-specific git config, 1Password socket, Zsh  | WSL2         |
@@ -35,12 +35,21 @@ stow -d os -t ~ wsl2    # WSL2
 
 > **Stow flags:** `-d <dir>` sets the package directory (where stow looks for packages). `-t <target>` sets where symlinks are created. OS packages need `-t ~` explicitly because `-d os` shifts stow's default target away from `~`.
 
+## Agent skills (moved)
+
+Agent skills and the `sync-skills` script now live in [dotfiles-skills](https://github.com/WilberC/dotfiles-skills). If you previously had skills linked from this repo (`shared/.agents/skills`), migrate with:
+
+```bash
+git clone git@github.com:WilberC/dotfiles-skills.git ~/dotfiles-skills
+~/dotfiles-skills/install.sh   # links sync-skills and relinks existing skills
+```
+
 ## Repository structure
 
 ```
 dotfiles/
 ├── git/          # .gitconfig, global .gitignore
-├── shared/       # Fish, Ghostty, Zed, lazygit, mise, scripts, agents
+├── shared/       # Fish, Ghostty, Zed, lazygit, mise, scripts
 ├── os/           # OS-specific packages (linux, osx, wsl2)
 ├── scripts/              # Setup scripts (not stowed)
 ├── docs/                 # Notes and tech debt
