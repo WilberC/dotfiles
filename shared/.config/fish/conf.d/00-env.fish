@@ -12,6 +12,7 @@ end
 
 set -gx PAGER less
 set -gx CODEX_HOME "$HOME/.codex"
+set -gx GLOW_STYLE "$HOME/.config/glow/clean-dark.json"
 
 # fzf — use bfs for faster file listing (breadth-first, respects ignores)
 set -gx FZF_DEFAULT_COMMAND 'bfs --type f 2>/dev/null'

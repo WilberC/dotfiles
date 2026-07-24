@@ -6,3 +6,9 @@ git:
   overrideGpg: true
 os:
   editPreset: zed
+customCommands:
+  - key: V
+    context: files
+    command: "glow --tui {{.SelectedFile.Name | quote}}"
+    description: View rendered Markdown
+    output: terminal

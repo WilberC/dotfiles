@@ -25,6 +25,9 @@ function help --description 'Show custom shell commands and aliases'
         printf "  $C%-16s$R $D%s$R\n" lg           "lazygit — terminal UI for git"
         printf "  $C%-16s$R $D%s$R\n" git-exclude  "Add pattern to .git/info/exclude (local-only)"
 
+        printf "\n$Y$B Markdown$R\n"
+        printf "  $C%-16s$R $D%s$R\n" md  "Explore and read rendered Markdown"
+
         printf "\n$Y$B Development$R\n"
         printf "  $C%-16s$R $D%s$R\n" dev            "Run development server (bin/dev)"
         printf "  $C%-16s$R $D%s$R\n" until_failure  "Run command until it exits non-zero"
@@ -67,7 +70,15 @@ function help --description 'Show custom shell commands and aliases'
             case lg
                 printf "$C$B lg$R — lazygit terminal UI\n"
                 printf "Stage hunks, rebase, manage branches, view diffs.\n"
-                printf "| to switch between delta and difftastic views.\n\n"
+                printf "| to switch between delta and difftastic views.\n"
+                printf "Shift+V on a Markdown file to read it in Glow; q to return.\n\n"
+            case md
+                printf "$C$B md$R [file]\n"
+                printf "Explore Markdown files or read one in the Glow TUI.\n"
+                printf "Press e to edit in Nano, esc to return, and q to quit.\n"
+                printf "\n$Y Examples:$R\n"
+                printf "  $D md$R\n"
+                printf "  $D md docs/guide.md$R\n\n"
             case tree treed tt ttt
                 printf "$C$B tree/treed/tt/ttt$R\n"
                 printf "  $C%-6s$R $D%s$R\n" tree  "eza --tree (respects .gitignore)"

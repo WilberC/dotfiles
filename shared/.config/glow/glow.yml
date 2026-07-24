@@ -1,0 +1,10 @@
+# Open Markdown in Glow's interactive reader instead of printing it.
+tui: true
+pager: false
+
+# Reader behavior.
+mouse: true
+width: 100
+all: false
+showLineNumbers: false
+preserveNewLines: false
