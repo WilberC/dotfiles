@@ -11,6 +11,9 @@ alias ttt 'treed -L 3'
 # Git
 alias lg lazygit
 
+# Markdown
+alias md glow
+
 # Development
 alias dev bin/dev
 alias until_failure ~/scripts/until_failure
