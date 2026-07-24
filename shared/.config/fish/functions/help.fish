@@ -67,7 +67,7 @@ function help --description 'Show custom shell commands and aliases'
             case lg
                 printf "$C$B lg$R — lazygit terminal UI\n"
                 printf "Stage hunks, rebase, manage branches, view diffs.\n"
-                printf "TAB to switch between delta and difftastic views.\n\n"
+                printf "| to switch between delta and difftastic views.\n\n"
             case tree treed tt ttt
                 printf "$C$B tree/treed/tt/ttt$R\n"
                 printf "  $C%-6s$R $D%s$R\n" tree  "eza --tree (respects .gitignore)"
