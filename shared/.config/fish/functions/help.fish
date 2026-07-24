@@ -27,6 +27,7 @@ function help --description 'Show custom shell commands and aliases'
 
         printf "\n$Y$B Markdown$R\n"
         printf "  $C%-16s$R $D%s$R\n" md  "Explore and read rendered Markdown"
+        printf "  $C%-16s$R $D%s$R\n" mdt "Open the split-pane Markdown workspace"
 
         printf "\n$Y$B Development$R\n"
         printf "  $C%-16s$R $D%s$R\n" dev            "Run development server (bin/dev)"
@@ -79,6 +80,14 @@ function help --description 'Show custom shell commands and aliases'
                 printf "\n$Y Examples:$R\n"
                 printf "  $D md$R\n"
                 printf "  $D md docs/guide.md$R\n\n"
+            case mdt
+                printf "$C$B mdt$R [path]\n"
+                printf "Browse, preview, and edit Markdown in a split-pane workspace.\n"
+                printf "Run without a path for the current directory.\n"
+                printf "\n$Y Examples:$R\n"
+                printf "  $D mdt$R\n"
+                printf "  $D mdt docs/$R\n"
+                printf "  $D mdt README.md$R\n\n"
             case tree treed tt ttt
                 printf "$C$B tree/treed/tt/ttt$R\n"
                 printf "  $C%-6s$R $D%s$R\n" tree  "eza --tree (respects .gitignore)"
