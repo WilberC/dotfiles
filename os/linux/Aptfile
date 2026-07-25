@@ -19,6 +19,9 @@ pkg-config
 zip
 zlib1g-dev
 
+# Terminal multiplexer
+tmux
+
 # Browsers
 chromium-browser
 

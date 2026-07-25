@@ -10,6 +10,7 @@ brew "gtab" # run `gtab init` once after install
 brew "libpq"
 brew "libyaml"
 brew "starship"
+brew "tmux"
 
 # ── Casks ─────────────────────────────────────────
 

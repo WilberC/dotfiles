@@ -9,7 +9,7 @@
 | Package  | Contents                                          | Platform     |
 |----------|---------------------------------------------------|--------------|
 | `git`    | `.gitconfig`, global `.gitignore`                 | All          |
-| `shared` | Fish, Ghostty, Zed, lazygit, mise, amp, scripts   | All          |
+| `shared` | Fish, Ghostty, tmux, Zed, lazygit, mise, amp, scripts | All       |
 | `os/linux`  | OS-specific git config, SSH, local bin         | Linux        |
 | `os/osx`    | OS-specific git config, SSH, LaunchAgents      | macOS        |
 | `os/wsl2`   | OS-specific git config, 1Password socket, Zsh  | WSL2         |
@@ -86,6 +86,25 @@ After editing a config file, restow its package:
 ```bash
 stow -R shared
 ```
+
+## tmux
+
+tmux is an opt-in terminal multiplexer. Its configuration lives at
+`~/.config/tmux/tmux.conf` after stowing `shared`. Start it manually with:
+
+```bash
+tmux
+```
+
+To test the repository configuration without stowing it first:
+
+```bash
+tmux -f ~/dotfiles/shared/.config/tmux/tmux.conf
+```
+
+The config keeps new panes in the current directory. With the tmux prefix
+(`Ctrl-b`), use `|` or `-` to split, `h`/`j`/`k`/`l` to move between panes, and
+`H`/`J`/`K`/`L` to resize them.
 
 > **Note:** Branch `chore/generalize-gitconfig` has a version of `.gitconfig` with no user-specific data (no name, email, or signing key). `gpgsign` is disabled there. To use it, configure git user globally after stowing:
 > ```bash
