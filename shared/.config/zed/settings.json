@@ -14,7 +14,6 @@
 	"auto_install_extensions": {
 		"biome": true,
 		"catppuccin-icons": true,
-		"codebook": true,
 		"csv": true,
 		"dockerfile": true,
 		"emmet": true,
@@ -94,9 +93,6 @@
 				}
 			}
 		},
-		"Ruby": {
-			"language_servers": ["codebook"]
-		},
 		"SQL": {
 			"formatter": {
 				"external": {
@@ -164,6 +160,7 @@
 			}
 		}
 	},
+	"language_servers": ["!codebook", "..."],
 	"outline_panel": {
 		"dock": "left"
 	},
