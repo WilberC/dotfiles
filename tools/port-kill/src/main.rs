@@ -133,9 +133,11 @@ impl App {
             self.rows.extend(local.into_iter().map(Row::Service));
         }
         if self.show_windows {
-            self.rows.push(Row::Heading(
-                "Windows host (informational; never killed)".into(),
-            ));
+            // Keep the two environments visually distinct without making either
+            // heading part of the selectable list.
+            self.rows.extend((0..4).map(|_| Row::Empty(String::new())));
+            self.rows
+                .push(Row::Heading("Windows host · informational only".into()));
             self.rows.push(Row::Empty(
                 "  PORT   PID     USER         PROCESS              ADDRESS".into(),
             ));
@@ -326,10 +328,13 @@ fn run_tui(
 
 fn render(frame: &mut Frame, app: &App) {
     let area = frame.area();
-    if area.width < 34 || area.height < 7 {
+    // The spacious two-environment view needs room for its four-line divider.
+    // Below that, retain every actionable row but omit only that decorative gap.
+    if area.width < 34 || area.height < 11 {
         render_tiny(frame, app, area);
         return;
     }
+    let compact = app.show_windows && area.height < 15;
     let sections = Layout::vertical([
         Constraint::Length(3),
         Constraint::Min(2),
@@ -338,7 +343,6 @@ fn render(frame: &mut Frame, app: &App) {
     .split(area);
     frame.render_widget(
         Paragraph::new("port-kill  •  Listening TCP services")
-            .block(Block::default().borders(Borders::BOTTOM))
             .style(themed(Color::Cyan, Modifier::BOLD | Modifier::UNDERLINED)),
         sections[0],
     );
@@ -353,7 +357,7 @@ fn render(frame: &mut Frame, app: &App) {
             Span::raw(format!("Discovery failed: {error}")),
         ])]
     } else {
-        app_rows(app)
+        app_rows(app, compact)
     };
     frame.render_widget(Paragraph::new(body).wrap(Wrap { trim: false }), sections[1]);
     let footer = match app.mode {
@@ -388,19 +392,20 @@ fn render_tiny(frame: &mut Frame, app: &App, area: Rect) {
     );
 }
 
-fn app_rows(app: &App) -> Vec<Line<'static>> {
+fn app_rows(app: &App, compact: bool) -> Vec<Line<'static>> {
     app.rows
         .iter()
         .enumerate()
+        .filter(|(_, row)| !(compact && matches!(row, Row::Empty(text) if text.is_empty())))
         .map(|(row_index, row)| match row {
             Row::Heading(label) => {
-                let (color, prefix) = if label.starts_with("Windows") {
-                    (Color::Yellow, "[WINDOWS HOST • INFO ONLY]")
+                let color = if label.starts_with("Windows") {
+                    Color::Yellow
                 } else {
-                    (Color::Cyan, "[LOCAL]")
+                    Color::Cyan
                 };
                 Line::from(Span::styled(
-                    format!("\n{prefix} {label}"),
+                    format!("── {label} ──"),
                     themed(color, Modifier::BOLD | Modifier::UNDERLINED),
                 ))
             }
@@ -750,6 +755,16 @@ mod tests {
             .map(|cell| cell.symbol())
             .collect()
     }
+    fn buffer_lines(app: &App, width: u16, height: u16) -> Vec<String> {
+        let buffer = rendered_buffer(app, width, height);
+        (0..height)
+            .map(|y| {
+                (0..width)
+                    .map(|x| buffer[(x, y)].symbol())
+                    .collect::<String>()
+            })
+            .collect()
+    }
     fn rendered_buffer(app: &App, width: u16, height: u16) -> Buffer {
         let backend = TestBackend::new(width, height);
         let mut terminal = Terminal::new(backend).unwrap();
@@ -788,29 +803,34 @@ mod tests {
         ));
     }
     #[test]
-    fn renders_both_section_headings_in_one_view() {
+    fn renders_title_then_two_blank_lines_and_environment_spacers() {
         let mut app = App::loading(true);
         app.set_discovery(Ok(vec![
             listener(Origin::Local, 3000, "node"),
             listener(Origin::Windows, 8000, "portproxy"),
         ]));
-        let text = buffer_text(&app, 100, 24);
-        assert!(text.contains("Linux / local"));
-        assert!(text.contains("Windows host"));
-        assert!(text.contains("3000"));
-        assert!(text.contains("8000"));
-    }
-    #[test]
-    fn renders_distinct_labels_and_emphasis_for_listing() {
-        let mut app = App::loading(true);
-        app.set_discovery(Ok(vec![
-            listener(Origin::Local, 3000, "node"),
-            listener(Origin::Windows, 8000, "portproxy"),
-        ]));
+        let lines = buffer_lines(&app, 100, 24);
+        assert_eq!(lines[0].trim(), "port-kill  •  Listening TCP services");
+        assert!(lines[1].trim().is_empty());
+        assert!(lines[2].trim().is_empty());
+        assert_eq!(lines[3].trim(), "── Linux / local ──");
+        assert_eq!(
+            lines[4].trim(),
+            "PORT   PID     USER         PROCESS              ADDRESS"
+        );
+        assert!(lines[5].contains("3000"));
+        assert!(lines[6..10].iter().all(|line| line.trim().is_empty()));
+        assert_eq!(lines[10].trim(), "── Windows host · informational only ──");
+        assert_eq!(
+            lines[11].trim(),
+            "PORT   PID     USER         PROCESS              ADDRESS"
+        );
+        assert!(lines[12].contains("8000"));
+
         let buffer = rendered_buffer(&app, 100, 24);
         let text: String = buffer.content.iter().map(|cell| cell.symbol()).collect();
-        assert!(text.contains("[LOCAL]"));
-        assert!(text.contains("[WINDOWS HOST • INFO ONLY]"));
+        assert!(text.contains("── Linux / local ──"));
+        assert!(text.contains("── Windows host · informational only ──"));
         assert!(text.contains("[KEYS]"));
         assert!(buffer.content.iter().any(|cell| {
             cell.modifier
@@ -867,6 +887,20 @@ mod tests {
             buffer_text(&app, 20, 5).contains("Terminal too small")
                 || buffer_text(&app, 20, 5).contains("[SCANNING]")
         );
+    }
+    #[test]
+    fn compact_layout_keeps_both_environment_sections_selectable() {
+        let mut app = App::loading(true);
+        app.set_discovery(Ok(vec![
+            listener(Origin::Local, 3000, "node"),
+            listener(Origin::Windows, 8000, "portproxy"),
+        ]));
+        let text = buffer_text(&app, 100, 14);
+        assert!(text.contains("── Linux / local ──"));
+        assert!(text.contains("── Windows host · informational only ──"));
+        assert_eq!(app.selected_listener_index(), Some(0));
+        app.move_selection(1);
+        assert_eq!(app.selected_listener_index(), Some(1));
     }
     #[test]
     fn truncates_only_overlong_values() {
