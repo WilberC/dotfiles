@@ -79,6 +79,23 @@ To run that step alone:
 bash scripts/setup-dirs.sh
 ```
 
+### WSL localhost access
+
+On a Windows machine running WSL2, enable mirrored networking once per Windows
+user account so services listening on Windows `localhost` are also available at
+`localhost` from WSL:
+
+```bash
+powershell.exe -ExecutionPolicy Bypass -File "$(wslpath -w "$PWD/scripts/setup-wsl-mirrored-networking.ps1")"
+```
+
+The script preserves other `.wslconfig` settings and does not close your
+terminal. Restart WSL when convenient to apply the change:
+
+```powershell
+wsl --shutdown
+```
+
 ## Updating configs
 
 After editing a config file, restow its package:
