@@ -1,5 +1,7 @@
 projects.conf
 __pycache__/
+# Cargo build artifacts for Rust tools and crates.
+target/
 *known_hosts*
 /linux/.local/bin
 shared/.config/fish/fish_variables
