@@ -499,21 +499,59 @@ fn render_confirmation(frame: &mut Frame, listener: &Listener, area: Rect) {
 fn render_windows_info(frame: &mut Frame, listener: &Listener, area: Rect) {
     let popup = popup_area(area);
     frame.render_widget(Clear, popup);
+    let command_style = themed(Color::Green, Modifier::BOLD | Modifier::UNDERLINED);
     let text = match &listener.kind {
-        ListenerKind::WindowsPortProxy { target } => format!(
-            "Windows portproxy: {} forwards to {}.\nNo Windows process will be killed.\n\nIn elevated Windows PowerShell:\nnetsh interface portproxy delete v4tov4 listenport={} listenaddress={}\n\n[Enter/Esc] back",
-            listener.address,
-            target,
-            listener.port,
-            listener
+        ListenerKind::WindowsPortProxy { target } => {
+            let listen_address = listener
                 .address
                 .rsplit_once(':')
-                .map_or("0.0.0.0", |(address, _)| address)
-        ),
-        ListenerKind::Process => format!(
-            "Windows listener: PID {} ({}) on {}.\nNo Windows process will be killed.\n\nInspect in Windows PowerShell:\nGet-Process -Id {}\n\n[Enter/Esc] back",
-            listener.pid, listener.process, listener.address, listener.pid
-        ),
+                .map_or("0.0.0.0", |(address, _)| address);
+            let command = format!(
+                "netsh interface portproxy delete v4tov4 listenport={} listenaddress={listen_address}",
+                listener.port
+            );
+            vec![
+                Line::from(format!(
+                    "Windows portproxy: {} forwards to {}.",
+                    listener.address, target
+                )),
+                Line::from("No Windows process will be killed."),
+                Line::from(""),
+                Line::from("In elevated Windows PowerShell:"),
+                Line::from(Span::styled(
+                    "[RUN THIS COMMAND]",
+                    themed(Color::Cyan, Modifier::BOLD),
+                )),
+                Line::from(Span::styled(command, command_style)),
+                Line::from(""),
+                Line::from(Span::styled(
+                    "[Enter/Esc] back",
+                    themed(Color::Yellow, Modifier::BOLD),
+                )),
+            ]
+        }
+        ListenerKind::Process => vec![
+            Line::from(format!(
+                "Windows listener: PID {} ({}) on {}.",
+                listener.pid, listener.process, listener.address
+            )),
+            Line::from("No Windows process will be killed."),
+            Line::from(""),
+            Line::from("Inspect in Windows PowerShell:"),
+            Line::from(Span::styled(
+                "[RUN THIS COMMAND]",
+                themed(Color::Cyan, Modifier::BOLD),
+            )),
+            Line::from(Span::styled(
+                format!("Get-Process -Id {}", listener.pid),
+                command_style,
+            )),
+            Line::from(""),
+            Line::from(Span::styled(
+                "[Enter/Esc] back",
+                themed(Color::Yellow, Modifier::BOLD),
+            )),
+        ],
     };
     frame.render_widget(
         Paragraph::new(vec![
@@ -522,7 +560,6 @@ fn render_windows_info(frame: &mut Frame, listener: &Listener, area: Rect) {
                 themed(Color::Yellow, Modifier::BOLD),
             )),
             Line::from(""),
-            Line::from(text),
         ])
         .wrap(Wrap { trim: true })
         .block(
@@ -535,6 +572,17 @@ fn render_windows_info(frame: &mut Frame, listener: &Listener, area: Rect) {
                 .border_style(themed(Color::Yellow, Modifier::BOLD)),
         ),
         popup,
+    );
+    frame.render_widget(
+        Paragraph::new(text)
+            .wrap(Wrap { trim: true })
+            .block(Block::default().borders(Borders::NONE)),
+        Rect::new(
+            popup.x.saturating_add(1),
+            popup.y.saturating_add(3),
+            popup.width.saturating_sub(2),
+            popup.height.saturating_sub(4),
+        ),
     );
 }
 
@@ -860,6 +908,50 @@ mod tests {
         let info_text = buffer_text(&info, 100, 24);
         assert!(info_text.contains("[WINDOWS HOST] Information only"));
         assert!(info_text.contains("[WINDOWS HOST • INFO ONLY]"));
+    }
+    #[test]
+    fn renders_portproxy_delete_command_as_a_distinct_emphasized_line() {
+        let mut app = App::loading(true);
+        app.set_discovery(Ok(vec![Listener {
+            origin: Origin::Windows,
+            kind: ListenerKind::WindowsPortProxy {
+                target: "172.28.25.34:8000".into(),
+            },
+            port: 8000,
+            pid: 4324,
+            user: "SYSTEM".into(),
+            process: "portproxy (IP Helper)".into(),
+            address: "0.0.0.0:8000".into(),
+        }]));
+        app.mode = Mode::WindowsInfo(0);
+
+        let command =
+            "netsh interface portproxy delete v4tov4 listenport=8000 listenaddress=0.0.0.0";
+        let lines = buffer_lines(&app, 100, 24);
+        let command_row = lines
+            .iter()
+            .position(|line| line.contains(command))
+            .expect("the delete command should remain on its own visible line");
+        let label_row = lines
+            .iter()
+            .position(|line| line.contains("[RUN THIS COMMAND]"))
+            .expect("the command should have a clear instruction label");
+        assert_eq!(command_row, label_row + 1);
+
+        let buffer = rendered_buffer(&app, 100, 24);
+        let command_x = lines[command_row]
+            .find("netsh interface")
+            .expect("the command's starting column should be visible")
+            as u16;
+        let command_cell = &buffer[(command_x, command_row as u16)];
+        assert!(
+            command_cell
+                .modifier
+                .contains(Modifier::BOLD | Modifier::UNDERLINED)
+        );
+        if std::env::var_os("NO_COLOR").is_none_or(|value| value.is_empty()) {
+            assert_eq!(command_cell.fg, Color::Green);
+        }
     }
     #[test]
     fn navigation_skips_non_selectable_section_rows() {
