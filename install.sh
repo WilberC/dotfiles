@@ -187,6 +187,24 @@ setup_zone_identifier_watcher() {
   success "Zone.Identifier watcher enabled"
 }
 
+setup_wsl_mirrored_networking() {
+  step "WSL localhost access"
+
+  if ! command -v powershell.exe &>/dev/null; then
+    warn "powershell.exe not found — skipping mirrored networking setup"
+    return
+  fi
+
+  local dotfiles_dir
+  local script_path
+  dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  script_path="$dotfiles_dir/scripts/setup-wsl-mirrored-networking.ps1"
+
+  info "Enabling mirrored networking for Windows localhost access..."
+  powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$(wslpath -w "$script_path")"
+  success "Mirrored networking configured — restart WSL when convenient to apply"
+}
+
 # --- platform select ---
 DETECTED=$(detect_os)
 
@@ -244,6 +262,7 @@ run_stow "$CHOSEN"
 
 case "$CHOSEN" in
   wsl2)
+    setup_wsl_mirrored_networking
     setup_zone_identifier_watcher
     ;;
 esac
