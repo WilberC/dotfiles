@@ -104,6 +104,14 @@ After editing a config file, restow its package:
 stow -R shared
 ```
 
+## MCP servers
+
+Install MCP servers with `codex mcp add <name> -- <command>`.
+
+| Server | Install |
+| --- | --- |
+| OpenPencil | `codex mcp add open-pencil -- openpencil-mcp` |
+
 ## tmux
 
 tmux is an opt-in terminal multiplexer. Its configuration lives at
