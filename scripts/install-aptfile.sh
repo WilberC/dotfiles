@@ -18,6 +18,15 @@ mapfile -t packages < <(
   sed -E 's/[[:space:]]*#.*$//; /^[[:space:]]*$/d' "$APTFILE"
 )
 
+# Debian ships the chromium package under a different name than Ubuntu.
+if [[ -r /etc/os-release ]] && . /etc/os-release && [[ "${ID:-}" == "debian" ]]; then
+  for i in "${!packages[@]}"; do
+    if [[ "${packages[$i]}" == "chromium-browser" ]]; then
+      packages[$i]="chromium"
+    fi
+  done
+fi
+
 if [[ "${#packages[@]}" -eq 0 ]]; then
   echo "No packages found in $APTFILE"
   exit 0
