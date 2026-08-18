@@ -14,7 +14,19 @@ CONF="$DOTFILES_DIR/shared/.config/ssh/configs/homelab.conf"
 
 [[ -f "$CONF" ]] || { echo "Not found: $CONF" >&2; exit 1; }
 
-mapfile -t hosts < <(grep -E '^Host ' "$CONF" | awk '{print $2}' | grep -v '^\*$')
+# Hosts already authorized manually outside this script — skip so it
+# doesn't re-prompt for their password unnecessarily.
+SKIP_HOSTS=(hermes)
+
+mapfile -t all_hosts < <(grep -E '^Host ' "$CONF" | awk '{print $2}' | grep -v '^\*$')
+hosts=()
+for host in "${all_hosts[@]}"; do
+  skip=false
+  for s in "${SKIP_HOSTS[@]}"; do
+    [[ "$host" == "$s" ]] && { skip=true; break; }
+  done
+  "$skip" || hosts+=("$host")
+done
 
 if [[ ${#hosts[@]} -eq 0 ]]; then
   echo "No hosts found in $CONF"
