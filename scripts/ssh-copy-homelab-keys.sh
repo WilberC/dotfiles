@@ -3,33 +3,100 @@ set -euo pipefail
 
 BOLD='\033[1m'
 GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
 CYAN='\033[0;36m'
 RESET='\033[0m'
 
 info()    { echo -e "${CYAN}${BOLD}::${RESET} $*"; }
 success() { echo -e "${GREEN}${BOLD}✓${RESET} $*"; }
+warn()    { echo -e "${YELLOW}${BOLD}!${RESET} $*"; }
+
+usage() {
+  cat <<EOF
+Usage: $(basename "$0") [host...]
+
+Copies each homelab host's configured SSH key (via IdentityFile) to that
+host's ~/.ssh/authorized_keys, using ssh-copy-id. Password auth is left
+untouched — this only adds a new login method.
+
+With no arguments, you'll be prompted to pick one or more hosts via fzf
+(or a numbered menu if fzf isn't installed). Pass host names directly to
+skip the picker, e.g.: $(basename "$0") forge
+
+Hosts already authorized manually (see SKIP_HOSTS in this script) are
+excluded from both the picker and "no arguments" runs, but can still be
+targeted explicitly by name.
+EOF
+}
+
+[[ "${1:-}" == "-h" || "${1:-}" == "--help" ]] && { usage; exit 0; }
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CONF="$DOTFILES_DIR/shared/.config/ssh/configs/homelab.conf"
 
 [[ -f "$CONF" ]] || { echo "Not found: $CONF" >&2; exit 1; }
 
-# Hosts already authorized manually outside this script — skip so it
-# doesn't re-prompt for their password unnecessarily.
+# Hosts already authorized manually outside this script — excluded from
+# the picker/default run so it doesn't needlessly prompt for their
+# password, but can still be targeted explicitly by name.
 SKIP_HOSTS=(hermes)
 
 mapfile -t all_hosts < <(grep -E '^Host ' "$CONF" | awk '{print $2}' | grep -v '^\*$')
-hosts=()
-for host in "${all_hosts[@]}"; do
-  skip=false
+
+is_skipped() {
+  local h="$1" s
   for s in "${SKIP_HOSTS[@]}"; do
-    [[ "$host" == "$s" ]] && { skip=true; break; }
+    [[ "$h" == "$s" ]] && return 0
   done
-  "$skip" || hosts+=("$host")
-done
+  return 1
+}
+
+is_known_host() {
+  local h="$1" s
+  for s in "${all_hosts[@]}"; do
+    [[ "$h" == "$s" ]] && return 0
+  done
+  return 1
+}
+
+if [[ $# -gt 0 ]]; then
+  hosts=("$@")
+  for host in "${hosts[@]}"; do
+    if ! is_known_host "$host"; then
+      echo "Unknown host: $host (available: ${all_hosts[*]})" >&2
+      exit 1
+    fi
+  done
+else
+  selectable=()
+  for host in "${all_hosts[@]}"; do
+    is_skipped "$host" || selectable+=("$host")
+  done
+
+  if [[ ${#selectable[@]} -eq 0 ]]; then
+    echo "No selectable hosts in $CONF (all skipped or none defined)"
+    exit 0
+  fi
+
+  if command -v fzf &>/dev/null; then
+    mapfile -t hosts < <(printf '%s\n' "${selectable[@]}" | fzf -m --prompt="Select homelab host(s) > ")
+  else
+    warn "fzf not found — falling back to a numbered menu (space-separated numbers for multiple)"
+    i=1
+    for h in "${selectable[@]}"; do
+      echo "  $i) $h"
+      ((i++))
+    done
+    read -rp "Select host(s): " -a nums
+    hosts=()
+    for n in "${nums[@]}"; do
+      hosts+=("${selectable[$((n - 1))]}")
+    done
+  fi
+fi
 
 if [[ ${#hosts[@]} -eq 0 ]]; then
-  echo "No hosts found in $CONF"
+  warn "No host selected — nothing to do"
   exit 0
 fi
 
@@ -47,9 +114,12 @@ for host in "${hosts[@]}"; do
   fi
 
   echo "── $host ── ${key} ──────────────────────────────"
-  ssh-copy-id -i "$key" "$host"
+  # -f: ssh-copy-id's default "check if already installed" step needs the
+  # private key, which deliberately doesn't exist on disk here — the key
+  # lives only in 1Password. -f skips that check and just appends.
+  ssh-copy-id -f -i "$key" "$host"
   success "$host done"
   echo
 done
 
-success "All hosts processed. Password auth is untouched — key is just a new option."
+success "Done. Password auth is untouched — key is just a new option."
