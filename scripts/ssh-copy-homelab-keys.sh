@@ -11,10 +11,8 @@ success() { echo -e "${GREEN}${BOLD}✓${RESET} $*"; }
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CONF="$DOTFILES_DIR/shared/.config/ssh/configs/homelab.conf"
-KEY="$HOME/.config/ssh/pubs/homelab.pub"
 
 [[ -f "$CONF" ]] || { echo "Not found: $CONF" >&2; exit 1; }
-[[ -f "$KEY" ]] || { echo "Not found: $KEY" >&2; exit 1; }
 
 mapfile -t hosts < <(grep -E '^Host ' "$CONF" | awk '{print $2}' | grep -v '^\*$')
 
@@ -23,12 +21,21 @@ if [[ ${#hosts[@]} -eq 0 ]]; then
   exit 0
 fi
 
-info "Copying ${KEY} to: ${hosts[*]}"
+info "Copying each host's configured key to: ${hosts[*]}"
 echo
 
 for host in "${hosts[@]}"; do
-  echo "── $host ──────────────────────────────"
-  ssh-copy-id -i "$KEY" "$host"
+  key="$(ssh -G "$host" | awk '/^identityfile /{print $2; exit}')"
+  key="${key/#\~/$HOME}"
+
+  if [[ -z "$key" || ! -f "$key" ]]; then
+    echo "── $host ── skipped: no IdentityFile resolved (${key:-none}) ──"
+    echo
+    continue
+  fi
+
+  echo "── $host ── ${key} ──────────────────────────────"
+  ssh-copy-id -i "$key" "$host"
   success "$host done"
   echo
 done
