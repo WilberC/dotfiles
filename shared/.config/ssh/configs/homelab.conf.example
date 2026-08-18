@@ -36,17 +36,12 @@
 # authorized in each host's ~/.ssh/authorized_keys, so the same
 # IdentityFile/IdentitiesOnly pair goes on every Host block below.
 
-Host forge
-  HostName REDACTED-IP
-  User wilber
+Host <alias>
+  HostName <ip>
+  User <user>
   IdentityFile ~/.config/ssh/pubs/homelab.pub
   IdentitiesOnly yes
 
-Host pve
-  HostName 192.168.1.10
-  User root
-  IdentityFile ~/.config/ssh/pubs/homelab.pub
-  IdentitiesOnly yes
-
-# Add one Host block per VM/LXC/service as needed, copying the
-# IdentityFile/IdentitiesOnly lines above.
+# Add one Host block per VM/LXC/service as needed, copying the format
+# above. If a host needs its own dedicated key instead of the shared one,
+# point IdentityFile at that key's .pub file instead.
