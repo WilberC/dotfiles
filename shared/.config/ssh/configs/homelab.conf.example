@@ -32,12 +32,21 @@
 #
 # ─────────────────────────────────────────────────────────────────────────
 
+# All homelab hosts share one dedicated 1Password SSH key ("Local Lab SSH"),
+# authorized in each host's ~/.ssh/authorized_keys, so the same
+# IdentityFile/IdentitiesOnly pair goes on every Host block below.
+
 Host forge
   HostName REDACTED-IP
   User wilber
+  IdentityFile ~/.config/ssh/pubs/homelab.pub
+  IdentitiesOnly yes
 
 Host pve
   HostName 192.168.1.10
   User root
+  IdentityFile ~/.config/ssh/pubs/homelab.pub
+  IdentitiesOnly yes
 
-# Add one Host block per VM/LXC/service as needed.
+# Add one Host block per VM/LXC/service as needed, copying the
+# IdentityFile/IdentitiesOnly lines above.
