@@ -165,6 +165,14 @@ run_stow() {
   info "Stowing: $platform"
   stow_force -d os -t ~ "$platform"
   success "$platform"
+
+  # OpenSSH refuses to use an IdentityFile pointed at a .pub (the
+  # agent-lookup-by-public-key mechanism) if its permissions are too open,
+  # even though it's public key material. Git doesn't track full mode bits,
+  # so this has to be reasserted on every install.
+  if [[ -d ~/.config/ssh/pubs ]]; then
+    chmod 600 ~/.config/ssh/pubs/*.pub 2>/dev/null || true
+  fi
 }
 
 setup_zone_identifier_watcher() {
@@ -185,6 +193,33 @@ setup_zone_identifier_watcher() {
   systemctl --user daemon-reload
   systemctl --user enable --now watch-zone-identifiers.service
   success "Zone.Identifier watcher enabled"
+}
+
+setup_1password_ssh_agent_relay() {
+  step "1Password SSH agent relay (WSL2)"
+
+  if ! command -v systemctl &>/dev/null || [[ ! -d /run/systemd/system ]]; then
+    warn "systemd is not running — skipping relay auto-start"
+    info "Start it manually anytime: systemctl --user start 1password-ssh-agent-relay.service"
+    return
+  fi
+
+  if ! command -v socat &>/dev/null; then
+    info "Installing socat (WSL2-only dependency, bridges the Windows named-pipe agent into WSL)..."
+    sudo apt update
+    sudo apt install -y socat
+  fi
+
+  if ! command -v npiperelay.exe &>/dev/null && command -v powershell.exe &>/dev/null; then
+    info "Installing npiperelay.exe via winget..."
+    powershell.exe -NoProfile -Command "winget install --id jstarks.npiperelay --silent --accept-package-agreements --accept-source-agreements" \
+      || warn "npiperelay install failed — install manually: winget install --id jstarks.npiperelay"
+  fi
+
+  info "Enabling relay service..."
+  systemctl --user daemon-reload
+  systemctl --user enable --now 1password-ssh-agent-relay.service
+  success "1Password SSH agent relay enabled — native ssh now reaches the 1Password agent via ~/.1password/agent.sock"
 }
 
 setup_wsl_mirrored_networking() {
@@ -264,6 +299,7 @@ case "$CHOSEN" in
   wsl2)
     setup_wsl_mirrored_networking
     setup_zone_identifier_watcher
+    setup_1password_ssh_agent_relay
     ;;
 esac
 
