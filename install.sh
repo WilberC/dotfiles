@@ -166,24 +166,10 @@ run_stow() {
   stow_force -d os -t ~ "$platform"
   success "$platform"
 
-  # .pub files aren't committed — they're regenerated from the 1Password
-  # SSH agent (the actual source of truth for these keys) so a rotated key
-  # never leaves a stale file behind. Best-effort: the agent may not be
-  # unlocked yet on a brand new machine.
-  if bash "$dotfiles_dir/scripts/sync-ssh-pubs.sh"; then
-    success "SSH public keys synced from 1Password"
-    # stow only links files that already exist, so on a fresh clone the
-    # first pass above skipped .pub files entirely — restow now that
-    # sync-ssh-pubs.sh has created them in the repo.
-    stow_force git shared
-  else
-    warn "Could not sync SSH public keys from 1Password — run scripts/sync-ssh-pubs.sh once the agent is unlocked, then restow"
-  fi
-
   # OpenSSH refuses to use an IdentityFile pointed at a .pub (the
   # agent-lookup-by-public-key mechanism) if its permissions are too open,
-  # even though it's public key material. Belt-and-suspenders in case any
-  # weren't just regenerated above.
+  # even though it's public key material. Git doesn't track full mode bits,
+  # so this has to be reasserted on every install.
   if [[ -d ~/.config/ssh/pubs ]]; then
     chmod 600 ~/.config/ssh/pubs/*.pub 2>/dev/null || true
   fi

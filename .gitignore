@@ -7,11 +7,6 @@ projects.conf
 shared/.config/ssh/configs/*.conf
 !shared/.config/ssh/configs/01-base.conf
 !shared/.config/ssh/configs/02-github.conf
-
-# .pub files are regenerated from the 1Password SSH agent at install time
-# (scripts/sync-ssh-pubs.sh) rather than committed, so a rotated key never
-# leaves a stale file behind.
-shared/.config/ssh/pubs/*.pub
 __pycache__/
 # Cargo build artifacts for Rust tools and crates.
 target/
