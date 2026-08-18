@@ -16,8 +16,9 @@ usage() {
 Usage: $(basename "$0") [host...]
 
 Copies each homelab host's configured SSH key (via IdentityFile) to that
-host's ~/.ssh/authorized_keys, using ssh-copy-id. Password auth is left
-untouched — this only adds a new login method.
+host's ~/.ssh/authorized_keys. Idempotent — safe to re-run, already-present
+keys are skipped. Password auth is left untouched — this only adds a new
+login method.
 
 With no arguments, you'll be prompted to pick one or more hosts via fzf
 (or a numbered menu if fzf isn't installed). Pass host names directly to
@@ -114,11 +115,32 @@ for host in "${hosts[@]}"; do
   fi
 
   echo "── $host ── ${key} ──────────────────────────────"
-  # -f: ssh-copy-id's default "check if already installed" step needs the
-  # private key, which deliberately doesn't exist on disk here — the key
-  # lives only in 1Password. -f skips that check and just appends.
-  ssh-copy-id -f -i "$key" "$host"
-  success "$host done"
+  # Not ssh-copy-id: its default "already installed?" check needs the
+  # private key, which deliberately never exists on disk here (the key
+  # lives only in 1Password), and its -f/force mode skips that check but
+  # then always appends — duplicating the line on every re-run. This does
+  # the same append ssh-copy-id would, but checks for an exact existing
+  # match first, in the same connection, so re-running is a clean no-op.
+  result="$(ssh "$host" '
+    set -e
+    mkdir -p ~/.ssh
+    chmod 700 ~/.ssh
+    touch ~/.ssh/authorized_keys
+    chmod 600 ~/.ssh/authorized_keys
+    line="$(cat)"
+    if grep -qxF "$line" ~/.ssh/authorized_keys; then
+      echo ALREADY_PRESENT
+    else
+      echo "$line" >> ~/.ssh/authorized_keys
+      echo ADDED
+    fi
+  ' < "$key")"
+
+  case "$result" in
+    ADDED) success "$host: key added" ;;
+    ALREADY_PRESENT) info "$host: key already present, skipped" ;;
+    *) echo "$host: unexpected result: $result" >&2 ;;
+  esac
   echo
 done
 
