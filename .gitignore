@@ -1,4 +1,12 @@
 projects.conf
+
+# SSH config groups are private-by-default: any *.conf here is ignored
+# unless explicitly allowlisted below. New groups (anything with a
+# matching *.conf.example, synced via scripts/ssh-config.sh) need no
+# extra entry — only add a "!" line for files meant to be public.
+shared/.config/ssh/configs/*.conf
+!shared/.config/ssh/configs/01-base.conf
+!shared/.config/ssh/configs/02-github.conf
 __pycache__/
 # Cargo build artifacts for Rust tools and crates.
 target/

@@ -79,6 +79,14 @@ To run that step alone:
 bash scripts/setup-dirs.sh
 ```
 
+**Private SSH config groups** (homelab/Proxmox hosts, etc.) work the same way: any `shared/.config/ssh/configs/<group>.conf.example` defines a group whose real `<group>.conf` holds actual IPs and is gitignored (this repo is public), synced through a 1Password Secure Note instead. Currently just `homelab` — see `homelab.conf.example` for the format.
+
+```bash
+bash scripts/ssh-config.sh              # interactive: pick push/pull and group(s) via fzf
+bash scripts/ssh-config.sh push homelab # or drive it directly / from another script
+bash scripts/ssh-config.sh pull homelab
+```
+
 ### WSL localhost access
 
 On a Windows machine running WSL2, enable mirrored networking once per Windows

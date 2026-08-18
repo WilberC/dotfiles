@@ -1,0 +1,43 @@
+# Homelab / Proxmox — SSH host aliases
+#
+# The real file (homelab.conf) is private: it's gitignored and synced
+# through a 1Password Secure Note instead of git, since this repo is public.
+# This is one "group" in scripts/ssh-config.sh — any <group>.conf.example
+# file in this directory is auto-discovered as a syncable group.
+#
+# ── First-time setup ────────────────────────────────────────────────────
+#
+#   1. Copy this file and fill in real hosts:
+#        cp homelab.conf.example homelab.conf
+#
+#   2. Push it to 1Password (from repo root):
+#        bash scripts/ssh-config.sh push homelab
+#
+# ── On another machine ──────────────────────────────────────────────────
+#
+#   Pull the existing file instead of recreating it:
+#        bash scripts/ssh-config.sh pull homelab
+#
+# ── Adding/updating hosts later ───────────────────────────────────────────
+#
+#   Edit homelab.conf directly, then push the change:
+#        bash scripts/ssh-config.sh push homelab
+#
+#   Or just run with no args for an interactive fzf picker over
+#   action + group(s):
+#        bash scripts/ssh-config.sh
+#
+#   To override the 1Password vault:
+#        OP_SSH_CONFIG_VAULT="Homelab" bash scripts/ssh-config.sh push homelab
+#
+# ─────────────────────────────────────────────────────────────────────────
+
+Host forge
+  HostName REDACTED-IP
+  User wilber
+
+Host pve
+  HostName 192.168.1.10
+  User root
+
+# Add one Host block per VM/LXC/service as needed.
