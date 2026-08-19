@@ -87,6 +87,8 @@ bash scripts/ssh-config.sh push homelab # or drive it directly / from another sc
 bash scripts/ssh-config.sh pull homelab
 ```
 
+See [docs/homelab-ssh.md](docs/homelab-ssh.md) for the full picture: the 1Password agent relay, authorizing keys on new hosts (including LXC containers, which need a different path than everything else), and the Proxmox-side tooling.
+
 ### WSL localhost access
 
 On a Windows machine running WSL2, enable mirrored networking once per Windows
