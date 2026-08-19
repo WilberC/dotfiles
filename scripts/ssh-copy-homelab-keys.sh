@@ -1,6 +1,15 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Hosts that can't (or shouldn't) go through this script — excluded from
+# the picker/default run/--all, but can still be targeted explicitly by
+# name. hermes: already authorized manually. The rest are LXC containers,
+# whose templates default to PermitRootLogin prohibit-password (blocks
+# SSH password auth entirely) — those go through
+# tools/proxmox-authorize-lxc-keys.sh (pct exec) instead, which never
+# touches SSH.
+SKIP_HOSTS=(hermes adguard tailscale cloudflared traefik authelia nas)
+
 BOLD='\033[1m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
@@ -39,15 +48,6 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CONF="$DOTFILES_DIR/shared/.config/ssh/configs/homelab.conf"
 
 [[ -f "$CONF" ]] || { echo "Not found: $CONF" >&2; exit 1; }
-
-# Hosts that can't (or shouldn't) go through this script — excluded from
-# the picker/default run/--all, but can still be targeted explicitly by
-# name. hermes: already authorized manually. The rest are LXC containers,
-# whose templates default to PermitRootLogin prohibit-password (blocks
-# SSH password auth entirely) — those go through
-# tools/proxmox-authorize-lxc-keys.sh (pct exec) instead, which never
-# touches SSH.
-SKIP_HOSTS=(hermes adguard tailscale cloudflared traefik authelia nas)
 
 mapfile -t all_hosts < <(grep -E '^Host ' "$CONF" | awk '{print $2}' | grep -v '^\*$')
 
