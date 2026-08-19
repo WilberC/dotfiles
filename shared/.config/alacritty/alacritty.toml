@@ -1,0 +1,21 @@
+# Shared across Linux/macOS/WSL2 via stow. Windows imports this file directly
+# (see docs for the %APPDATA%\alacritty\alacritty.toml importer) — keep this
+# file free of platform-specific keys like [terminal].shell.
+
+[font]
+size = 16.0
+
+[font.normal]
+family = "Berkeley Mono"
+
+[window]
+padding = { x = 10, y = 10 }
+opacity = 1.0
+decorations = "full"
+startup_mode = "Maximized"
+
+[cursor]
+style = { shape = "Block", blinking = "Off" }
+
+[scrolling]
+history = 10000

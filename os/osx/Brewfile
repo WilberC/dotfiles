@@ -15,6 +15,7 @@ brew "tmux"
 # ── Casks ─────────────────────────────────────────
 
 # Terminal
+cask "alacritty"
 cask "ghostty"
 
 # AI
