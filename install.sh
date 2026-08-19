@@ -88,6 +88,11 @@ install_stow_apt() {
     sudo apt install -y stow
     success "stow installed"
   fi
+
+  step "Aptfile packages"
+  local dotfiles_dir
+  dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+  bash "$dotfiles_dir/scripts/install-aptfile.sh"
 }
 
 set_default_fish() {
