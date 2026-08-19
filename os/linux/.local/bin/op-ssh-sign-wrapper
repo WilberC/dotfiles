@@ -8,4 +8,13 @@ if [ -n "$SSH_CONNECTION" ] && [ -z "$SSH_TTY" ]; then
   export SSH_TTY=/dev/pts/0
 fi
 
-exec /opt/1Password/op-ssh-sign "$@"
+# op-ssh-sign only exists when the 1Password desktop app is installed
+# locally (Linux desktops). Headless servers have no desktop app but do
+# have a forwarded 1Password agent on $SSH_AUTH_SOCK, so fall back to
+# ssh-keygen -Y — the same CLI surface op-ssh-sign implements — which
+# signs through whatever agent SSH_AUTH_SOCK points at.
+if [ -x /opt/1Password/op-ssh-sign ]; then
+  exec /opt/1Password/op-ssh-sign "$@"
+else
+  exec ssh-keygen "$@"
+fi
