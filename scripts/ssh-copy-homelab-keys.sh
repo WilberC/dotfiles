@@ -13,19 +13,22 @@ warn()    { echo -e "${YELLOW}${BOLD}!${RESET} $*"; }
 
 usage() {
   cat <<EOF
-Usage: $(basename "$0") [host...]
+Usage: $(basename "$0") [--all | host...]
 
 Copies each homelab host's configured SSH key (via IdentityFile) to that
 host's ~/.ssh/authorized_keys. Idempotent — safe to re-run, already-present
 keys are skipped. Password auth is left untouched — this only adds a new
 login method.
 
-With no arguments, you'll be prompted to pick one or more hosts via fzf
-(or a numbered menu if fzf isn't installed). Pass host names directly to
-skip the picker, e.g.: $(basename "$0") forge
+With no arguments, you'll be prompted to pick one or more hosts via fzf —
+Tab to mark each one, Ctrl-A to mark all shown, Enter to run on everything
+marked at once — or a numbered menu (space-separated numbers) if fzf isn't
+installed. Pass host names directly to skip the picker, e.g.:
+$(basename "$0") forge dokploy
+Or use --all to run on every selectable host without picking at all.
 
 Hosts already authorized manually (see SKIP_HOSTS in this script) are
-excluded from both the picker and "no arguments" runs, but can still be
+excluded from the picker, "no arguments" runs, and --all, but can still be
 targeted explicitly by name.
 EOF
 }
@@ -60,7 +63,18 @@ is_known_host() {
   return 1
 }
 
-if [[ $# -gt 0 ]]; then
+selectable=()
+for host in "${all_hosts[@]}"; do
+  is_skipped "$host" || selectable+=("$host")
+done
+
+if [[ "${1:-}" == "--all" ]]; then
+  if [[ ${#selectable[@]} -eq 0 ]]; then
+    echo "No selectable hosts in $CONF (all skipped or none defined)"
+    exit 0
+  fi
+  hosts=("${selectable[@]}")
+elif [[ $# -gt 0 ]]; then
   hosts=("$@")
   for host in "${hosts[@]}"; do
     if ! is_known_host "$host"; then
@@ -69,18 +83,13 @@ if [[ $# -gt 0 ]]; then
     fi
   done
 else
-  selectable=()
-  for host in "${all_hosts[@]}"; do
-    is_skipped "$host" || selectable+=("$host")
-  done
-
   if [[ ${#selectable[@]} -eq 0 ]]; then
     echo "No selectable hosts in $CONF (all skipped or none defined)"
     exit 0
   fi
 
   if command -v fzf &>/dev/null; then
-    mapfile -t hosts < <(printf '%s\n' "${selectable[@]}" | fzf -m --prompt="Select homelab host(s) > ")
+    mapfile -t hosts < <(printf '%s\n' "${selectable[@]}" | fzf -m --bind 'ctrl-a:select-all' --prompt="Select homelab host(s) (Tab=mark, Ctrl-A=all) > ")
   else
     warn "fzf not found — falling back to a numbered menu (space-separated numbers for multiple)"
     i=1
