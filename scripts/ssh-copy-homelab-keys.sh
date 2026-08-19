@@ -40,10 +40,14 @@ CONF="$DOTFILES_DIR/shared/.config/ssh/configs/homelab.conf"
 
 [[ -f "$CONF" ]] || { echo "Not found: $CONF" >&2; exit 1; }
 
-# Hosts already authorized manually outside this script — excluded from
-# the picker/default run so it doesn't needlessly prompt for their
-# password, but can still be targeted explicitly by name.
-SKIP_HOSTS=(hermes)
+# Hosts that can't (or shouldn't) go through this script — excluded from
+# the picker/default run/--all, but can still be targeted explicitly by
+# name. hermes: already authorized manually. The rest are LXC containers,
+# whose templates default to PermitRootLogin prohibit-password (blocks
+# SSH password auth entirely) — those go through
+# tools/proxmox-authorize-lxc-keys.sh (pct exec) instead, which never
+# touches SSH.
+SKIP_HOSTS=(hermes adguard tailscale cloudflared traefik authelia nas)
 
 mapfile -t all_hosts < <(grep -E '^Host ' "$CONF" | awk '{print $2}' | grep -v '^\*$')
 
