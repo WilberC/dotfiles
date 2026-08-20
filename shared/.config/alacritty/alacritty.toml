@@ -19,3 +19,16 @@ style = { shape = "Block", blinking = "Off" }
 
 [scrolling]
 history = 10000
+
+[keyboard]
+bindings = [
+  { key = "N", mods = "Control", action = "CreateNewWindow" },
+  { key = "L", mods = "Control|Shift", action = "ClearHistory" },
+  { key = "Q", mods = "Control|Shift", action = "Quit" },
+]
+
+[mouse]
+bindings = [
+  { mouse = "WheelUp", mods = "Control", action = "IncreaseFontSize" },
+  { mouse = "WheelDown", mods = "Control", action = "DecreaseFontSize" },
+]
