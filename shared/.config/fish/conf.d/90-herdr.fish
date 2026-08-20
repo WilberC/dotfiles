@@ -6,12 +6,16 @@
 # Linux session, so the Windows-side alacritty.toml instead sets HERDR_AUTO=1
 # explicitly on the wsl.exe command line (see
 # %APPDATA%\alacritty\alacritty.toml, not tracked in this repo).
-if status is-interactive
-    and begin
-        set -q ALACRITTY_WINDOW_ID
-        or set -q HERDR_AUTO
-    end
-    and not set -q HERDR_ENV
-    and command -q herdr
-    herdr
-end
+#
+# Disabled: launch herdr manually instead, so each new window starts as a
+# plain shell and `herdr`/`herdr --remote <host>`/`ssh <host>` is a deliberate
+# choice rather than automatic.
+# if status is-interactive
+#     and begin
+#         set -q ALACRITTY_WINDOW_ID
+#         or set -q HERDR_AUTO
+#     end
+#     and not set -q HERDR_ENV
+#     and command -q herdr
+#     herdr
+# end
