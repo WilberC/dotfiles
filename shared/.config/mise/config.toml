@@ -5,6 +5,7 @@ _.file = "~/.env.default"
 idiomatic_version_file_enable_tools = ["ruby"]
 ruby = { compile = true }
 status = { missing_tools = "never" }
+auto_update = true
 
 [tools]
 ast-grep = "latest"
