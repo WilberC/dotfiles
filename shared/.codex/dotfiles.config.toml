@@ -1,0 +1,17 @@
+[tui]
+status_line = [
+  "run-state",
+  "model-with-reasoning",
+  "current-dir",
+  "git-branch",
+  "branch-changes",
+  "context-used",
+  "context-remaining",
+  "five-hour-limit",
+  "weekly-limit",
+  "used-tokens",
+  "total-input-tokens",
+  "total-output-tokens",
+  "task-progress",
+]
+status_line_use_colors = true

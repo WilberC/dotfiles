@@ -9,7 +9,7 @@
 | Package  | Contents                                          | Platform     |
 |----------|---------------------------------------------------|--------------|
 | `git`    | `.gitconfig`, global `.gitignore`                 | All          |
-| `shared` | Fish, Ghostty, tmux, Zed, lazygit, mise, amp, scripts | All       |
+| `shared` | Fish, Ghostty, tmux, Zed, lazygit, mise, Codex, scripts | All       |
 | `os/linux`  | OS-specific git config, SSH, local bin         | Linux        |
 | `os/osx`    | OS-specific git config, SSH, LaunchAgents      | macOS        |
 | `os/wsl2`   | OS-specific git config, 1Password socket, Zsh  | WSL2         |
@@ -121,6 +121,18 @@ Install MCP servers with `codex mcp add <name> -- <command>`.
 | Server | Install |
 | --- | --- |
 | OpenPencil | `codex mcp add open-pencil -- openpencil-mcp` |
+
+## Codex
+
+The `shared` package installs a portable `dotfiles` profile with the preferred
+TUI status line. It deliberately does not replace `~/.codex/config.toml`, which
+also contains machine-local project trust, plugin, and application settings.
+
+Use the profile when starting Codex:
+
+```bash
+codex -p dotfiles
+```
 
 ## tmux
 
