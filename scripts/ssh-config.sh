@@ -48,7 +48,10 @@ discover_groups() {
   done
 }
 
-mapfile -t AVAILABLE_GROUPS < <(discover_groups)
+AVAILABLE_GROUPS=()
+while IFS= read -r group; do
+  AVAILABLE_GROUPS+=("$group")
+done < <(discover_groups)
 
 if [[ ${#AVAILABLE_GROUPS[@]} -eq 0 ]]; then
   error "No groups found — expected shared/.config/ssh/configs/<group>.conf.example"
@@ -74,7 +77,9 @@ fi
 SEL_GROUPS=("$@")
 if [[ ${#SEL_GROUPS[@]} -eq 0 ]]; then
   if command -v fzf &>/dev/null; then
-    mapfile -t SEL_GROUPS < <(printf '%s\n' "${AVAILABLE_GROUPS[@]}" | fzf -m --prompt="Select ssh-config group(s) > ")
+    while IFS= read -r group; do
+      SEL_GROUPS+=("$group")
+    done < <(printf '%s\n' "${AVAILABLE_GROUPS[@]}" | fzf -m --prompt="Select ssh-config group(s) > ")
   else
     warn "fzf not found — falling back to a numbered menu (space-separated numbers for multiple)"
     select_menu=()
@@ -82,7 +87,7 @@ if [[ ${#SEL_GROUPS[@]} -eq 0 ]]; then
     for g in "${AVAILABLE_GROUPS[@]}"; do
       echo "  $i) $g"
       select_menu+=("$g")
-      ((i++))
+      i=$((i + 1))
     done
     read -rp "Select group(s): " -a nums
     SEL_GROUPS=()
