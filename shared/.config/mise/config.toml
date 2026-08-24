@@ -3,6 +3,10 @@ _.file = "~/.env.default"
 
 [settings]
 idiomatic_version_file_enable_tools = ["ruby"]
+minimum_release_age_excludes = [
+  "npm:@anthropic-ai/claude-code",
+  "npm:@openai/codex",
+]
 ruby = { compile = true }
 status = { missing_tools = "never" }
 auto_update = true
