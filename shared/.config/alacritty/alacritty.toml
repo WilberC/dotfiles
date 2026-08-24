@@ -3,10 +3,22 @@
 # file free of platform-specific keys like [terminal].shell.
 
 [font]
-size = 16.0
+size = 18.0
 
 [font.normal]
-family = "Berkeley Mono"
+family = "BerkeleyMono Nerd Font"
+
+[font.bold]
+family = "BerkeleyMono Nerd Font"
+style = "Bold"
+
+[font.italic]
+family = "BerkeleyMono Nerd Font"
+style = "Oblique"
+
+[font.bold_italic]
+family = "BerkeleyMono Nerd Font"
+style = "Bold Oblique"
 
 [window]
 padding = { x = 10, y = 10 }
