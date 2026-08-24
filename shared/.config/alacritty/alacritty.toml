@@ -25,7 +25,6 @@ padding = { x = 10, y = 10 }
 opacity = 1.0
 decorations = "full"
 startup_mode = "Maximized"
-option_as_alt = "OnlyLeft"
 
 [cursor]
 style = { shape = "Block", blinking = "Off" }
@@ -35,9 +34,8 @@ history = 10000
 
 [keyboard]
 bindings = [
+  { key = "N", mods = "Command", action = "None" },
   { key = "N", mods = "Command|Shift", action = "CreateNewWindow" },
-  { key = "Up", chars = "\u001b[A" },
-  { key = "Down", chars = "\u001b[B" },
   { key = "L", mods = "Control|Shift", action = "ClearHistory" },
   { key = "Q", mods = "Control|Shift", action = "Quit" },
 ]
