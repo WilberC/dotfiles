@@ -1,0 +1,8 @@
+## Execute the selected command when pressing Enter.
+enter_accept = true
+
+## Use Ctrl+0..9 instead of Alt+0..9 for numeric UI shortcuts.
+ctrl_n_shortcuts = true
+
+[sync]
+records = true
