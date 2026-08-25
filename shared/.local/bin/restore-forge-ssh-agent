@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+runtime_dir=${XDG_RUNTIME_DIR:-/tmp/user-$(id -u)}
+stable_agent="$runtime_dir/forge-forwarded-ssh-agent.sock"
+
+mkdir -p -m 700 "$runtime_dir"
+
+while IFS= read -r candidate; do
+  [[ "$candidate" != "$stable_agent" ]] || continue
+
+  if SSH_AUTH_SOCK="$candidate" ssh-add -l >/dev/null 2>&1; then
+    ln -sfn -- "$candidate" "$stable_agent"
+    printf 'SSH agent restored: %s -> %s\n' "$stable_agent" "$candidate"
+    exit 0
+  fi
+done < <(
+  find /tmp -maxdepth 2 -type s -path '/tmp/ssh-*/agent.*' \
+    -user "$(id -u)" -printf '%T@ %p\n' 2>/dev/null \
+    | sort -nr \
+    | cut -d' ' -f2-
+)
+
+printf 'No working forwarded SSH agent socket was found.\n' >&2
+printf 'Open a fresh SSH connection to forge and retry.\n' >&2
+exit 1
