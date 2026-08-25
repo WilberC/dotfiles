@@ -21,6 +21,7 @@ alias pi 'mise exec node@lts -- pi'
 alias codex 'mise exec node@lts -- codex -p dotfiles --dangerously-bypass-approvals-and-sandbox'
 
 # Herdr
+alias h herdr
 alias hf 'herdr --remote forge'
 alias hfk 'herdr --remote forge --remote-keybindings server'
 
