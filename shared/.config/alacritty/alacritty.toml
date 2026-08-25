@@ -35,7 +35,9 @@ history = 10000
 [keyboard]
 bindings = [
   { key = "N", mods = "Command", action = "None" },
+  { key = "W", mods = "Command", action = "None" },
   { key = "N", mods = "Command|Shift", action = "CreateNewWindow" },
+  { key = "W", mods = "Command|Shift", action = "Quit" },
   { key = "Up", chars = "\u001b[A" },
   { key = "Down", chars = "\u001b[B" },
   { key = "1", mods = "Control", chars = "\u001b[49;5u" },
