@@ -25,15 +25,20 @@ Stow the packages you need:
 
 ```bash
 # All platforms
-stow git shared
+stow --no-folding git shared
 
 # Pick one OS package
-stow -d os -t ~ linux   # Linux
-stow -d os -t ~ osx     # macOS
-stow -d os -t ~ wsl2    # WSL2
+stow --no-folding -d os -t ~ linux   # Linux
+stow --no-folding -d os -t ~ osx     # macOS
+stow --no-folding -d os -t ~ wsl2    # WSL2
 ```
 
-> **Stow flags:** `-d <dir>` sets the package directory (where stow looks for packages). `-t <target>` sets where symlinks are created. OS packages need `-t ~` explicitly because `-d os` shifts stow's default target away from `~`.
+> **Stow flags:** `--no-folding` keeps shared directories such as
+> `~/.config/fish/conf.d` as real directories so files from `shared` and the
+> selected OS package can coexist. `-d <dir>` sets the package directory
+> (where Stow looks for packages), while `-t <target>` sets where symlinks are
+> created. OS packages need `-t ~` explicitly because `-d os` shifts Stow's
+> default target away from `~`.
 
 ## Agent skills (moved)
 
@@ -108,11 +113,14 @@ wsl --shutdown
 
 ## Updating configs
 
-After editing a config file, restow its package:
+After editing a shared config file, restow it with the repository helper:
 
 ```bash
-stow -R shared
+bash scripts/stow-shared.sh
 ```
+
+The helper uses `--no-folding`, preserving directories that contain links from
+both `shared` and an OS-specific package.
 
 ## MCP servers
 
