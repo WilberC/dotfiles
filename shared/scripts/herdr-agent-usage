@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+plugin_json=$(herdr plugin list --plugin usagebar --json)
+plugin_root=$(printf '%s\n' "$plugin_json" | sed -n 's/.*"plugin_root":"\([^"]*\)".*/\1/p')
+
+if [[ -z "$plugin_root" || ! -x "$plugin_root/bin/run-limits-pane.sh" ]]; then
+  printf 'Agent Usage plugin is not installed or is unavailable.\n' >&2
+  exit 1
+fi
+
+exec "$plugin_root/bin/run-limits-pane.sh"

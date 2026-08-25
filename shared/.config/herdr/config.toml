@@ -23,8 +23,10 @@ auto_switch = false
 
 [[keys.command]]
 key = "ctrl+shift+u"
-type = "plugin_action"
-command = "usagebar.open-limits"
+type = "popup"
+command = "bash ~/scripts/herdr-agent-usage"
+width = "70%"
+height = "60%"
 description = "Agent Usage: open limits pane"
 
 [[keys.command]]

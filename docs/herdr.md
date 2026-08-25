@@ -25,9 +25,10 @@ The setup action prints configuration suggestions but does not rewrite the
 main Herdr configuration. The required sidebar rows and keybindings are
 already present in the dotfiles-managed `config.toml`.
 
-Shortcuts:
+Shortcuts (when using `herdr --remote`, connect with
+`--remote-keybindings server`):
 
-- `Ctrl+Shift+U`: open the Agent Usage limits pane.
+- `Ctrl+Shift+U`: open Agent Usage in a `70%` × `60%` floating popup.
 - `Ctrl+Shift+M`: refresh the sidebar meters.
 
 The plugin-specific configuration is kept at the path printed by:
