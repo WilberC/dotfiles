@@ -9,6 +9,19 @@ if status is-interactive; and test (hostname -s) = forge
     end
 
     set -l stable_agent $agent_dir/forge-forwarded-ssh-agent.sock
+    set -l local_agent $agent_dir/openssh_agent
+    set -l data_home ~/.local/share
+    if set -q XDG_DATA_HOME; and test -n "$XDG_DATA_HOME"
+        set data_home $XDG_DATA_HOME
+    end
+
+    # A Forge-local agent is the zero-friction headless-server path. The
+    # marker is created by the first `forge-keys import`; other Linux hosts and Forge
+    # before setup retain the forwarded-agent behavior below.
+    if test -e $data_home/forge-keys/enabled; and test -S $local_agent
+        set -gx SSH_AUTH_SOCK $local_agent
+        return
+    end
 
     # A real SSH login receives a fresh socket. Never replace the stable link
     # with itself or with a stale socket inherited by a persistent Herdr pane.

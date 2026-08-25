@@ -1,0 +1,275 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ "$(hostname -s)" != "forge" ]]; then
+  printf 'forge-keys is restricted to the forge host.\n' >&2
+  exit 1
+fi
+
+data_home=${XDG_DATA_HOME:-$HOME/.local/share}
+runtime_dir=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}
+config_home=${XDG_CONFIG_HOME:-$HOME/.config}
+state_dir="$data_home/forge-keys"
+keys_dir="$state_dir/keys"
+public_dir="$state_dir/public"
+enabled_marker="$state_dir/enabled"
+agent_socket="$runtime_dir/openssh_agent"
+service_file="$config_home/systemd/user/forge-keys.service"
+declare -a cleanup_files=()
+
+cleanup() {
+  if (( ${#cleanup_files[@]} > 0 )); then
+    rm -f -- "${cleanup_files[@]}"
+  fi
+}
+
+trap cleanup EXIT
+
+usage() {
+  cat <<'EOF'
+Usage: forge-keys <command> [arguments]
+
+Commands:
+  setup                 Configure persistent loading on Forge
+  import                Download every missing required key from 1Password
+  load                  Load all managed keys into the persistent agent
+  status                Show the service and loaded key fingerprints
+  disable               Disable automatic loading without deleting keys
+EOF
+}
+
+ensure_dirs() {
+  install -d -m 700 "$state_dir" "$keys_dir" "$public_dir"
+}
+
+write_service() {
+  install -d -m 700 "$(dirname "$service_file")"
+  local temp_service
+  temp_service=$(mktemp "${service_file}.XXXXXX")
+  cleanup_files+=("$temp_service")
+  chmod 600 "$temp_service"
+  cat > "$temp_service" <<EOF
+[Unit]
+Description=Load Forge-local SSH keys
+Requires=ssh-agent.socket
+After=ssh-agent.socket
+
+[Service]
+Type=oneshot
+Environment=SSH_AUTH_SOCK=%t/openssh_agent
+ExecStart=%h/.local/bin/forge-keys load
+RemainAfterExit=yes
+
+[Install]
+WantedBy=default.target
+EOF
+  mv -f -- "$temp_service" "$service_file"
+}
+
+load_keys() {
+  ensure_dirs
+  export SSH_AUTH_SOCK="$agent_socket"
+  systemctl --user start ssh-agent.socket
+
+  local loaded=0
+  local key
+  shopt -s nullglob
+  for key in "$keys_dir"/*; do
+    [[ -f "$key" ]] || continue
+    if ! ssh-keygen -y -P '' -f "$key" >/dev/null 2>&1; then
+      printf 'Skipping %s: not a valid unencrypted private key.\n' "$(basename "$key")" >&2
+      continue
+    fi
+    ssh-add -q "$key"
+    loaded=$((loaded + 1))
+  done
+
+  printf 'Loaded %d Forge key(s) into %s.\n' "$loaded" "$agent_socket"
+}
+
+setup() {
+  ensure_dirs
+  write_service
+  systemctl --user daemon-reload
+  printf 'Forge key storage and autoload service are prepared.\n'
+  printf 'Private keys directory: %s\n' "$keys_dir"
+  printf 'Import the first key to enable autoload.\n'
+}
+
+import_keys() {
+  ensure_dirs
+  command -v op >/dev/null 2>&1 || {
+    printf '1Password CLI (op) is required.\n' >&2
+    exit 1
+  }
+
+  local -a required_keys=(
+    'github|.config/ssh/pubs/github.pub'
+    'azure-outcode|.config/ssh/pubs/azure_outcode.pub'
+    'homelab|.config/ssh/pubs/homelab.pub'
+    'hermes|.config/ssh/pubs/hermes.pub'
+  )
+  local -a missing_specs=()
+  local spec name public_rel public_key expected_fingerprint existing_fingerprint
+  local required_count=0
+
+  for spec in "${required_keys[@]}"; do
+    IFS='|' read -r name public_rel <<< "$spec"
+    public_key="$HOME/$public_rel"
+    [[ -f "$public_key" ]] || continue
+    required_count=$((required_count + 1))
+    expected_fingerprint=$(ssh-keygen -lf "$public_key" 2>/dev/null | awk '{print $2}')
+    [[ -n "$expected_fingerprint" ]] || {
+      printf 'Invalid configured public key: %s\n' "$public_key" >&2
+      exit 1
+    }
+
+    if [[ -f "$keys_dir/$name" ]]; then
+      existing_fingerprint=$(ssh-keygen -y -P '' -f "$keys_dir/$name" 2>/dev/null \
+        | ssh-keygen -lf - 2>/dev/null | awk '{print $2}' || true)
+      if [[ "$existing_fingerprint" == "$expected_fingerprint" ]]; then
+        printf '✓ %s already installed.\n' "$name"
+        continue
+      fi
+      printf 'Existing key %s does not match %s; refusing to overwrite.\n' \
+        "$keys_dir/$name" "$public_key" >&2
+      exit 1
+    fi
+    missing_specs+=("$spec")
+  done
+
+  (( required_count > 0 )) || {
+    printf 'No configured SSH public keys were found.\n' >&2
+    exit 1
+  }
+
+  if (( ${#missing_specs[@]} > 0 )); then
+    if ! op whoami >/dev/null 2>&1; then
+      printf 'Sign in to 1Password to download %d missing key(s).\n' "${#missing_specs[@]}"
+      op signin >/dev/null
+    fi
+    op whoami >/dev/null 2>&1 || {
+      printf '1Password authentication failed.\n' >&2
+      exit 1
+    }
+  fi
+
+  local item_list
+  item_list=$(mktemp "$state_dir/.items.XXXXXX")
+  cleanup_files+=("$item_list")
+  chmod 600 "$item_list"
+  if (( ${#missing_specs[@]} > 0 )); then
+    if ! op item list --categories 'SSH Key' --format json > "$item_list"; then
+      rm -f -- "$item_list"
+      printf 'Failed to list SSH Key items in 1Password.\n' >&2
+      exit 1
+    fi
+  fi
+
+  local temp_key temp_public derived_public item_id item_vault candidate_id candidate_vault downloaded=0
+  for spec in "${missing_specs[@]}"; do
+    IFS='|' read -r name public_rel <<< "$spec"
+    public_key="$HOME/$public_rel"
+    expected_fingerprint=$(ssh-keygen -lf "$public_key" | awk '{print $2}')
+    item_id=''
+    item_vault=''
+
+    while IFS=$'\t' read -r candidate_id candidate_vault; do
+      [[ -n "$candidate_id" ]] || continue
+      temp_public=$(mktemp "$state_dir/.public.XXXXXX")
+      cleanup_files+=("$temp_public")
+      if op item get "$candidate_id" --fields 'label=public key' --reveal \
+          > "$temp_public" 2>/dev/null \
+          && existing_fingerprint=$(ssh-keygen -lf "$temp_public" 2>/dev/null | awk '{print $2}') \
+          && [[ "$existing_fingerprint" == "$expected_fingerprint" ]]; then
+        item_id="$candidate_id"
+        item_vault="$candidate_vault"
+        rm -f -- "$temp_public"
+        break
+      fi
+      rm -f -- "$temp_public"
+    done < <(python3 -c \
+      'import json,sys; print(*(item["id"] + "\t" + item["vault"]["id"] for item in json.load(sys.stdin)), sep="\n")' \
+      < "$item_list")
+
+    if [[ -z "$item_id" ]]; then
+      rm -f -- "$item_list"
+      printf 'No 1Password SSH Key item matches %s (%s).\n' \
+        "$public_key" "$expected_fingerprint" >&2
+      exit 1
+    fi
+
+    temp_key=$(mktemp "$state_dir/.import.XXXXXX")
+    derived_public="$state_dir/.derived-$name.pub"
+    cleanup_files+=("$temp_key" "$derived_public")
+    chmod 600 "$temp_key"
+
+    printf '↓ Downloading %s from 1Password...\n' "$name"
+    if ! op read \
+        "op://$item_vault/$item_id/private key?ssh-format=openssh" \
+        --out-file "$temp_key" --force; then
+      rm -f -- "$temp_key" "$derived_public"
+      rm -f -- "$item_list"
+      printf 'Failed to download the matching 1Password SSH Key item.\n' >&2
+      exit 1
+    fi
+    if ! ssh-keygen -y -P '' -f "$temp_key" > "$derived_public" 2>/dev/null; then
+      rm -f -- "$temp_key" "$derived_public"
+      rm -f -- "$item_list"
+      printf 'The matching item did not contain a usable unencrypted private key.\n' >&2
+      exit 1
+    fi
+    existing_fingerprint=$(ssh-keygen -lf "$derived_public" | awk '{print $2}')
+    if [[ "$existing_fingerprint" != "$expected_fingerprint" ]]; then
+      rm -f -- "$temp_key" "$derived_public"
+      rm -f -- "$item_list"
+      printf 'Downloaded key does not match configured public key %s.\n' \
+        "$public_key" >&2
+      exit 1
+    fi
+
+    install -m 600 "$derived_public" "$public_dir/$name.pub"
+    mv -- "$temp_key" "$keys_dir/$name"
+    chmod 600 "$keys_dir/$name"
+    rm -f -- "$derived_public"
+    downloaded=$((downloaded + 1))
+    printf '✓ %s installed and verified.\n' "$name"
+  done
+  rm -f -- "$item_list"
+
+  write_service
+  : > "$enabled_marker"
+  chmod 600 "$enabled_marker"
+  systemctl --user daemon-reload
+  systemctl --user enable forge-keys.service >/dev/null
+  systemctl --user restart forge-keys.service
+  printf 'Forge keys ready: %d required, %d downloaded.\n' "$required_count" "$downloaded"
+}
+
+status() {
+  printf 'Storage: %s\n' "$state_dir"
+  printf 'Autoload: '
+  if [[ -e "$enabled_marker" ]] && systemctl --user is-enabled --quiet forge-keys.service; then
+    printf 'enabled\n'
+  else
+    printf 'disabled\n'
+  fi
+  printf 'Agent: %s\n' "$agent_socket"
+  SSH_AUTH_SOCK="$agent_socket" ssh-add -l 2>&1 || true
+}
+
+disable() {
+  systemctl --user disable --now forge-keys.service >/dev/null 2>&1 || true
+  rm -f -- "$enabled_marker"
+  printf 'Forge key autoload disabled; stored keys were preserved.\n'
+}
+
+case "${1:-}" in
+  setup) setup ;;
+  import) import_keys ;;
+  load) load_keys ;;
+  status) status ;;
+  disable) disable ;;
+  -h|--help|help|'') usage ;;
+  *) usage >&2; exit 2 ;;
+esac
