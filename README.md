@@ -53,10 +53,11 @@ git clone git@github.com:WilberC/dotfiles-skills.git ~/dotfiles-skills
 
 ```
 dotfiles/
-├── git/          # .gitconfig, global .gitignore
-├── shared/       # Fish, Ghostty, Zed, lazygit, mise, scripts
-├── os/           # OS-specific packages (linux, osx, wsl2)
+├── git/                  # .gitconfig, global .gitignore
+├── shared/               # Fish, Ghostty, Zed, lazygit, mise, scripts
+├── os/                   # OS-specific packages (linux, osx, wsl2)
 ├── scripts/              # Setup scripts (not stowed)
+├── templates/            # Templates copied to machine-local configs
 ├── docs/                 # Notes and tech debt
 ├── projects.conf.example # Template for project directory layout (see below)
 └── install.sh            # Bootstrap script
@@ -132,15 +133,33 @@ Install MCP servers with `codex mcp add <name> -- <command>`.
 
 ## Codex
 
-The `shared` package installs a portable `dotfiles` profile with the preferred
-TUI status line. It deliberately does not replace `~/.codex/config.toml`, which
-also contains machine-local project trust, plugin, and application settings.
+The preferred TUI status line is versioned as
+`templates/codex/dotfiles.config.toml`. The manual setup helper copies it to
+`~/.codex/dotfiles.config.toml`; it is intentionally outside `shared`, so Stow
+does not link the mutable profile back into this repository. Codex can safely
+append machine-local project trust to the copied profile without dirtying the
+dotfiles worktree.
 
-Use the profile when starting Codex:
+Codex is not assumed to be installed during bootstrap. After installing Codex,
+create or migrate the profile manually with:
+
+```bash
+bash scripts/setup-codex-profile.sh
+```
+
+The command preserves an existing local profile. Changes made later to the
+template are not applied automatically, avoiding overwrites of machine-local
+settings.
+
+The regular shell alias starts Codex without this optional profile. Activate it
+explicitly when needed:
 
 ```bash
 codex -p dotfiles
 ```
+
+See [templates/codex/README.md](templates/codex/README.md) for installation,
+migration, update, and maintenance instructions.
 
 ## tmux
 

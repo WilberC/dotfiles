@@ -18,7 +18,7 @@ alias md glow
 alias dev bin/dev
 alias until_failure ~/scripts/until_failure
 alias pi 'mise exec node@lts -- pi'
-alias codex 'mise exec node@lts -- codex -p dotfiles --dangerously-bypass-approvals-and-sandbox'
+alias codex 'mise exec node@lts -- codex --dangerously-bypass-approvals-and-sandbox'
 
 # Herdr
 alias h herdr
