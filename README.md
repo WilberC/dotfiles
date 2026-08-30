@@ -180,6 +180,13 @@ The config keeps new panes in the current directory. With the tmux prefix
 (`Ctrl-b`), use `|` or `-` to split, `h`/`j`/`k`/`l` to move between panes, and
 `H`/`J`/`K`/`L` to resize them.
 
+## SFTP directory links
+
+From a Fish shell on a remote SSH host, run `sfh` to copy an SFTP URL for the
+current directory to the local clipboard and print a clickable link. See the
+[sftp-here guide](docs/sftp-here.md) for Windows and macOS client setup,
+connection overrides, and troubleshooting.
+
 > **Note:** Branch `chore/generalize-gitconfig` has a version of `.gitconfig` with no user-specific data (no name, email, or signing key). `gpgsign` is disabled there. To use it, configure git user globally after stowing:
 > ```bash
 > git config --global user.name "Your Name"

@@ -19,6 +19,7 @@ alias dev bin/dev
 alias until_failure ~/scripts/until_failure
 alias pi 'mise exec node@lts -- pi'
 alias codex 'mise exec node@lts -- codex --dangerously-bypass-approvals-and-sandbox'
+alias sfh sftp-here
 
 # Herdr
 alias h herdr
