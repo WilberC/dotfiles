@@ -33,7 +33,6 @@ nvim .
 shared/.config/nvim/
 ├── init.lua
 ├── lazy-lock.json
-├── lazyvim.json
 └── lua/
     ├── config/
     │   ├── autocmds.lua
@@ -50,7 +49,10 @@ shared/.config/nvim/
 - `lua/config/options.lua` contains editor-wide behavior.
 - `lua/config/keymaps.lua` contains mappings not owned by a plugin.
 - `lua/plugins/` contains small, purpose-specific plugin specifications.
-- `lazy-lock.json` pins plugin revisions for reproducible installations.
+- `lazy-lock.json` pins plugin revisions for reproducible installations and is
+  shared between machines.
+- LazyVim's `lazyvim.json` metadata is intentionally stored per machine at
+  `~/.local/state/nvim/lazyvim.json`; it is not part of the Stow package.
 
 ## File explorers
 
