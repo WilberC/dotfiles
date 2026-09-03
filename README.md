@@ -123,14 +123,6 @@ bash scripts/stow-shared.sh
 The helper uses `--no-folding`, preserving directories that contain links from
 both `shared` and an OS-specific package.
 
-## MCP servers
-
-Install MCP servers with `codex mcp add <name> -- <command>`.
-
-| Server | Install |
-| --- | --- |
-| OpenPencil | `codex mcp add open-pencil -- openpencil-mcp` |
-
 ## Codex
 
 The preferred TUI status line is versioned as
