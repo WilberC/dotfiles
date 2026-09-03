@@ -134,32 +134,23 @@ Install MCP servers with `codex mcp add <name> -- <command>`.
 ## Codex
 
 The preferred TUI status line is versioned as
-`templates/codex/dotfiles.config.toml`. The manual setup helper copies it to
-`~/.codex/dotfiles.config.toml`; it is intentionally outside `shared`, so Stow
-does not link the mutable profile back into this repository. Codex can safely
-append machine-local project trust to the copied profile without dirtying the
-dotfiles worktree.
+`templates/codex/tui.config.toml`. Apply it manually to the normal user
+configuration at `~/.codex/config.toml`; the template is intentionally outside
+`shared`, so Stow never links the mutable config back into this repository.
+Codex can safely append machine-local settings without dirtying the dotfiles
+worktree.
 
 Codex is not assumed to be installed during bootstrap. After installing Codex,
-create or migrate the profile manually with:
+ask an AI agent to read [templates/codex/README.md](templates/codex/README.md)
+and apply the template. This remains a deliberate manual step and is not part
+of `install.sh`.
 
-```bash
-bash scripts/setup-codex-profile.sh
-```
+See [templates/codex/README.md](templates/codex/README.md) for installation and
+maintenance instructions.
 
-The command preserves an existing local profile. Changes made later to the
-template are not applied automatically, avoiding overwrites of machine-local
-settings.
-
-The regular shell alias starts Codex without this optional profile. Activate it
-explicitly when needed:
-
-```bash
-codex -p dotfiles
-```
-
-See [templates/codex/README.md](templates/codex/README.md) for installation,
-migration, update, and maintenance instructions.
+The Claude Code status line follows the same manual workflow. Ask an AI agent
+to read [templates/claude/README.md](templates/claude/README.md) and apply it to
+Claude's normal user configuration.
 
 ## tmux
 
