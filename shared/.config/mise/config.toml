@@ -52,3 +52,4 @@ zoxide = "latest"
 "npm:@openai/codex" = { version = "latest", depends = ["node"] }
 "npm:@ticktick/ticktick-cli" = { version = "latest", depends = ["node"] }
 "npm:opencode-ai" = { version = "latest", depends = ["node"], postinstall = "$(mise which node) $(find \"$MISE_TOOL_INSTALL_PATH\" -path '*/opencode-ai/postinstall.mjs' | head -1)" }
+bun = "latest"
