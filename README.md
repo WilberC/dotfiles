@@ -9,7 +9,7 @@
 | Package  | Contents                                          | Platform     |
 |----------|---------------------------------------------------|--------------|
 | `git`    | `.gitconfig`, global `.gitignore`                 | All          |
-| `shared` | Fish, Ghostty, tmux, Zed, lazygit, mise, Codex, scripts | All       |
+| `shared` | Fish, Ghostty, tmux, Neovim, Zed, lazygit, mise, Codex, scripts | All |
 | `os/linux`  | OS-specific git config, SSH, local bin         | Linux        |
 | `os/osx`    | OS-specific git config, SSH, LaunchAgents      | macOS        |
 | `os/wsl2`   | OS-specific git config, 1Password socket, Zsh  | WSL2         |
@@ -111,6 +111,13 @@ terminal. Restart WSL when convenient to apply the change:
 ```powershell
 wsl --shutdown
 ```
+
+## Neovim
+
+The shared Neovim setup is a focused LazyVim-based code editor with project
+and local file explorers, LSP support, formatting, debugging, and Vim learning
+tools. See [docs/neovim.md](docs/neovim.md) for installation, keymaps,
+architecture, and maintenance.
 
 ## Updating configs
 
