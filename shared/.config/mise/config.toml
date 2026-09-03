@@ -23,6 +23,7 @@ elasticsearch = "7"
 elixir = "latest"
 erlang = "latest"
 eza = "latest"
+fd = "latest"
 fzf = "latest"
 gh = "latest"
 go = "latest"
@@ -33,8 +34,10 @@ lazydocker = "latest"
 lazygit = "latest"
 lsd = "latest"
 node = "lts"
+neovim = "latest"
 pnpm = "latest"
 python = "latest"
+ripgrep = "latest"
 ruby = { version = "latest", depends = ["rust"] }
 rust = { version = "latest", components = "rust-analyzer,rust-src" }
 starship = { version = "latest", postinstall = "starship preset pure-preset -o ~/.config/starship.toml" }
