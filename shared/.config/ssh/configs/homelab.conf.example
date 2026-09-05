@@ -42,6 +42,17 @@ Host <alias>
   IdentityFile ~/.config/ssh/pubs/homelab.pub
   IdentitiesOnly yes
 
+# Optional: for a host such as forge that runs local development services,
+# add these forwards inside that host's block. They become available on the
+# client at the same localhost ports whenever the SSH session is open.
+#
+#   LocalForward 3000 127.0.0.1:3000
+#   LocalForward 4173 127.0.0.1:4173
+#   LocalForward 5173 127.0.0.1:5173
+#   LocalForward 8000 127.0.0.1:8000
+#   LocalForward 8080 127.0.0.1:8080
+#   ExitOnForwardFailure yes
+
 # Add one Host block per VM/LXC/service as needed, copying the format
 # above. If a host needs its own dedicated key instead of the shared one,
 # point IdentityFile at that key's .pub file instead.
