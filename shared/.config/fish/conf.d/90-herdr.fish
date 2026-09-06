@@ -19,3 +19,16 @@
 #     and command -q herdr
 #     herdr
 # end
+
+# Herdr's agent panes (reached via `--remote`, e.g. `hfk`) start with
+# NO_COLOR=1 in the process environment. This isn't set anywhere in this
+# repo — confirmed by inspecting `env` inside a live Claude Code pane — so
+# it's Herdr itself injecting it, likely to keep its own plain-text agent
+# state detection reliable. The side effect: every color-aware CLI run from
+# that shell (Claude Code, Codex, etc.) sees NO_COLOR and renders with no
+# ANSI colors at all. Undo it for interactive herdr panes so agent output
+# keeps its colors.
+if status is-interactive; and set -q HERDR_ENV
+    set -e NO_COLOR
+    set -gx FORCE_COLOR 1
+end
