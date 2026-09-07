@@ -1,0 +1,188 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+config_home=${XDG_CONFIG_HOME:-$HOME/.config}
+accounts_dir="$config_home/dokploy/accounts"
+current_file="$accounts_dir/current"
+
+usage() {
+  cat <<EOF
+dokploy-account — run the dokploy CLI under one of several saved accounts
+
+Why: a Dokploy API key is scoped to exactly one organization (1:1). The
+dokploy CLI itself only stores a single DOKPLOY_URL/DOKPLOY_API_KEY pair, so
+this wrapper keeps one env file per organization and injects the right pair
+before calling the real dokploy binary. Native multi-account support is an
+open feature request: Dokploy/cli#44.
+
+Usage:
+  dokploy-account add <name> -u <url> -t <token>    Save an account
+  dokploy-account list                               List accounts (* = default)
+  dokploy-account use <name>                         Set the default account
+  dokploy-account current                            Print the default account name
+  dokploy-account remove <name>                      Delete an account
+  dokploy-account <name> <dokploy-args...>           Run dokploy once as <name>
+  dokploy-account <dokploy-args...>                  Run dokploy as the default account
+  dokploy-account -h | --help                        Show this help
+
+Examples:
+  dokploy-account add prod -u https://panel.acme.com -t dp_xxx
+  dokploy-account add client-b -u https://panel.acme.com -t dp_yyy
+  dokploy-account use prod
+  dokploy-account project list           # runs as the default account
+  dokploy-account client-b project list  # one-off override, default unchanged
+
+Storage: $accounts_dir/<name>.env (mode 600, one file per organization).
+The default account name is stored in $current_file.
+
+For agents: every subcommand is non-interactive and exits non-zero with a
+message on stderr on failure. 'list' and 'current' are read-only and safe to
+run to discover what is configured. Never print the contents of a
+<name>.env file.
+EOF
+}
+
+valid_name() {
+  [[ "$1" =~ ^[a-zA-Z0-9._-]+$ ]]
+}
+
+account_file() {
+  printf '%s/%s.env\n' "$accounts_dir" "$1"
+}
+
+cmd_add() {
+  if [[ $# -lt 1 ]]; then
+    echo "usage: dokploy-account add <name> -u <url> -t <token>" >&2
+    exit 1
+  fi
+  local name="$1"; shift
+  local url='' token=''
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -u|--url) url="${2:-}"; shift 2 ;;
+      -t|--token) token="${2:-}"; shift 2 ;;
+      *) echo "error: unknown option '$1'" >&2; exit 1 ;;
+    esac
+  done
+  if [[ -z "$name" || -z "$url" || -z "$token" ]]; then
+    echo "usage: dokploy-account add <name> -u <url> -t <token>" >&2
+    exit 1
+  fi
+  if ! valid_name "$name"; then
+    echo "error: account name may only contain [a-zA-Z0-9._-]" >&2
+    exit 1
+  fi
+  install -d -m 700 "$accounts_dir"
+  local file; file=$(account_file "$name")
+  ( umask 177; printf 'DOKPLOY_URL=%s\nDOKPLOY_API_KEY=%s\n' "$url" "$token" > "$file" )
+  echo "saved account '$name' -> $file"
+}
+
+cmd_list() {
+  if [[ ! -d "$accounts_dir" ]]; then
+    echo "no accounts yet (run 'dokploy-account add <name> -u <url> -t <token>')"
+    return 0
+  fi
+  local active=''
+  [[ -f "$current_file" ]] && active=$(<"$current_file")
+  local found=0 f name
+  shopt -s nullglob
+  for f in "$accounts_dir"/*.env; do
+    found=1
+    name=$(basename "$f" .env)
+    if [[ "$name" == "$active" ]]; then
+      echo "* $name"
+    else
+      echo "  $name"
+    fi
+  done
+  shopt -u nullglob
+  if [[ "$found" -eq 0 ]]; then
+    echo "no accounts yet (run 'dokploy-account add <name> -u <url> -t <token>')"
+  fi
+}
+
+cmd_use() {
+  local name="${1:-}"
+  if [[ -z "$name" ]]; then
+    echo "usage: dokploy-account use <name>" >&2
+    exit 1
+  fi
+  local file; file=$(account_file "$name")
+  if [[ ! -f "$file" ]]; then
+    echo "error: unknown account '$name' (run 'dokploy-account list')" >&2
+    exit 1
+  fi
+  install -d -m 700 "$accounts_dir"
+  printf '%s\n' "$name" > "$current_file"
+  chmod 600 "$current_file"
+  echo "default account is now '$name'"
+}
+
+cmd_current() {
+  if [[ -f "$current_file" ]]; then
+    cat "$current_file"
+  else
+    echo "no default account set (use: dokploy-account use <name>)" >&2
+    exit 1
+  fi
+}
+
+cmd_remove() {
+  local name="${1:-}"
+  if [[ -z "$name" ]]; then
+    echo "usage: dokploy-account remove <name>" >&2
+    exit 1
+  fi
+  local file; file=$(account_file "$name")
+  if [[ ! -f "$file" ]]; then
+    echo "error: unknown account '$name' (run 'dokploy-account list')" >&2
+    exit 1
+  fi
+  rm -f -- "$file"
+  if [[ -f "$current_file" && "$(<"$current_file")" == "$name" ]]; then
+    rm -f -- "$current_file"
+  fi
+  echo "removed account '$name'"
+}
+
+run_with_account() {
+  local name="$1"; shift
+  local file; file=$(account_file "$name")
+  local line key value
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    [[ -z "$line" ]] && continue
+    key="${line%%=*}"
+    value="${line#*=}"
+    export "$key=$value"
+  done < "$file"
+  exec dokploy "$@"
+}
+
+case "${1:-}" in
+  -h|--help|help|'')
+    usage
+    ;;
+  add) shift; cmd_add "$@" ;;
+  list) shift; cmd_list "$@" ;;
+  use) shift; cmd_use "$@" ;;
+  current) shift; cmd_current "$@" ;;
+  remove) shift; cmd_remove "$@" ;;
+  *)
+    name="$1"
+    file=$(account_file "$name")
+    if [[ -f "$file" ]]; then
+      shift
+      run_with_account "$name" "$@"
+    else
+      default_name=''
+      [[ -f "$current_file" ]] && default_name=$(<"$current_file")
+      if [[ -z "$default_name" || ! -f "$(account_file "$default_name")" ]]; then
+        echo "error: unknown account '$name' and no default account set" >&2
+        echo "Run 'dokploy-account list' or 'dokploy-account use <name>'." >&2
+        exit 1
+      fi
+      run_with_account "$default_name" "$@"
+    fi
+    ;;
+esac
