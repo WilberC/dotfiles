@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -u
+
+if ping -c 1 -w 2 1.1.1.1 >/dev/null 2>&1; then
+  echo "✅ IP: OK"
+else
+  echo "❌ IP: FALLÓ"
+fi
+
+if ping -c 1 -w 2 google.com >/dev/null 2>&1; then
+  echo "✅ DNS: OK"
+else
+  echo "❌ DNS: FALLÓ"
+fi
