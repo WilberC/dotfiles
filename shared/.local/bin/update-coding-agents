@@ -1,0 +1,201 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Update the coding-agent CLIs installed on this machine.
+# mise is intentionally the only supported installation authority.
+
+readonly LOG_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/coding-agents"
+readonly LOG_FILE="$LOG_DIR/update.log"
+readonly LOCK_FILE="${XDG_RUNTIME_DIR:-/tmp}/coding-agents-update.lock"
+QUIET="${QUIET:-0}"
+
+info() { [[ "$QUIET" == 1 ]] || printf '[coding-agents] %s\n' "$*"; }
+warn() { printf '[coding-agents] WARNING: %s\n' "$*" >&2; }
+
+usage() {
+  cat <<'EOF'
+Usage: update-coding-agents [--check|--dry-run|--install-schedule|--uninstall-schedule|--status]
+
+Updates Codex, Pi, and Claude Code when they are installed. Missing agents are skipped.
+EOF
+}
+
+have() { command -v "$1" >/dev/null 2>&1; }
+
+load_path() {
+  # Schedulers have a deliberately small PATH. Include common Node and Homebrew paths.
+  export PATH="/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/local/sbin:$HOME/.local/bin:$HOME/.npm-global/bin:$HOME/.volta/bin:$HOME/.asdf/shims:$HOME/.mise/shims:$PATH"
+  if have mise; then
+    local mise_bin
+    mise_bin="$(command -v mise)"
+    export PATH="$(dirname "$mise_bin"):$PATH"
+  fi
+}
+
+mise_tool_configured() {
+  local tool="$1"
+  have mise && mise ls --global --no-header 2>/dev/null | awk '{print $1}' | grep -Fxq "$tool"
+}
+
+verify_agent() {
+  local tool="$1"
+  local command="$2"
+  local version
+  if version="$(mise exec -- "$command" --version 2>&1)"; then
+    info "$tool verificado: $version"
+    return 0
+  fi
+  warn "$tool descargado, pero la verificación post-instalación falló"
+  return 1
+}
+
+run_update() {
+  load_path
+  mkdir -p "$LOG_DIR"
+  if have flock; then
+    exec 9>"$LOCK_FILE"
+    flock -n 9 || { info 'Ya hay otra actualización en curso'; return 0; }
+  fi
+  info "Comprobando actualizaciones ($(date '+%Y-%m-%d %H:%M:%S %Z'))"
+  if ! have mise; then
+    warn 'mise no está disponible; no se realizará ninguna actualización'
+    return 1
+  fi
+  local -a mise_agents=()
+  local tool
+  for tool in \
+    'npm:@openai/codex' \
+    'npm:@anthropic-ai/claude-code' \
+    'npm:@earendil-works/pi-coding-agent' \
+    'npm:@mariozechner/pi-coding-agent'; do
+    if mise_tool_configured "$tool"; then
+      mise_agents+=("$tool")
+    else
+      info "$tool no está configurado en mise; se omite"
+    fi
+  done
+
+  if ((${#mise_agents[@]} == 0)); then
+    info 'No hay agentes configurados en mise'
+  elif [[ "${DRY_RUN:-0}" == 1 ]]; then
+    mise upgrade --dry-run "${mise_agents[@]}"
+  else
+    info "Actualizando con mise: ${mise_agents[*]}"
+    mise upgrade "${mise_agents[@]}"
+    local verification_failed=0
+    if mise_tool_configured 'npm:@openai/codex'; then
+      verify_agent 'Codex' codex || verification_failed=1
+    fi
+    if mise_tool_configured 'npm:@earendil-works/pi-coding-agent'; then
+      verify_agent 'Pi' pi || verification_failed=1
+    elif mise_tool_configured 'npm:@mariozechner/pi-coding-agent'; then
+      verify_agent 'Pi' pi || verification_failed=1
+    fi
+    if mise_tool_configured 'npm:@anthropic-ai/claude-code'; then
+      verify_agent 'Claude Code' claude || verification_failed=1
+    fi
+    if ((verification_failed)); then
+      warn 'Una o más verificaciones post-instalación fallaron'
+      return 1
+    fi
+  fi
+  info 'Comprobación terminada'
+}
+
+install_schedule() {
+  load_path
+  mkdir -p "$LOG_DIR"
+  if have systemctl && [[ -d /run/systemd/system ]]; then
+    mkdir -p "$HOME/.config/systemd/user"
+    cat >"$HOME/.config/systemd/user/coding-agents-update.service" <<EOF
+[Unit]
+Description=Update coding agent CLIs
+
+[Service]
+Type=oneshot
+Environment=TZ=America/Lima
+ExecStart=%h/.local/bin/update-coding-agents --quiet
+EOF
+    cat >"$HOME/.config/systemd/user/coding-agents-update.timer" <<EOF
+[Unit]
+Description=Daily coding agent CLI update
+
+[Timer]
+OnCalendar=*-*-* 05:00:00 America/Lima
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF
+    systemctl --user daemon-reload
+    systemctl --user enable --now coding-agents-update.timer
+    info 'Programado diariamente con systemd a las 05:00 (America/Lima)'
+  elif [[ "$(uname -s)" == Darwin ]]; then
+    mkdir -p "$HOME/Library/LaunchAgents"
+    cat >"$HOME/Library/LaunchAgents/com.wilber.coding-agents-update.plist" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.wilber.coding-agents-update</string>
+  <key>ProgramArguments</key><array><string>$HOME/.local/bin/update-coding-agents</string><string>--quiet</string></array>
+  <key>EnvironmentVariables</key><dict><key>TZ</key><string>America/Lima</string></dict>
+  <key>StartCalendarInterval</key><dict><key>Hour</key><integer>5</integer><key>Minute</key><integer>0</integer></dict>
+  <key>RunAtLoad</key><false/>
+  <key>StandardOutPath</key><string>$LOG_FILE</string>
+  <key>StandardErrorPath</key><string>$LOG_FILE</string>
+</dict></plist>
+EOF
+    launchctl bootout "gui/$(id -u)/com.wilber.coding-agents-update" 2>/dev/null || true
+    launchctl bootstrap "gui/$(id -u)" "$HOME/Library/LaunchAgents/com.wilber.coding-agents-update.plist"
+    info 'Programado diariamente con launchd'
+  elif have crontab; then
+    (crontab -l 2>/dev/null | grep -vF '# coding-agents-update'; printf 'CRON_TZ=America/Lima\n0 5 * * * %s --quiet >> %s 2>&1 # coding-agents-update\n' "$HOME/.local/bin/update-coding-agents" "$LOG_FILE") | crontab -
+    info 'Programado diariamente con cron a las 05:00 (America/Lima)'
+  else
+    warn 'No se encontró systemd, launchd ni crontab'
+    return 1
+  fi
+}
+
+uninstall_schedule() {
+  if have systemctl && [[ -f "$HOME/.config/systemd/user/coding-agents-update.timer" ]]; then
+    systemctl --user disable --now coding-agents-update.timer 2>/dev/null || true
+    rm -f "$HOME/.config/systemd/user/coding-agents-update.service" "$HOME/.config/systemd/user/coding-agents-update.timer"
+    systemctl --user daemon-reload
+  fi
+  if [[ -f "$HOME/Library/LaunchAgents/com.wilber.coding-agents-update.plist" ]]; then
+    launchctl bootout "gui/$(id -u)/com.wilber.coding-agents-update" 2>/dev/null || true
+    rm -f "$HOME/Library/LaunchAgents/com.wilber.coding-agents-update.plist"
+  fi
+  if have crontab; then
+    crontab -l 2>/dev/null | grep -vF '# coding-agents-update' | crontab - || true
+  fi
+  info 'Programación eliminada'
+}
+
+status() {
+  if have systemctl && systemctl --user is-enabled coding-agents-update.timer >/dev/null 2>&1; then
+    systemctl --user status coding-agents-update.timer --no-pager
+  elif [[ -f "$HOME/Library/LaunchAgents/com.wilber.coding-agents-update.plist" ]]; then
+    launchctl print "gui/$(id -u)/com.wilber.coding-agents-update" 2>/dev/null | head -n 12
+  elif have crontab && crontab -l 2>/dev/null | grep -F '# coding-agents-update'; then
+    info 'Activo mediante cron'
+  else
+    info 'No hay una programación instalada'
+  fi
+}
+
+main() {
+  case "${1:-}" in
+    '') run_update 2>&1 | tee -a "$LOG_FILE" ;;
+    --quiet) QUIET=1 run_update >>"$LOG_FILE" 2>&1 ;;
+    --check|--dry-run) DRY_RUN=1 run_update ;;
+    --install-schedule) install_schedule ;;
+    --uninstall-schedule) uninstall_schedule ;;
+    --status) status ;;
+    --help|-h) usage ;;
+    *) usage >&2; return 2 ;;
+  esac
+}
+
+main "$@"

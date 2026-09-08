@@ -30,9 +30,6 @@ chromium-browser
 # Terminal
 # ghostty
 
-# AI
-# claude-code  (npm install -g @anthropic-ai/claude-code)
-
 # Editors
 # visual-studio-code
 # zed

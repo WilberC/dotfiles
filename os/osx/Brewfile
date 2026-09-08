@@ -18,9 +18,6 @@ brew "tmux"
 cask "alacritty"
 cask "ghostty"
 
-# AI
-cask "claude-code"
-
 # Editors
 cask "visual-studio-code"
 cask "zed"

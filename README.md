@@ -147,6 +147,41 @@ of `install.sh`.
 See [templates/codex/README.md](templates/codex/README.md) for installation and
 maintenance instructions.
 
+## Actualizar agentes de código
+
+El comando `update-coding-agents` comprueba y actualiza Codex, Pi y Claude Code
+exclusivamente mediante `mise`. Los agentes que no estén declarados en la
+configuración global de mise se omiten; el script nunca usa npm global ni
+Homebrew para instalarlos o actualizarlos:
+
+Después de actualizar, ejecuta cada agente mediante `mise exec` para confirmar
+que la instalación y sus scripts post-install dejaron un CLI funcional. Claude
+Code tiene habilitado explícitamente su post-install en la configuración de
+mise porque lo necesita para preparar su CLI de plataforma.
+
+```bash
+update-coding-agents --check       # solo detectar qué cambiaría
+update-coding-agents               # comprobar y actualizar
+update-coding-agents --install-schedule
+update-coding-agents --status
+```
+
+`--install-schedule` instala un timer de systemd en Linux/WSL, un agente de
+`launchd` en macOS o cron como último recurso. La ejecución automática es
+diaria a las 05:00, hora de Perú (`America/Lima`), y guarda el registro en
+`~/.local/state/coding-agents/update.log`. Para quitarla:
+
+```bash
+update-coding-agents --uninstall-schedule
+```
+
+Si todavía no están declarados en mise, la instalación inicial recomendada es:
+
+```bash
+mise use -g node@lts
+mise use -g 'npm:@openai/codex' 'npm:@earendil-works/pi-coding-agent' 'npm:@anthropic-ai/claude-code'
+```
+
 The Claude Code status line follows the same manual workflow. Ask an AI agent
 to read [templates/claude/README.md](templates/claude/README.md) and apply it to
 Claude's normal user configuration.
