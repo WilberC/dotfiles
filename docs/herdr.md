@@ -25,7 +25,7 @@ The setup action prints configuration suggestions but does not rewrite the
 main Herdr configuration. The required sidebar rows and keybindings are
 already present in the dotfiles-managed `config.toml`.
 
-Shortcuts (when using `herdr --remote`, connect with
+Shortcuts (when using `hfk`, or any `herdr --remote` connection with
 `--remote-keybindings server`):
 
 - `Ctrl+Shift+U`: open Agent Usage in a `70%` × `60%` floating popup.

@@ -44,11 +44,16 @@ end
 
 function hf
     __hf_cleanup_orphaned_muxes
+    herdr --remote forge $argv
+end
+
+# Forge using the server's keybindings, as opposed to Herdr's local defaults.
+function hfk
+    __hf_cleanup_orphaned_muxes
     herdr --remote forge --remote-keybindings server $argv
 end
 
-# Remote Forge with the port bridge enabled. Keep this separate from the
-# default connection so ordinary sessions do not create local port forwards.
+# Remote Forge with the port bridge workflow.
 function hfp
     __hf_cleanup_orphaned_muxes
     herdr --remote forge $argv
