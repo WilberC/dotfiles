@@ -11,7 +11,7 @@ Hay tres aliases para conectarse a Forge:
 | --- | --- | --- |
 | `hf` | Locales, predeterminados | Conexión normal |
 | `hfk` | Del servidor | Conexión como la anterior `hfk` |
-| `hfp` | Locales, predeterminados | Flujo del puente de puertos |
+| `hfp` | Locales, predeterminados | Flujo del puente de puertos mediante `forge-ports` |
 
 `hf` usa la opción predeterminada de Herdr:
 
@@ -28,7 +28,7 @@ herdr --remote forge --remote-keybindings server
 `hfp` mantiene la variante separada para el flujo del puente de puertos:
 
 ```fish
-herdr --remote forge
+herdr --remote forge-ports
 ```
 
 ## Dónde vive cada configuración
@@ -123,6 +123,9 @@ Después de modificar esta configuración:
 4. Conéctate normalmente con `hf`.
 5. Usa `hfk` si necesitas los keybindings del servidor.
 6. Usa `hfp` únicamente cuando necesites el flujo del puente de puertos.
+
+El target SSH `forge` no debe contener `LocalForward`. Los forwards deben
+vivir solamente en el target `forge-ports`, que es el que utiliza `hfp`.
 
 macOS y WSL2 pueden conectarse al mismo servidor Herdr de Forge. La
 configuración del servidor y sus plugins permanecen en Forge; los keybindings

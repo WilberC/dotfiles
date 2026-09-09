@@ -38,7 +38,9 @@ function __hf_cleanup_orphaned_muxes
         kill -0 $client_pid 2>/dev/null; and continue
 
         set -l ssh_config $mux_dir/config
-        ssh -F $ssh_config -S $control -O exit forge >/dev/null 2>&1
+        for target in forge forge-ports
+            ssh -F $ssh_config -S $control -O exit $target >/dev/null 2>&1
+        end
     end
 end
 
@@ -56,7 +58,7 @@ end
 # Remote Forge with the port bridge workflow.
 function hfp
     __hf_cleanup_orphaned_muxes
-    herdr --remote forge $argv
+    herdr --remote forge-ports $argv
 end
 
 # Claude Code
