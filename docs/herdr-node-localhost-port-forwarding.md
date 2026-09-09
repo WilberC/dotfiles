@@ -1,7 +1,7 @@
 # Herdr, Node y `localhost` en puertos de desarrollo
 
 Este documento registra un problema resuelto al acceder desde Windows a un
-servidor de desarrollo que se ejecuta en `hfk`/Forge dentro de una sesión
+servidor de desarrollo que se ejecuta en `hf`/Forge dentro de una sesión
 remota de Herdr.
 
 La solución se aplica de forma global desde la configuración compartida de
@@ -19,7 +19,7 @@ Navegador en Windows
 WSL2 local
         │ cliente Herdr + conexión SSH persistente
         ▼
-hfk / Forge
+hf / Forge
         │ servidor de desarrollo
         ▼
 Aplicación Node, Vite o Django

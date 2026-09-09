@@ -23,12 +23,11 @@ alias sfh sftp-here
 
 # Herdr
 alias h herdr
-alias hf 'herdr --remote forge'
 
 # Herdr's remote client leaves its SSH ControlMaster behind if the terminal is
 # closed abruptly. Reclaim only masters whose owning Herdr client PID no
 # longer exists, so an active remote session is left alone.
-function __hfk_cleanup_orphaned_muxes
+function __hf_cleanup_orphaned_muxes
     for control in /tmp/herdr-ssh-*/ctl
         test -S $control; or continue
 
@@ -43,9 +42,16 @@ function __hfk_cleanup_orphaned_muxes
     end
 end
 
-function hfk
-    __hfk_cleanup_orphaned_muxes
+function hf
+    __hf_cleanup_orphaned_muxes
     herdr --remote forge --remote-keybindings server $argv
+end
+
+# Remote Forge with the port bridge enabled. Keep this separate from the
+# default connection so ordinary sessions do not create local port forwards.
+function hfp
+    __hf_cleanup_orphaned_muxes
+    herdr --remote forge $argv
 end
 
 # Claude Code

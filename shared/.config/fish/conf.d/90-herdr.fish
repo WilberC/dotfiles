@@ -20,7 +20,7 @@
 #     herdr
 # end
 
-# Herdr's agent panes (reached via `--remote`, e.g. `hfk`) start with
+# Herdr's agent panes (reached via `--remote`, e.g. `hf`) start with
 # NO_COLOR=1 in the process environment. This isn't set anywhere in this
 # repo — confirmed by inspecting `env` inside a live Claude Code pane — so
 # it's Herdr itself injecting it, likely to keep its own plain-text agent
