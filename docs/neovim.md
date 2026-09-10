@@ -2,7 +2,7 @@
 
 The shared Neovim configuration is a focused code editor built on LazyVim. It
 borrows the visual direction and useful workflows from Gentleman.Dots without
-including its AI, Obsidian, WSL, or tmux integrations.
+including its AI, Obsidian, or WSL integrations.
 
 The source of truth lives in `shared/.config/nvim/` and is linked to
 `~/.config/nvim/` by the `shared` GNU Stow package.
@@ -172,13 +172,11 @@ Incline labels split windows, Treesitter Context keeps the surrounding code
 scope visible, Render Markdown improves Markdown presentation, and Smear Cursor
 animates cursor movement. The active colorscheme is Gentleman Kanagawa Blur.
 
-## Git and terminal multiplexing
+## Git workflow
 
 Neovim shows Git changes and supports file-oriented Git actions, but LazyGit
-remains the primary interface for repository operations.
-
-There is no tmux navigation plugin. `<C-h/j/k/l>` only moves between windows
-inside Neovim, while Herdr manages its own panes and shortcuts independently.
+remains the primary interface for repository operations. Herdr manages terminal
+panes and shortcuts independently.
 
 ## Maintain and troubleshoot
 

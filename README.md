@@ -9,7 +9,7 @@
 | Package  | Contents                                          | Platform     |
 |----------|---------------------------------------------------|--------------|
 | `git`    | `.gitconfig`, global `.gitignore`                 | All          |
-| `shared` | Fish, Ghostty, WezTerm, tmux, Neovim, Zed, lazygit, mise, Codex, scripts | All |
+| `shared` | Fish, Ghostty, WezTerm, Neovim, Zed, lazygit, mise, Codex, scripts | All |
 | `os/linux`  | OS-specific git config, SSH, local bin         | Linux        |
 | `os/osx`    | OS-specific git config, SSH, LaunchAgents      | macOS        |
 | `os/wsl2`   | OS-specific git config, 1Password socket, Zsh  | WSL2         |
@@ -185,25 +185,6 @@ mise use -g 'npm:@openai/codex' 'npm:@earendil-works/pi-coding-agent' 'npm:@anth
 The Claude Code status line follows the same manual workflow. Ask an AI agent
 to read [templates/claude/README.md](templates/claude/README.md) and apply it to
 Claude's normal user configuration.
-
-## tmux
-
-tmux is an opt-in terminal multiplexer. Its configuration lives at
-`~/.config/tmux/tmux.conf` after stowing `shared`. Start it manually with:
-
-```bash
-tmux
-```
-
-To test the repository configuration without stowing it first:
-
-```bash
-tmux -f ~/dotfiles/shared/.config/tmux/tmux.conf
-```
-
-The config keeps new panes in the current directory. With the tmux prefix
-(`Ctrl-b`), use `|` or `-` to split, `h`/`j`/`k`/`l` to move between panes, and
-`H`/`J`/`K`/`L` to resize them.
 
 ## SFTP directory links
 

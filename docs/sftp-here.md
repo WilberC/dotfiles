@@ -15,8 +15,8 @@ Instead, `sftp-here` uses two terminal escape sequences:
 - OSC 52 copies the generated `sftp://` URL to the client's clipboard.
 - OSC 8 renders the `Open ... with SFTP` label as a hyperlink.
 
-Fish's clipboard helper also handles the common tmux case by writing the OSC
-52 sequence to the underlying client terminal. No FTP server or additional
+Fish's clipboard helper writes the OSC 52 sequence to the client terminal.
+No FTP server or additional
 service is required because SFTP uses the existing SSH connection service.
 
 ## Client setup

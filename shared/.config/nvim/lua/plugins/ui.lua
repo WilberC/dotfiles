@@ -22,7 +22,7 @@ return {
     cmd = "ZenMode",
     dependencies = { "folke/twilight.nvim" },
     keys = { { "<leader>uz", "<cmd>ZenMode<cr>", desc = "Toggle Zen Mode" } },
-    opts = { plugins = { gitsigns = true, tmux = false, twilight = { enabled = true } } },
+    opts = { plugins = { gitsigns = true, twilight = { enabled = true } } },
   },
   {
     "folke/twilight.nvim",

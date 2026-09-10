@@ -17,8 +17,5 @@ set -gx CPPFLAGS "-I/opt/homebrew/opt/openssl@3/include"
 set -gx HOMEBREW_NO_ANALYTICS 1
 set -gx HOMEBREW_NO_ENV_HINTS 1
 
-# gtab
-alias g gtab
-
 # Fix Chromium Gatekeeper block after install/upgrade
 alias fix-chromium "xattr -dr com.apple.quarantine /Applications/Chromium.app"

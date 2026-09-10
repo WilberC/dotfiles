@@ -42,7 +42,7 @@ function sftp-here --description 'Open the current SSH directory with a local SF
     set -l url "sftp://$encoded_user@$host:$port$encoded_path/"
 
     # Copy through OSC 52 so the URL reaches the clipboard of the computer
-    # running the terminal, including SSH sessions inside tmux.
+    # running the terminal across SSH sessions.
     printf '%s' $url | fish_clipboard_copy
 
     # OSC 8 makes the label clickable in terminals such as Ghostty,
