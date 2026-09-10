@@ -9,7 +9,7 @@
 | Package  | Contents                                          | Platform     |
 |----------|---------------------------------------------------|--------------|
 | `git`    | `.gitconfig`, global `.gitignore`                 | All          |
-| `shared` | Fish, Ghostty, tmux, Neovim, Zed, lazygit, mise, Codex, scripts | All |
+| `shared` | Fish, Ghostty, WezTerm, tmux, Neovim, Zed, lazygit, mise, Codex, scripts | All |
 | `os/linux`  | OS-specific git config, SSH, local bin         | Linux        |
 | `os/osx`    | OS-specific git config, SSH, LaunchAgents      | macOS        |
 | `os/wsl2`   | OS-specific git config, 1Password socket, Zsh  | WSL2         |
