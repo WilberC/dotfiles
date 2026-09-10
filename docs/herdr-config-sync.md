@@ -127,6 +127,36 @@ Después de modificar esta configuración:
 El target SSH `forge` no debe contener `LocalForward`. Los forwards deben
 vivir solamente en el target `forge-ports`, que es el que utiliza `hfp`.
 
+## Actualizar Herdr sin cerrar sesiones
+
+Para actualizar Herdr en el entorno actual y Forge con un solo comando:
+
+```bash
+bash scripts/update-herdr.sh
+```
+
+El helper ejecuta primero `herdr update --handoff` en el entorno local, usando
+`mise` tanto en WSL2 como en Linux o macOS. Luego compara esa versión con la de
+Forge y solo actualiza Forge si son diferentes. El handoff intenta mover el
+servidor a la versión nueva manteniendo panes y sesiones activos. El script
+nunca ejecuta `herdr server stop` automáticamente; si el handoff no es posible,
+la sesión antigua queda intacta y se informa para decidir después.
+
+Variantes útiles:
+
+```bash
+bash scripts/update-herdr.sh --local-only
+bash scripts/update-herdr.sh --remote-only
+bash scripts/update-herdr.sh --no-handoff
+```
+
+Después, comprueba que ambos binarios usan la misma versión:
+
+```bash
+herdr --version
+ssh -o ClearAllForwardings=yes forge 'mise exec -- herdr --version'
+```
+
 macOS y WSL2 pueden conectarse al mismo servidor Herdr de Forge. La
 configuración del servidor y sus plugins permanecen en Forge; los keybindings
 locales de cada cliente siguen siendo independientes cuando se usa el modo
