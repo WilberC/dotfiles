@@ -51,7 +51,7 @@ zoxide = "latest"
 "npm:@herb-tools/language-server" = { version = "latest", depends = ["node"] }
 "npm:agent-browser" = { version = "latest", depends = ["node"] }
 # Claude Code needs its package postinstall to download/setup the platform CLI.
-"npm:@anthropic-ai/claude-code" = { version = "latest", os = ["linux"], depends = ["node"], allow_builds = ["@anthropic-ai/claude-code"] }
+"npm:@anthropic-ai/claude-code" = { version = "latest", depends = ["node"], allow_builds = ["@anthropic-ai/claude-code"] }
 "npm:@dokploy/cli" = { version = "latest", depends = ["node"] }
 "npm:@openai/codex" = { version = "latest", depends = ["node"] }
 "npm:@ticktick/ticktick-cli" = { version = "latest", depends = ["node"] }
