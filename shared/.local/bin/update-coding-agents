@@ -39,9 +39,10 @@ mise_tool_configured() {
 
 verify_agent() {
   local tool="$1"
-  local command="$2"
+  local mise_tool="$2"
+  local command="$3"
   local version
-  if version="$(mise exec -- "$command" --version 2>&1)"; then
+  if version="$(mise exec "$mise_tool" -- "$command" --version 2>&1)"; then
     info "$tool verificado: $version"
     return 0
   fi
@@ -84,15 +85,15 @@ run_update() {
     mise upgrade "${mise_agents[@]}"
     local verification_failed=0
     if mise_tool_configured 'npm:@openai/codex'; then
-      verify_agent 'Codex' codex || verification_failed=1
+      verify_agent 'Codex' 'npm:@openai/codex' codex || verification_failed=1
     fi
     if mise_tool_configured 'npm:@earendil-works/pi-coding-agent'; then
-      verify_agent 'Pi' pi || verification_failed=1
+      verify_agent 'Pi' 'npm:@earendil-works/pi-coding-agent' pi || verification_failed=1
     elif mise_tool_configured 'npm:@mariozechner/pi-coding-agent'; then
-      verify_agent 'Pi' pi || verification_failed=1
+      verify_agent 'Pi' 'npm:@mariozechner/pi-coding-agent' pi || verification_failed=1
     fi
     if mise_tool_configured 'npm:@anthropic-ai/claude-code'; then
-      verify_agent 'Claude Code' claude || verification_failed=1
+      verify_agent 'Claude Code' 'npm:@anthropic-ai/claude-code' claude || verification_failed=1
     fi
     if ((verification_failed)); then
       warn 'Una o más verificaciones post-instalación fallaron'
