@@ -21,6 +21,16 @@ position = "bottom-left"
 name = "catppuccin"
 auto_switch = false
 
+[keys]
+# Temporary cross-platform workaround for remote image paste.
+#
+# In the current WSL2 workflow, Ctrl+V is reserved for text paste and Codex
+# receives Alt+V for clipboard images. Keep this as one shared setting for
+# now so all clients use the same working shortcut. If macOS/Linux later need
+# a different key, replace this with platform-specific config layering after
+# the upstream Herdr configuration work is settled.
+remote_image_paste = "alt+v"
+
 [[keys.command]]
 key = "ctrl+shift+u"
 type = "popup"

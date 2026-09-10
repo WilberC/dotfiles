@@ -157,6 +157,12 @@ herdr --version
 ssh -o ClearAllForwardings=yes forge 'mise exec -- herdr --version'
 ```
 
+Por ahora, el único workaround compartido usa `Alt+V` para pegar imágenes
+desde el clipboard en clientes remotos; `Ctrl+V` conserva el pegado de texto
+en el flujo WSL2. La configuración es deliberadamente simple y repetitiva:
+cuando exista una solución upstream para capas o imports, este override podrá
+separarse por plataforma.
+
 macOS y WSL2 pueden conectarse al mismo servidor Herdr de Forge. La
 configuración del servidor y sus plugins permanecen en Forge; los keybindings
 locales de cada cliente siguen siendo independientes cuando se usa el modo
