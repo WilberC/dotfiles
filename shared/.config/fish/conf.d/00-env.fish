@@ -11,6 +11,8 @@ else
 end
 
 set -gx PAGER less
+set -gx EDITOR nano
+set -gx VISUAL nano
 set -gx CODEX_HOME "$HOME/.codex"
 set -gx GLOW_STYLE "$HOME/.config/glow/clean-dark.json"
 
