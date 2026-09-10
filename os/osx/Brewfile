@@ -1,24 +1,21 @@
 # ── Brews ─────────────────────────────────────────
-tap "Franvy/gtab"
-
 # Shell
 brew "fish"
 
 # Dev tools
 brew "bat"
-brew "gtab" # run `gtab init` once after install
 brew "libpq"
 brew "libyaml"
-brew "tmux"
 
 # ── Casks ─────────────────────────────────────────
 
 # Terminal
-cask "alacritty"
+# Alacritty's cask is disabled because the app does not pass macOS Gatekeeper.
+# Install it manually from an upstream release if needed.
+# cask "alacritty"
 cask "ghostty"
 
 # Editors
-cask "visual-studio-code"
 cask "zed"
 
 # Productivity
