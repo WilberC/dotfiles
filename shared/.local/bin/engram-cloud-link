@@ -1,0 +1,42 @@
+#!/bin/sh
+set -eu
+
+usage() {
+    printf 'Usage: engram-cloud-link\n'
+    printf '\nEnrolls the current directory name as an Engram Cloud project and syncs it.\n'
+}
+
+case "${1:-}" in
+    -h|--help)
+        usage
+        exit 0
+        ;;
+    '')
+        ;;
+    *)
+        printf 'Unknown argument: %s\n' "$1" >&2
+        usage >&2
+        exit 2
+        ;;
+esac
+
+if ! command -v engram >/dev/null 2>&1; then
+    printf 'engram was not found in PATH.\n' >&2
+    exit 1
+fi
+
+project=$(basename "$PWD")
+
+if [ -z "$project" ] || [ "$project" = "." ] || [ "$project" = ".." ]; then
+    printf 'Could not determine the current directory name.\n' >&2
+    exit 1
+fi
+
+printf '[engram] Linking current directory as project: %s\n' "$project"
+printf '[engram] Enrolling project...\n'
+engram cloud enroll "$project"
+
+printf '[engram] Syncing project...\n'
+engram sync --cloud --project "$project"
+
+printf '[engram] Cloud link complete: %s\n' "$project"
