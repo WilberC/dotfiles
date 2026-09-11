@@ -1,6 +1,82 @@
 #!/bin/sh
 set -eu
 
+if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
+    color_blue=$(printf '\033[34m')
+    color_cyan=$(printf '\033[36m')
+    color_green=$(printf '\033[32m')
+    color_red=$(printf '\033[31m')
+    color_bold=$(printf '\033[1m')
+    color_reset=$(printf '\033[0m')
+else
+    color_blue=''
+    color_cyan=''
+    color_green=''
+    color_red=''
+    color_bold=''
+    color_reset=''
+fi
+
+info() {
+    printf '%s[engram]%s %s\n' "$color_blue" "$color_reset" "$*"
+}
+
+step() {
+    printf '%s[engram]%s %s%s%s\n' "$color_bold" "$color_reset" "$color_cyan" "$*" "$color_reset"
+}
+
+success() {
+    printf '%s[engram] %s%s\n' "$color_green" "$*" "$color_reset"
+}
+
+error() {
+    printf '%s[engram] ERROR:%s %s\n' "$color_red" "$color_reset" "$*" >&2
+}
+
+prompt_for_token() {
+    if [ ! -r /dev/tty ]; then
+        error 'ENGRAM_CLOUD_TOKEN is missing and no interactive terminal is available.'
+        exit 1
+    fi
+
+    step 'Engram Cloud token required (input hidden):'
+    printf 'Token: ' > /dev/tty
+    stty -echo < /dev/tty
+    if ! IFS= read -r ENGRAM_CLOUD_TOKEN < /dev/tty; then
+        stty echo < /dev/tty
+        printf '\n' > /dev/tty
+        error 'Could not read the Engram Cloud token.'
+        exit 1
+    fi
+    stty echo < /dev/tty
+    printf '\n' > /dev/tty
+    export ENGRAM_CLOUD_TOKEN
+}
+
+load_token_from_file() {
+    secret_file="${ENGRAM_CLOUD_SECRETS_FILE:-$HOME/dotfiles-secrets/secret-files/Personal/Engram/.env}"
+
+    [ -r "$secret_file" ] || return 0
+
+    token_from_file=$(awk '
+        /^[[:space:]]*(export[[:space:]]+)?ENGRAM_CLOUD_TOKEN[[:space:]]*=/ {
+            sub(/^[^=]*=[[:space:]]*/, "", $0)
+            if ($0 ~ /^".*"$/) {
+                sub(/^"/, "", $0)
+                sub(/"$/, "", $0)
+            }
+            print
+            exit
+        }
+    ' "$secret_file")
+
+    if [ -n "$token_from_file" ]; then
+        ENGRAM_CLOUD_TOKEN="$token_from_file"
+        export ENGRAM_CLOUD_TOKEN
+        info 'Using Engram Cloud token from the configured secrets file.'
+    fi
+}
+
 usage() {
     printf 'Usage: engram-cloud-link\n'
     printf '\nEnrolls the current directory name as an Engram Cloud project and syncs it.\n'
@@ -14,29 +90,43 @@ case "${1:-}" in
     '')
         ;;
     *)
-        printf 'Unknown argument: %s\n' "$1" >&2
+        error "Unknown argument: $1"
         usage >&2
         exit 2
         ;;
 esac
 
 if ! command -v engram >/dev/null 2>&1; then
-    printf 'engram was not found in PATH.\n' >&2
+    error 'engram was not found in PATH.'
     exit 1
 fi
 
 project=$(basename "$PWD")
 
 if [ -z "$project" ] || [ "$project" = "." ] || [ "$project" = ".." ]; then
-    printf 'Could not determine the current directory name.\n' >&2
+    error 'Could not determine the current directory name.'
     exit 1
 fi
 
-printf '[engram] Linking current directory as project: %s\n' "$project"
-printf '[engram] Enrolling project...\n'
-engram cloud enroll "$project"
+if [ -z "${ENGRAM_CLOUD_TOKEN:-}" ]; then
+    load_token_from_file
+fi
 
-printf '[engram] Syncing project...\n'
-engram sync --cloud --project "$project"
+if [ -z "${ENGRAM_CLOUD_TOKEN:-}" ]; then
+    prompt_for_token
+fi
 
-printf '[engram] Cloud link complete: %s\n' "$project"
+info "Linking current directory as project: $color_bold$project$color_reset"
+step 'Enrolling project...'
+if ! engram cloud enroll "$project"; then
+    error "Could not enroll project: $project"
+    exit 1
+fi
+
+step 'Syncing project...'
+if ! engram sync --cloud --project "$project"; then
+    error "Could not sync project: $project"
+    exit 1
+fi
+
+success "Cloud link complete: $project"
