@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+readonly config_dir="$HOME/dotfiles-secrets/secret-files/Personal/Engram"
+readonly default_server="https://engram.wilberc.dev"
+config_file="${1:-}"
+
+if [[ "${config_file:-}" == '-h' || "${config_file:-}" == '--help' ]]; then
+  printf 'Usage: setup-engram-projects [CONFIG.yml]\n'
+  exit 0
+fi
+
+if [[ -z "$config_file" ]]; then
+  config_file="$(find "$config_dir" -maxdepth 1 -type f -name '*.yml' -print | sort | tail -1)"
+fi
+if [[ ! -f "$config_file" ]]; then
+  printf '[engram] No YAML configuration found\n' >&2
+  exit 1
+fi
+if ! command -v mise >/dev/null 2>&1; then
+  printf '[engram] mise is required to run Engram\n' >&2
+  exit 1
+fi
+
+if [[ -z "${ENGRAM_CLOUD_TOKEN:-}" ]]; then
+  read -r -s -p 'Engram Cloud token: ' ENGRAM_CLOUD_TOKEN
+  printf '\n'
+  export ENGRAM_CLOUD_TOKEN
+fi
+
+engram() { mise exec -- engram "$@"; }
+
+config_lines="$(mise exec -- ruby -ryaml -e '
+  config = YAML.safe_load(File.read(ARGV.fetch(0)), permitted_classes: [], aliases: false)
+  abort "configuration must be a mapping" unless config.is_a?(Hash)
+  puts "ROOT\t#{File.expand_path(config.fetch("root", "~/Projects"))}"
+  projects = config.fetch("projects")
+  abort "projects must be a mapping" unless projects.is_a?(Hash)
+
+  walk = lambda do |node, parts|
+    if node.is_a?(Hash)
+      node.each { |name, child| walk.call(child, parts + [name.to_s]) }
+    else
+      puts "PROJECT\t#{parts.join("/")}\t#{node}"
+    end
+  end
+  walk.call(projects, [])
+' "$config_file")"
+
+root=''
+while IFS=$'\t' read -r record_type field_one field_two; do
+  [[ "$record_type" == ROOT ]] && root="$field_one"
+done <<< "$config_lines"
+
+if [[ -z "$root" || ! -d "$root" ]]; then
+  printf '[engram] Projects root not found: %s\n' "${root:-unknown}" >&2
+  exit 1
+fi
+
+engram cloud config --server "${ENGRAM_CLOUD_SERVER:-$default_server}"
+
+while IFS=$'\t' read -r record_type relative_path project_name; do
+  [[ "$record_type" == PROJECT ]] || continue
+  repo="$root/$relative_path"
+  if [[ ! -d "$repo" ]]; then
+    printf '[engram] Missing project directory: %s\n' "$repo" >&2
+    continue
+  fi
+  printf '[engram] Enrolling %s (%s)\n' "$project_name" "$relative_path"
+  (cd "$repo" && engram cloud enroll "$project_name")
+done <<< "$config_lines"

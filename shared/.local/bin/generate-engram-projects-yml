@@ -1,0 +1,151 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+readonly default_output_dir="$HOME/dotfiles-secrets/secret-files/Personal/Engram"
+
+usage() {
+  cat <<'EOF'
+Usage: generate-engram-projects-yml [ROOT] [--output DIR]
+
+Scan Git repositories below ROOT and generate an editable Engram project map.
+ROOT defaults to ~/Projects. The output filename is <root-name>-<timestamp>.yml.
+EOF
+}
+
+yaml_quote() {
+  local value="$1"
+  value="${value//\'/\'\'}"
+  printf "'%s'" "$value"
+}
+
+root="${ENGRAM_PROJECTS_ROOT:-$HOME/Projects}"
+output_dir="${ENGRAM_PROJECTS_OUTPUT_DIR:-$default_output_dir}"
+
+while (($# > 0)); do
+  case "$1" in
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    --output)
+      (($# >= 2)) || { printf 'Missing value for --output\n' >&2; exit 2; }
+      output_dir="$2"
+      shift 2
+      ;;
+    --output=*)
+      output_dir="${1#*=}"
+      shift
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -* )
+      printf 'Unknown option: %s\n' "$1" >&2
+      usage >&2
+      exit 2
+      ;;
+    *)
+      root="$1"
+      shift
+      ;;
+  esac
+done
+
+if (($# > 0)); then
+  printf 'Unexpected argument: %s\n' "$1" >&2
+  usage >&2
+  exit 2
+fi
+
+if [[ ! -d "$root" ]]; then
+  printf 'Root directory not found: %s\n' "$root" >&2
+  exit 1
+fi
+
+root="$(cd "$root" && pwd -P)"
+mkdir -p "$output_dir"
+
+root_name="${root##*/}"
+timestamp="$(date '+%Y%m%d-%H%M%S')"
+output_file="$output_dir/${root_name}-${timestamp}.yml"
+
+if [[ -e "$output_file" ]]; then
+  printf 'Output file already exists: %s\n' "$output_file" >&2
+  exit 1
+fi
+
+tmp_file="$(mktemp)"
+trap 'rm -f "$tmp_file"' EXIT
+
+append_repository() {
+  local repo="$1"
+  local remote_url project_name relative_path
+
+  remote_url="$(git -C "$repo" remote get-url origin 2>/dev/null || true)"
+
+  if [[ -n "$remote_url" ]]; then
+    remote_url="${remote_url%/}"
+    project_name="${remote_url##*/}"
+    project_name="${project_name%.git}"
+  else
+    project_name="${repo##*/}"
+  fi
+
+  if [[ "$repo" == "$root" ]]; then
+    relative_path='.'
+  else
+    relative_path="${repo#"$root"/}"
+  fi
+  printf '%s\t%s\n' "$relative_path" "$project_name" >> "$tmp_file"
+}
+
+scan_directory() {
+  local current="$1"
+  local child child_name
+
+  if [[ -d "$current/.git" || -f "$current/.git" ]]; then
+    append_repository "$current"
+    return
+  fi
+
+  for child in "$current"/* "$current"/.[!.]* "$current"/..?*; do
+    [[ -d "$child" && ! -L "$child" ]] || continue
+    child_name="${child##*/}"
+    case "$child_name" in
+      node_modules|vendor|target|dist|build|.venv|__pycache__)
+        continue
+        ;;
+    esac
+    scan_directory "$child"
+  done
+}
+
+scan_directory "$root"
+
+root_for_yaml="$root"
+if [[ "$root" == "$HOME/"* ]]; then
+  root_for_yaml="~/${root#"$HOME/"}"
+elif [[ "$root" == "$HOME" ]]; then
+  root_for_yaml='~'
+fi
+
+mise exec -- ruby -ryaml -e '
+  root = ARGV.fetch(0)
+  input = ARGV.fetch(1)
+  tree = {}
+
+  File.foreach(input) do |line|
+    relative_path, project_name = line.chomp.split("\t", 2)
+    parts = relative_path.split("/")
+    node = tree
+    parts[0...-1].each { |part| node = (node[part] ||= {}) }
+    node[parts.last] = project_name
+  end
+
+  puts YAML.dump("root" => root, "projects" => tree)
+' "$root_for_yaml" "$tmp_file" > "$output_file"
+
+count="$(wc -l < "$tmp_file" | tr -d ' ')"
+printf 'Generated %s\n' "$output_file"
+printf 'Found %s Git repositories\n' "$count"
