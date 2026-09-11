@@ -11,6 +11,9 @@ ruby = { compile = true }
 status = { missing_tools = "never" }
 auto_update = true
 
+[tool_alias]
+engram = "github:Gentleman-Programming/engram"
+
 [tools]
 ast-grep = "latest"
 atuin = "latest"
@@ -19,7 +22,7 @@ bfs = "latest"
 "cargo:mdtui" = "latest"
 delta = "latest"
 difftastic = "latest"
-"github:Gentleman-Programming/engram" = "v2.0.0-rc.10"
+engram = "v2.0.0-rc.10"
 elasticsearch = "7"
 elixir = "latest"
 erlang = "latest"
