@@ -20,8 +20,25 @@ case "${1:-}" in
         ;;
 esac
 
-if ! command -v engram >/dev/null 2>&1; then
-    printf 'engram was not found in PATH.\n' >&2
+if ! command -v mise >/dev/null 2>&1; then
+    printf 'mise was not found in PATH.\n' >&2
+    exit 1
+fi
+
+engram() {
+    mise exec -- engram "$@"
+}
+
+engram_env_file="${ENGRAM_ENV_FILE:-$HOME/dotfiles-secrets/secret-files/Personal/Engram/.env}"
+if [ -z "${ENGRAM_CLOUD_SERVER:-}" ] && [ -f "$engram_env_file" ]; then
+    set -a
+    # shellcheck disable=SC1090
+    . "$engram_env_file"
+    set +a
+fi
+
+if [ -z "${ENGRAM_CLOUD_SERVER:-}" ]; then
+    printf 'ENGRAM_CLOUD_SERVER is not configured.\n' >&2
     exit 1
 fi
 
@@ -33,6 +50,8 @@ if [ -z "$project" ] || [ "$project" = "." ] || [ "$project" = ".." ]; then
 fi
 
 printf '[engram] Linking current directory as project: %s\n' "$project"
+printf '[engram] Configuring cloud server...\n'
+engram cloud config --server "$ENGRAM_CLOUD_SERVER"
 printf '[engram] Enrolling project...\n'
 engram cloud enroll "$project"
 
