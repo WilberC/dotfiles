@@ -58,10 +58,13 @@ dotfiles/
 ├── os/                   # OS-specific packages (linux, osx, wsl2)
 ├── scripts/              # Setup scripts (not stowed)
 ├── templates/            # Templates copied to machine-local configs
-├── docs/                 # Notes and tech debt
+├── docs/                 # Notes, custom-tool index, and tech debt
 ├── projects.conf.example # Template for project directory layout (see below)
 └── install.sh            # Bootstrap script
 ```
+
+See [docs/custom-tools.md](docs/custom-tools.md) for the user-facing custom
+commands and utilities maintained by this repository.
 
 ## install.sh
 
