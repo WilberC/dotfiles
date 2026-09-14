@@ -117,9 +117,9 @@ Agent-platform activation remains opt-in. The current default behavior is the
 existing global skill linking and shared-context workflow. Rollout state is
 kept outside Stow-managed files and can be inspected or changed with:
 
-    sync-skills rollout status
-    sync-skills rollout enable --harness pi
-    sync-skills rollout disable --harness pi
+    sync-skills platform rollout status
+    sync-skills platform rollout enable --harness pi
+    sync-skills platform rollout disable --harness pi
 
 Only Pi is currently eligible for opt-in activation because its installed CLI
 exposes direct session skill paths. Codex and Claude Code remain blocked until
@@ -128,10 +128,19 @@ does not rewrite active harness settings or global skill links.
 
 Before any physical harness test, run the portable local gate:
 
-    sync-skills verify
+    sync-skills platform verify
 
 This exercises temporary resolution, materialization, adapter diagnostics,
 evaluation, rollout reversibility, and cleanup without launching a harness.
+
+## Command-surface compatibility
+
+The explicit `platform` namespace is the recommended interface for new
+agent-platform workflows. Direct platform commands remain supported as
+backward-compatible aliases during the transition. The no-argument picker and
+legacy global-link commands (`remove`, `context`, `relink`, `update`, and
+`validate`) retain their existing behavior and remain outside the platform
+namespace.
 
 ## Planned delivery sequence
 
