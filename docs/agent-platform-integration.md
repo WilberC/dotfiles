@@ -126,6 +126,13 @@ exposes direct session skill paths. Codex and Claude Code remain blocked until
 a direct session skill-root contract is verified. Enabling or disabling rollout
 does not rewrite active harness settings or global skill links.
 
+Before any physical harness test, run the portable local gate:
+
+    sync-skills verify
+
+This exercises temporary resolution, materialization, adapter diagnostics,
+evaluation, rollout reversibility, and cleanup without launching a harness.
+
 ## Planned delivery sequence
 
 1. Wait for the portable profile and resolver contracts in
