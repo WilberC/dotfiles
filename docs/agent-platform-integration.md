@@ -61,6 +61,21 @@ files merely to add one platform value. Prefer, in order:
 3. an idempotent narrow merge with preview, backup, and validation;
 4. a documented manual step when no safe automated contract exists.
 
+## Verified adapter boundaries
+
+The installed harness CLIs were inspected on 2026-09-14 before implementing the
+portable adapter previews:
+
+| Harness | Safe preview inputs | Unsupported or deferred input |
+| --- | --- | --- |
+| Pi | model, thinking level, repeated skill paths, MCP config path | automatic model mapping without an explicit class mapping |
+| Claude Code | model, effort, additional directory, MCP config, plugin directory | direct session skill-root discovery |
+| Codex | model, model_reasoning_effort config override, additional directory, ephemeral/json mode | direct session skill-root discovery |
+
+The adapter command remains preview-only. It never launches a harness or
+rewrites active settings. The portable implementation reports degraded status
+when a harness lacks a verified session skill-root contract.
+
 ## External Pi packages
 
 External packages remain independently versioned dependencies:
