@@ -111,6 +111,21 @@ model or provider.
 - Keep platform activation opt-in until the corresponding adapter has automated
   tests and a verified rollback path.
 
+## Rollout controls
+
+Agent-platform activation remains opt-in. The current default behavior is the
+existing global skill linking and shared-context workflow. Rollout state is
+kept outside Stow-managed files and can be inspected or changed with:
+
+    sync-skills rollout status
+    sync-skills rollout enable --harness pi
+    sync-skills rollout disable --harness pi
+
+Only Pi is currently eligible for opt-in activation because its installed CLI
+exposes direct session skill paths. Codex and Claude Code remain blocked until
+a direct session skill-root contract is verified. Enabling or disabling rollout
+does not rewrite active harness settings or global skill links.
+
 ## Planned delivery sequence
 
 1. Wait for the portable profile and resolver contracts in
