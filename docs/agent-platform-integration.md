@@ -133,6 +133,22 @@ Before any physical harness test, run the portable local gate:
 This exercises temporary resolution, materialization, adapter diagnostics,
 evaluation, rollout reversibility, and cleanup without launching a harness.
 
+## Legacy global-link boundary
+
+The existing global skill symlinks are a compatibility layer for harnesses that
+do not yet expose a verified session skill-root contract. They remain managed by
+the legacy linker, but they are outside the agent-platform runtime. The platform
+uses resolved profiles and isolated materialized session roots instead, and must
+not mutate the global links.
+
+The explicit legacy entry point is available during migration:
+
+    sync-skills legacy
+    sync-skills legacy relink
+    sync-skills legacy validate
+
+The current flat commands remain supported as compatibility aliases.
+
 ## Command-surface compatibility
 
 The explicit `platform` namespace is the recommended interface for new
