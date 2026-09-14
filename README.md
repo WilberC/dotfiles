@@ -49,6 +49,12 @@ git clone git@github.com:WilberC/dotfiles-skills.git ~/dotfiles-skills
 ~/dotfiles-skills/install.sh   # links sync-skills and relinks existing skills
 ```
 
+Future machine integration for agent-scoped profiles, model routing, isolated
+skill roots, and optional Pi packages is tracked in
+[`docs/agent-platform-integration.md`](docs/agent-platform-integration.md).
+`dotfiles-skills` owns the portable platform; this repository owns only
+merge-safe installation and machine configuration.
+
 ## Repository structure
 
 ```
