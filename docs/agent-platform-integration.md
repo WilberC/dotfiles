@@ -11,6 +11,17 @@
 - **Update trigger:** revise this document when an owned machine path, package,
   setup command, merge rule, or platform integration changes.
 
+## Current status
+
+- Automated platform implementation: complete.
+- Local verification and Stow dry-run: passing.
+- Physical Pi validation: pending; no real harness session has been approved.
+- Rollout: disabled.
+
+The next step is a manual Pi smoke test using a temporary materialized skill
+root and an explicit model mapping. Global skill links must be compared before
+and after the test and must remain unchanged.
+
 ## Ownership boundary
 
 The portable platform belongs to `~/dotfiles-skills`. It owns capability
