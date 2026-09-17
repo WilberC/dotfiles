@@ -17,16 +17,15 @@
 - Local verification and Stow dry-run: passing.
 - Pi profile smoke test: passed on 2026-09-17 with `nan/gemma4` and the
   `backend-implementer` profile in an isolated materialized root.
-- Claude startup smoke test: passed on 2026-09-17 with print mode and an
-  isolated root supplied through `--add-dir`; per-session skill discovery is
-  still unverified.
+- Claude Code profile smoke test: passed on 2026-09-17 with print mode, an
+  isolated root supplied through `--add-dir`, and `.claude/skills` discovery.
 - Global skill links: unchanged during both smoke tests.
 - Interactive-session and MCP-specific checks: pending.
 - Rollout: disabled.
 
-The remaining validation is an optional interactive Pi smoke test and MCP
-verification when an MCP configuration is used. Review model selection,
-permissions, and harness output before enabling rollout.
+The remaining validation is optional interactive-session and MCP verification
+when an MCP configuration is used. Review model selection, permissions, and
+harness output before enabling rollout.
 
 ## Ownership boundary
 
@@ -80,18 +79,19 @@ files merely to add one platform value. Prefer, in order:
 
 ## Verified adapter boundaries
 
-The installed harness CLIs were inspected on 2026-09-14 before implementing the
-portable adapter previews:
+The installed harness CLIs and current official Claude Code skill-discovery
+contract were verified on 2026-09-17:
 
 | Harness | Safe preview inputs | Unsupported or deferred input |
 | --- | --- | --- |
 | Pi | model, thinking level, repeated skill paths, MCP config path | automatic model mapping without an explicit class mapping |
-| Claude Code | model, effort, additional directory, MCP config, plugin directory | direct session skill-root discovery |
+| Claude Code | model, effort, additional directory with `.claude/skills`, MCP config, plugin directory | automatic profile launch |
 | Codex | model, model_reasoning_effort config override, additional directory, ephemeral/json mode | direct session skill-root discovery |
 
 The adapter command remains preview-only. It never launches a harness or
-rewrites active settings. The portable implementation reports degraded status
-when a harness lacks a verified session skill-root contract.
+rewrites active settings. Pi and Claude Code have verified session skill paths;
+the portable implementation reports degraded status for Codex until its session
+skill-root contract is verified.
 
 ## External Pi packages
 
@@ -142,10 +142,10 @@ kept outside Stow-managed files and can be inspected or changed with:
     sync-skills platform rollout enable --harness pi
     sync-skills platform rollout disable --harness pi
 
-Only Pi is currently eligible for opt-in activation because its installed CLI
-exposes direct session skill paths. Codex and Claude Code remain blocked until
-a direct session skill-root contract is verified. Enabling or disabling rollout
-does not rewrite active harness settings or global skill links.
+Pi and Claude Code have verified session skill paths. Codex remains blocked
+until a direct session skill-root contract is verified. Automatic rollout is
+still disabled for all harnesses; enabling or disabling rollout does not rewrite
+active harness settings or global skill links.
 
 Before any physical harness test, run the portable local gate:
 
@@ -157,7 +157,8 @@ evaluation, rollout reversibility, and cleanup without launching a harness.
 ## Legacy global-link boundary
 
 The existing global skill symlinks are a compatibility layer for harnesses that
-do not yet expose a verified session skill-root contract. They remain managed by
+do not yet expose a verified session skill-root contract, currently Codex. They
+remain managed by
 the legacy linker, but they are outside the agent-platform runtime. The platform
 uses resolved profiles and isolated materialized session roots instead, and must
 not mutate the global links.
