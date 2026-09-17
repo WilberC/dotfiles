@@ -152,7 +152,7 @@ maintenance instructions.
 
 ## Actualizar agentes de código
 
-El comando `update-coding-agents` comprueba y actualiza Codex, Pi y Claude Code
+The `update-coding-agents` command checks and updates Codex, Pi, Claude Code, CodeGraph, and RTK
 exclusivamente mediante `mise`. Los agentes que no estén declarados en la
 configuración global de mise se omiten; el script nunca usa npm global ni
 Homebrew para instalarlos o actualizarlos:
@@ -182,7 +182,8 @@ Si todavía no están declarados en mise, la instalación inicial recomendada es
 
 ```bash
 mise use -g node@lts
-mise use -g 'npm:@openai/codex' 'npm:@earendil-works/pi-coding-agent' 'npm:@anthropic-ai/claude-code'
+mise use -g rtk@latest
+mise use -g 'npm:@openai/codex' 'npm:@earendil-works/pi-coding-agent' 'npm:@anthropic-ai/claude-code' 'npm:@colbymchenry/codegraph'
 ```
 
 The Claude Code status line follows the same manual workflow. Ask an AI agent

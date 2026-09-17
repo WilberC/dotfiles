@@ -42,6 +42,7 @@ neovim = "latest"
 pnpm = "latest"
 python = "latest"
 ripgrep = "latest"
+rtk = "latest"
 ruby = { version = "latest", depends = ["rust"] }
 rust = { version = "latest", components = "rust-analyzer,rust-src" }
 starship = "latest"
@@ -58,6 +59,7 @@ zoxide = "latest"
 "npm:@anthropic-ai/claude-code" = { version = "latest", depends = ["node"], allow_builds = ["@anthropic-ai/claude-code"] }
 "npm:@dokploy/cli" = { version = "latest", depends = ["node"], allow_low_downloads = true }
 "npm:@openai/codex" = { version = "latest", depends = ["node"] }
+"npm:@colbymchenry/codegraph" = { version = "latest", depends = ["node"] }
 "npm:@ticktick/ticktick-cli" = { version = "latest", depends = ["node"], allow_low_downloads = true }
 "npm:opencode-ai" = { version = "latest", depends = ["node"], postinstall = "$(mise which node) $(find \"$MISE_TOOL_INSTALL_PATH\" -path '*/opencode-ai/postinstall.mjs' | head -1)" }
 bun = "latest"
