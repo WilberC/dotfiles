@@ -61,6 +61,12 @@ function hfp
     herdr --remote forge-ports $argv
 end
 
+# Remote Forge with the port bridge workflow and the server's keybindings.
+function hfkp
+    __hf_cleanup_orphaned_muxes
+    herdr --remote forge-ports --remote-keybindings server $argv
+end
+
 # Claude Code
 alias cc claude
 alias cca 'claude --dangerously-skip-permissions'

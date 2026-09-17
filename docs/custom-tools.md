@@ -46,6 +46,12 @@ contract. Secret values must never be added to this index.
 | `sftp-here` | `shared/.config/fish/functions/sftp-here.fish` | Open the current SSH directory through a local SFTP client. | `sftp-here [REMOTE_PATH]` |
 | `zr` | `shared/.config/fish/functions/zr.fish` | Open a remote folder on `r0n1n` through Zed SSH remote. | `zr [PATH]` |
 
+## Fish aliases
+
+| Tool | Location | Main purpose | Primary use |
+| --- | --- | --- | --- |
+| `hfkp` | `shared/.config/fish/conf.d/98-aliases.fish` | Connect to Forge through the port bridge using the server's Herdr keybindings. | `hfkp` |
+
 ## Maintenance rule
 
 When a custom tool is added or its primary behavior changes, update this

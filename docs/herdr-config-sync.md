@@ -5,13 +5,14 @@ después de instalar o actualizar los dotfiles de Herdr.
 
 ## Conexiones disponibles
 
-Hay tres aliases para conectarse a Forge:
+Hay cuatro aliases para conectarse a Forge:
 
 | Alias | Keybindings | Uso |
 | --- | --- | --- |
 | `hf` | Locales, predeterminados | Conexión normal |
 | `hfk` | Del servidor | Conexión como la anterior `hfk` |
 | `hfp` | Locales, predeterminados | Flujo del puente de puertos mediante `forge-ports` |
+| `hfkp` | Del servidor | Flujo del puente de puertos con keybindings del servidor |
 
 `hf` usa la opción predeterminada de Herdr:
 
@@ -29,6 +30,12 @@ herdr --remote forge --remote-keybindings server
 
 ```fish
 herdr --remote forge-ports
+```
+
+`hfkp` combina el puente de puertos con los keybindings del servidor:
+
+```fish
+herdr --remote forge-ports --remote-keybindings server
 ```
 
 ## Dónde vive cada configuración
@@ -56,7 +63,7 @@ bash scripts/stow-shared.sh
 Esto enlaza los archivos compartidos, incluyendo:
 
 - `~/.config/herdr/config.toml`
-- los aliases de Fish, incluyendo `hf` y `hfp`
+- los aliases de Fish, incluyendo `hf`, `hfp` y `hfkp`
 - `~/scripts/herdr-agent-usage`
 
 Después, abre una nueva shell de Fish o recarga sus aliases:
@@ -122,10 +129,12 @@ Después de modificar esta configuración:
    remoto una vez.
 4. Conéctate normalmente con `hf`.
 5. Usa `hfk` si necesitas los keybindings del servidor.
-6. Usa `hfp` únicamente cuando necesites el flujo del puente de puertos.
+6. Usa `hfp` cuando necesites el flujo del puente de puertos con keybindings
+   locales, o `hfkp` si necesitas los keybindings del servidor.
 
 El target SSH `forge` no debe contener `LocalForward`. Los forwards deben
-vivir solamente en el target `forge-ports`, que es el que utiliza `hfp`.
+vivir solamente en el target `forge-ports`, que es el que utilizan `hfp` y
+`hfkp`.
 
 ## Actualizar Herdr sin cerrar sesiones
 
