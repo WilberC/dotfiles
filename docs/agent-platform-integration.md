@@ -15,12 +15,15 @@
 
 - Automated platform implementation: complete.
 - Local verification and Stow dry-run: passing.
-- Physical Pi validation: pending; no real harness session has been approved.
+- Pi profile smoke test: passed on 2026-09-17 with `nan/gemma4` and the
+  `backend-implementer` profile in an isolated materialized root.
+- Global skill links: unchanged during the smoke test.
+- Interactive-session and MCP-specific checks: pending.
 - Rollout: disabled.
 
-The next step is a manual Pi smoke test using a temporary materialized skill
-root and an explicit model mapping. Global skill links must be compared before
-and after the test and must remain unchanged.
+The remaining validation is an optional interactive Pi smoke test and MCP
+verification when an MCP configuration is used. Review model selection,
+permissions, and harness output before enabling rollout.
 
 ## Ownership boundary
 
