@@ -152,7 +152,7 @@ maintenance instructions.
 
 ## Actualizar agentes de código
 
-The `update-coding-agents` command checks and updates Codex, Pi, Claude Code, CodeGraph, and RTK
+The `update-coding-agents` command checks and updates Codex, Pi, Claude Code, CodeGraph, RTK, and NaN
 exclusivamente mediante `mise`. Los agentes que no estén declarados en la
 configuración global de mise se omiten; el script nunca usa npm global ni
 Homebrew para instalarlos o actualizarlos:

@@ -43,6 +43,7 @@ pnpm = "latest"
 python = "latest"
 ripgrep = "latest"
 rtk = "latest"
+"github:helmcode/nan-cli" = "latest"
 ruby = { version = "latest", depends = ["rust"] }
 rust = { version = "latest", components = "rust-analyzer,rust-src" }
 starship = "latest"

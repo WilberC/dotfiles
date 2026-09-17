@@ -32,7 +32,7 @@ contract. Secret values must never be added to this index.
 | `restore-forge-ssh-agent` | `shared/.local/bin/restore-forge-ssh-agent` | Restore the stable SSH-agent link after a forwarded Forge socket changes. | `restore-forge-ssh-agent` |
 | `setup-engram-projects` | `shared/.local/bin/setup-engram-projects` | Apply a generated Engram project map to the configured Engram server. | `setup-engram-projects [CONFIG.yml]` |
 | `test-network` | `shared/.local/bin/test-network` | Check basic IP connectivity and DNS resolution. | `test-network` |
-| `update-coding-agents` | `shared/.local/bin/update-coding-agents` | Check, update, and schedule updates for configured coding-agent CLIs and tools, including CodeGraph and RTK. | `update-coding-agents --help` |
+| `update-coding-agents` | `shared/.local/bin/update-coding-agents` | Check, update, and schedule updates for configured coding-agent CLIs and tools, including CodeGraph, RTK, and NaN. | `update-coding-agents --help` |
 | `watch-zone-identifiers` | `shared/.local/bin/watch-zone-identifiers` | Watch a directory and remove unwanted Windows `Zone.Identifier` metadata. | `watch-zone-identifiers [DIRECTORY]` |
 
 ## Fish functions

@@ -16,7 +16,7 @@ usage() {
   cat <<'EOF'
 Usage: update-coding-agents [--check|--dry-run|--install-schedule|--uninstall-schedule|--status]
 
-Updates Codex, Pi, Claude Code, CodeGraph, and RTK when they are installed. Missing tools are skipped.
+Updates Codex, Pi, Claude Code, CodeGraph, RTK, and NaN when they are installed. Missing tools are skipped.
 EOF
 }
 
@@ -69,6 +69,7 @@ run_update() {
     'npm:@anthropic-ai/claude-code' \
     'npm:@colbymchenry/codegraph' \
     'rtk' \
+    'github:helmcode/nan-cli' \
     'npm:@earendil-works/pi-coding-agent' \
     'npm:@mariozechner/pi-coding-agent'; do
     if mise_tool_configured "$tool"; then
@@ -102,6 +103,9 @@ run_update() {
     fi
     if mise_tool_configured 'rtk'; then
       verify_agent 'RTK' 'rtk' rtk || verification_failed=1
+    fi
+    if mise_tool_configured 'github:helmcode/nan-cli'; then
+      verify_agent 'NaN' 'github:helmcode/nan-cli' nan || verification_failed=1
     fi
     if ((verification_failed)); then
       warn 'Una o más verificaciones post-instalación fallaron'
