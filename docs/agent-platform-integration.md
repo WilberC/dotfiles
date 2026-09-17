@@ -95,11 +95,15 @@ External packages remain independently versioned dependencies:
 - `pi-lens` provides Pi-native edit-time diagnostics and may expose related MCP
   capabilities to other clients;
 - `pi-btw` provides an optional side-conversation workflow;
+- `@vndv/pi-codegraph` provides Pi-native CodeGraph tools and requires the
+  mise-managed `@colbymchenry/codegraph` CLI;
 - Engram remains the existing persistent-memory integration.
 
 The platform may describe these capabilities in profiles, but this repository
 must install them only through Pi's supported package workflow and preserve
-unrelated package entries. Package source code is never vendored here.
+unrelated package entries. Package sources managed by this repository are
+listed in `shared/.config/pi/packages.txt` and installed with
+`setup-coding-agents`; package source code is never vendored here.
 
 ## Model mapping
 

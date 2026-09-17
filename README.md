@@ -196,6 +196,17 @@ The Claude Code status line follows the same manual workflow. Ask an AI agent
 to read [templates/claude/README.md](templates/claude/README.md) and apply it to
 Claude's normal user configuration.
 
+To install the Pi packages listed in the dotfiles manifest and configure RTK
+for Codex, Claude Code, and Pi, run:
+
+```bash
+setup-coding-agents --check
+setup-coding-agents
+```
+
+Add future Pi package sources to `shared/.config/pi/packages.txt`; do not
+version the mutable `~/.pi/agent` settings or credentials.
+
 ## SFTP directory links
 
 From a Fish shell on a remote SSH host, run `sfh` to copy an SFTP URL for the

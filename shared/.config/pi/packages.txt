@@ -1,0 +1,4 @@
+# Pi packages managed by ~/dotfiles.
+# Add one npm or Git source per line. Keep credentials and mutable Pi state
+# outside this file.
+npm:@vndv/pi-codegraph

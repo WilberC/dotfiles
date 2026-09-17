@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+set -euo pipefail
+shopt -s extglob
+
+# Install configured Pi packages and initialize RTK integrations.
+# mise remains the installation authority for the CLIs themselves.
+
+readonly PACKAGE_FILE="${PI_PACKAGES_FILE:-${XDG_CONFIG_HOME:-$HOME/.config}/pi/packages.txt}"
+QUIET="${QUIET:-0}"
+DRY_RUN=0
+
+info() { [[ "$QUIET" == 1 ]] || printf '[coding-agents] %s\n' "$*"; }
+warn() { printf '[coding-agents] WARNING: %s\n' "$*" >&2; }
+
+usage() {
+  cat <<'EOF'
+Usage: setup-coding-agents [--check|--quiet]
+
+Install the Pi packages listed in the dotfiles manifest and configure RTK for
+Codex, Claude Code, and Pi. Missing mise-managed tools are reported as errors.
+EOF
+}
+
+have() { command -v "$1" >/dev/null 2>&1; }
+
+load_path() {
+  export PATH="$HOME/.local/bin:$HOME/.mise/shims:$PATH"
+}
+
+run_mise() {
+  mise exec "$@"
+}
+
+install_pi_packages() {
+  if [[ ! -f "$PACKAGE_FILE" ]]; then
+    warn "Pi package manifest not found: $PACKAGE_FILE"
+    return 0
+  fi
+
+  local package
+  while IFS= read -r package || [[ -n "$package" ]]; do
+    package="${package%%#*}"
+    package="${package##+([[:space:]])}"
+    package="${package%%+([[:space:]])}"
+    [[ -z "$package" ]] && continue
+
+    if ((DRY_RUN)); then
+      info "Would install Pi package: $package"
+    else
+      info "Installing Pi package: $package"
+      run_mise npm:@earendil-works/pi-coding-agent -- pi install "$package"
+    fi
+  done < "$PACKAGE_FILE"
+}
+
+configure_rtk() {
+  local -a targets=(
+    'Codex:--codex:no-auto-patch'
+    'Claude Code:--agent claude:auto-patch'
+    'Pi:--agent pi:auto-patch'
+  )
+  local target name options patch_mode
+
+  for target in "${targets[@]}"; do
+    name="${target%%:*}"
+    options="${target#*:}"
+    patch_mode="${options##*:}"
+    options="${options%:*}"
+    if ((DRY_RUN)); then
+      info "Would configure RTK for $name"
+    else
+      info "Configuring RTK for $name"
+      # shellcheck disable=SC2086
+      if [[ "$patch_mode" == auto-patch ]]; then
+        run_mise rtk -- rtk init -g $options --auto-patch
+      else
+        run_mise rtk -- rtk init -g $options
+      fi
+    fi
+  done
+}
+
+main() {
+  while (($#)); do
+    case "$1" in
+      --check|--dry-run) DRY_RUN=1 ;;
+      --quiet) QUIET=1 ;;
+      --help|-h) usage; return 0 ;;
+      *) usage >&2; return 2 ;;
+    esac
+    shift
+  done
+
+  load_path
+  have mise || { warn 'mise is not available'; return 1; }
+  if ((DRY_RUN == 0)); then
+    run_mise npm:@earendil-works/pi-coding-agent -- pi --version >/dev/null
+    run_mise rtk -- rtk --version >/dev/null
+  fi
+  install_pi_packages
+  configure_rtk
+  info 'Coding-agent setup completed'
+}
+
+main "$@"
