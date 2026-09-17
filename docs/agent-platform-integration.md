@@ -17,7 +17,10 @@
 - Local verification and Stow dry-run: passing.
 - Pi profile smoke test: passed on 2026-09-17 with `nan/gemma4` and the
   `backend-implementer` profile in an isolated materialized root.
-- Global skill links: unchanged during the smoke test.
+- Claude startup smoke test: passed on 2026-09-17 with print mode and an
+  isolated root supplied through `--add-dir`; per-session skill discovery is
+  still unverified.
+- Global skill links: unchanged during both smoke tests.
 - Interactive-session and MCP-specific checks: pending.
 - Rollout: disabled.
 
