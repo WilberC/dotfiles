@@ -1,0 +1,6 @@
+[hooks]
+exclude_commands = ["curl", "playwright"]
+
+[tee]
+enabled = true
+mode = "failures"
