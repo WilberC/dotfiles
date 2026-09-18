@@ -26,3 +26,6 @@ TAGS
 
 # znap generated files
 *.zwc
+
+# CodeGraph local indexes
+.codegraph/
