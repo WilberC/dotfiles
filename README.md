@@ -204,6 +204,11 @@ setup-coding-agents --check
 setup-coding-agents
 ```
 
+The Pi setup uses RTK's no-patch mode because Pi's `AGENTS.md` is a link to the
+canonical shared context managed by `dotfiles-skills`. Keep RTK-specific
+instructions in each agent's own configuration file rather than adding them to
+the shared context.
+
 Add future Pi package sources to `shared/.config/pi/packages.txt`; do not
 version the mutable `~/.pi/agent` settings or credentials.
 

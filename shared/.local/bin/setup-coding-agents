@@ -57,7 +57,7 @@ configure_rtk() {
   local -a targets=(
     'Codex:--codex:no-auto-patch'
     'Claude Code:--agent claude:auto-patch'
-    'Pi:--agent pi:auto-patch'
+    'Pi:--agent pi:no-patch'
   )
   local target name options patch_mode
 
@@ -73,6 +73,10 @@ configure_rtk() {
       # shellcheck disable=SC2086
       if [[ "$patch_mode" == auto-patch ]]; then
         run_mise rtk -- rtk init -g $options --auto-patch
+      elif [[ "$patch_mode" == no-patch ]]; then
+        # Pi's AGENTS.md is a symlink to the canonical shared context. Keep
+        # RTK's Pi extension setup from patching that repository-owned file.
+        run_mise rtk -- rtk init -g $options --no-patch
       else
         run_mise rtk -- rtk init -g $options
       fi
