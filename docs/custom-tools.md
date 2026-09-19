@@ -35,6 +35,12 @@ contract. Secret values must never be added to this index.
 | `update-coding-agents` | `shared/.local/bin/update-coding-agents` | Check, update, and schedule updates for configured coding-agent CLIs and tools, including CodeGraph, RTK, and NaN. | `update-coding-agents --help` |
 | `watch-zone-identifiers` | `shared/.local/bin/watch-zone-identifiers` | Watch a directory and remove unwanted Windows `Zone.Identifier` metadata. | `watch-zone-identifiers [DIRECTORY]` |
 
+## Maintenance scripts
+
+| Tool | Location | Main purpose | Primary use |
+| --- | --- | --- | --- |
+| `update-dotfiles.sh` | `scripts/update-dotfiles.sh` | Pull the direct-child Git repositories named `dotfiles` or `dotfiles-*` from the home directory. | `bash ~/dotfiles/scripts/update-dotfiles.sh` |
+
 ## Fish functions
 
 | Tool | Location | Main purpose | Primary use |
